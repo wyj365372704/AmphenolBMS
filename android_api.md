@@ -89,20 +89,26 @@
 	请求方式：get
 	参数：
 		default
+	action=query_warehouse
 
 返回
 
 	warehouse:String 默认仓库
-	warehouse_list:List<String> 仓库列表集合
+	warehouse_list:List<Map<String,Object>> 仓库列表集合
+		Map<String,Object> 仓库
+			name:String 仓库名
 		
 ##获取子库列表
 	请求方式：get
 	参数：
 		warehouse	仓库
+	action=query_shard_list
 
 返回
 	
-	shard_list:List<String> 子库列表集合
+	shard_list:List<Map<String,Object>> 子库列表集合
+		Map<String,Object> 子库
+			name:String 子库名
 
 ##查询送货单
 	请求方式：get

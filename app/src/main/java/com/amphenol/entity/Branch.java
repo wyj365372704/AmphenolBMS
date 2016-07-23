@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Carl on 2016/7/12/012.
  */
-public class Branch extends Object{
+public class Branch{
     private String branchNumber;//到货单批明细行
     private String scpc;//生产批次
     private double jhsl;//计划数量
