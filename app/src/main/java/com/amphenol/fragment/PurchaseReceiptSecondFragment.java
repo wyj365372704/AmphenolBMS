@@ -170,6 +170,14 @@ public class PurchaseReceiptSecondFragment extends Fragment {
             public void onOtherButtonClick(ActionSheet actionSheet, int index) {
                 switch (index) {
                     case 0://确认收货
+//                        if (TextUtils.isEmpty(mShardTextView.getText().toString())) {
+//                            Toast.makeText(getContext(), "收货子库无效", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                        if (TextUtils.isEmpty(mLocationEditText.getText().toString())) {
+//                            Toast.makeText(getContext(), "收货库位无效", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
                         final double singleBefore = mater.getActualSingle();
                         double singleAfter = 0;
                         double actualQuantity = 0;
@@ -177,16 +185,17 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                             singleAfter = Double.parseDouble(mactualSingleEditText.getText().toString().trim());
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(getContext(), "实际单重输入非法", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "实际单重无效", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         try {
                             actualQuantity = Double.parseDouble(mactualQuantityEditText.getText().toString().trim());
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(getContext(), "实收总数输入非法", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "实收总数无效", Toast.LENGTH_SHORT).show();
                             return;
                         }
+
 
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
                         builder2.setTitle("确认收货").setMessage("将要对此物料进行确认收货?");
@@ -301,7 +310,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
         mActualSingleUnitTextView.setText(mater.getActualUnit());
         mShardTextView.setText(mater.getShard());
         mLocationEditText.setText(mater.getLocation());
-        mactualQuantityEditText.setText(mater.getActualQuantity() + "");
+        mactualQuantityEditText.setText(mater.getPlan_quantity() + "");//默认填上计划总数
         rootView.findViewById(R.id.toolbar_menu).setOnClickListener(mOnClickListener);
 
     }
@@ -336,7 +345,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
             }
         }
         if (mater != null && mater.getBranches() != null) {
-            mater.getBranches().add(new Branch("xxxx", branchNumber, 0, num));
+            mater.getBranches().add(new Branch("-1", branchNumber, 0, num));
             mSecondReceiptAdapter.notifyDataSetChanged();
             Toast.makeText(getContext(), "增加成功", Toast.LENGTH_SHORT).show();
         }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -76,12 +77,6 @@ public class PurchaseReceiptMainFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (rootView != null)
@@ -144,11 +139,11 @@ public class PurchaseReceiptMainFragment extends Fragment {
                         startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN);
                         break;
                     case R.id.fragment_purchase_receipt_inquire_bt://查询按钮
-                        boolean state = mInquireButton.getTag() == null?false: (boolean) mInquireButton.getTag();
+                        boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
                         if (state) {//当前按钮状态为“清除”
                             receipt = new Receipt();
                             refreshShow(receipt);
-                        } else{
+                        } else {
                             handleScanCode(mCodeEditText.getText().toString().trim());
                         }
 
@@ -175,7 +170,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
             @Override
             public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
                 try {
-                    switch (requestCode){
+                    switch (requestCode) {
                         case REQUEST_CODE_QUERY_RECEIPT:
                             DecodeManager.decodeQueryReceipt(jsonObject, requestCode, myHandler);
                             break;
@@ -186,7 +181,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     ((BaseActivity) getActivity()).ShowToast("服务器返回错误");
-                }finally {
+                } finally {
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
                         mLoadingDialog = null;
@@ -244,20 +239,8 @@ public class PurchaseReceiptMainFragment extends Fragment {
         if (!PurchaseReceiptMainFragment.this.isVisible())
             return;
         if (TextUtils.isEmpty(receipt.getReceiptNumber())) {//当前收货单为空，扫码查询收货单
-
-            int startIndex = code.indexOf("*P");
-            if (startIndex == -1) {//不含“*P”的字符串，直接使用code进行查询
-
-            } else {
-                int endIndex = code.indexOf("*", startIndex + 1);
-                endIndex = endIndex == -1 ? code.length() : endIndex;
-                startIndex += 2;
-                if (startIndex == endIndex) {
-                    Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                code = code.substring(startIndex, endIndex);
-            }
+            code = decodeScanString("P", code);
+            if (code == null) return;
             mCodeEditText.setText(code);
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
@@ -265,9 +248,42 @@ public class PurchaseReceiptMainFragment extends Fragment {
             param.put("delive_code", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT, getContext()), param, REQUEST_CODE_QUERY_RECEIPT, mRequestTaskListener);
         } else {//当前收货单不为空，扫码查询物料
-            Toast.makeText(getContext(),"扫描物料"+code,Toast.LENGTH_SHORT).show();
+            code = decodeScanString("M",code);
+            if (code == null) return;
             mCodeEditText.setText("");
+
+            for (int i = 0; i < receipt.getMaters().size(); i++) {
+                if (TextUtils.equals(receipt.getMaters().get(i).getMate_number(), code)) {
+                    handleInquireMater(receipt.getMaters().get(i).getShdhm(), receipt.getMaters().get(i).getShdhh());
+                    break;
+                }else{
+                    Toast.makeText(getContext(),"无效物料标签",Toast.LENGTH_SHORT).show();
+                }
+            }
         }
+    }
+
+    /**
+     * 解码扫码到的条码字符串，根据指定的前缀返回解码后的字符串
+     * @param prefix 标签前缀 ，如 P   M   L  ,不需要加上‘*’
+     * @param code   待解码字符串
+     * @return
+     */
+    private String decodeScanString(String prefix, String code) {
+        int startIndex = code.indexOf("*" + prefix);
+        if (startIndex == -1) {//不含prefix的字符串，直接使用code进行查询
+
+        } else {
+            int endIndex = code.indexOf("*", startIndex + 1);
+            endIndex = endIndex == -1 ? code.length() : endIndex;
+            startIndex += 2;
+            if (startIndex == endIndex) {
+                Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            code = code.substring(startIndex, endIndex);
+        }
+        return code;
     }
 
     /**
@@ -283,7 +299,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("receipt_number", shdhm);
-        param.put("receipt_line",shdhh);
+        param.put("receipt_line", shdhh);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT_ITEM, getContext()), param, REQUEST_CODE_QUERY_RECEIPT_ITEM, mRequestTaskListener);
 
     }
@@ -302,13 +318,13 @@ public class PurchaseReceiptMainFragment extends Fragment {
         mFirstReceiptAdapter.notifyDataSetChanged();
 
 
-        if(TextUtils.isEmpty(receipt.getReceiptNumber())){
+        if (TextUtils.isEmpty(receipt.getReceiptNumber())) {
             mInquireButton.setTag(false);
             mInquireButton.setText("查询");
             mCodeEditText.getText().clear();
             mCodeEditText.setHint("输入送货单号");
             mCodeEditText.requestFocus();
-        }else{
+        } else {
             mInquireButton.setText("清除");
             mInquireButton.setTag(true);
             mCodeEditText.setText("");
@@ -317,16 +333,20 @@ public class PurchaseReceiptMainFragment extends Fragment {
 
     }
 
-
-    public void refreshShow(String deletedMater){
-        for(int i = 0;i<receipt.getMaters().size();i++){
-            if(TextUtils.equals(receipt.getMaters().get(i).getShdhh(),deletedMater)){
+    /**
+     * 移除了一个物料，刷新list
+     * @param deletedMater
+     */
+    public void refreshShow(String deletedMater) {
+        for (int i = 0; i < receipt.getMaters().size(); i++) {
+            if (TextUtils.equals(receipt.getMaters().get(i).getShdhh(), deletedMater)) {
                 receipt.getMaters().remove(i);
                 mFirstReceiptAdapter.notifyDataSetChanged();
                 break;
             }
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 

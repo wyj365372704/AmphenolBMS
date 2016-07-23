@@ -125,7 +125,7 @@ public class DecodeManager {
             if (materJsonArray != null) {
                 for (int i = 0; i < materJsonArray.length(); i++) {
                     JSONObject materJsonObject1 = materJsonArray.optJSONObject(i);
-                    String materPO = jsonObject.optString("mater_po");
+                    String materPO = materJsonObject1.optString("mater_po");
                     String number = materJsonObject1.optString("number");
                     String mate = materJsonObject1.optString("mate");
                     String unit = materJsonObject1.optString("unit");

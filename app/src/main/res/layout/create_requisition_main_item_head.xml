@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#909ba1"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/purchase_receipt_main_item_cgdxc_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="库位"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normal_font_size" />
+
+    <TextView
+        android:id="@+id/purchase_receipt_main_item_wl_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="物料"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normal_font_size" />
+
+    <TextView
+        android:id="@+id/create_requisition_main_item_body_branch_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="批次"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normal_font_size" />
+
+    <TextView
+        android:id="@+id/purchase_receipt_main_item_dw_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="调拨数量"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normal_font_size" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normal_font_size" />
+</LinearLayout>

@@ -175,7 +175,6 @@
 			branch_number: String 到货单批明细行
 			branch_desc:String 生产批次
 			plan_quantity:double 计划数量
-			actual_quantity:double 实际数量
 
 ##关闭物料收货
 	请求方式：get
@@ -229,7 +228,7 @@
 返回
 	
 	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。
-		Map<String,Object>	物料批次
+		Map<String,Object>
 			mate: String 物料编号
 			location:String 库位
 			branch:批次号
@@ -245,6 +244,7 @@
 		location 库位
 		mate 物料编号
 		branch 批次号
+	action=create_requisition_get_mater
 
 返回
 
@@ -273,6 +273,71 @@
 	code = 2 失败，错误原因：调拨数量大于库存数量
 
 ##审核调拨单
+
 	请求方式：get
 	参数：
+		requisition 调拨单号
+	action=check_requisition_get_mater_list
+
+返回
+
+	state:int 调拨单状态
+		10 已创建
+	founder:String 创建人
+	department:String 创建部门
+	date：String 创建日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	mater_list:List<Map<String,Object>> 物料集合
+		Map<String,Object> 物料
+			requisition_line:int 调拨单行
+			mater:String 物料
+			branch:Striing	批次
+			quantity:double	调拨数量
+			unit:String	单位
+	
+##审核调拨单-物料明细查询
+	
+	请求方式：get
+	参数：
+		requisition 调拨单号
+		requisition_line 调拨单行		
+	action=check_requisition_get_mater_detail
+
+返回
+	
+	mater_desc:String 物料描述
+	mater_format:String	物料规格
+	from_warehouse:String	来源仓库
+	form_shard:String 来源子库
+	form_location:String	来源库位
+	target_shard:String	目标子库
+	target_location:String	目标库位
+	target_shard_list:List<String> 目标子库列表
+		
+##审核调拨单-确认过账
+	
+	请求方式：get
+	参数：
+		requisition 调拨单号
+		requisition_line 调拨单行	
+		actual_quantity 实收数量，double类型
+		target_shard 目标子库
+		target_location 目标库位
+	action=check_requisition_sure
+
+返回
+
+	code = 1 成功
+	code = 2 目标库位不存在
+
+##审核调拨单-终止过账
+
+	请求方式：get
+	参数：
+		requisition 调拨单号
+		requisition_line 调拨单行	
+	action=cation=check_requisition_cancel
+
+返回
+
+	default
 		

@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * Created by Carl on 2016/7/12/012.
- * adapter会自动将表头添加进入数据集合中，使用者不需要手动添加
  */
 public class FirstReceiptAdapter extends RecyclerView.Adapter {
     private List<Mater> maters;
@@ -76,9 +75,6 @@ public class FirstReceiptAdapter extends RecyclerView.Adapter {
         }
     }
     public interface OnItemClickListener{
-        /**
-         * @param position  只返回表体中的position ，表头不参与。  从0开始
-         */
         void OnItemClick(int position);
     }
 }

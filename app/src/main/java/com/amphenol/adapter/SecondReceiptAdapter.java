@@ -19,7 +19,6 @@ import java.util.List;
 
 /**
  * Created by Carl on 2016/7/12/012.
- * adapter会自动将表头添加进入数据集合中，使用者不需要手动添加
  */
 public class SecondReceiptAdapter extends RecyclerView.Adapter {
     private List<Branch> branches;
@@ -44,7 +43,7 @@ public class SecondReceiptAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolderBody) {
             ((ViewHolderBody) holder).scpcTextView.setText(branches.get(position).getScpc());
             ((ViewHolderBody) holder).jhslTextView.setText(branches.get(position).getJhsl() + "");
-            ((ViewHolderBody) holder).ssslTextView.setText(branches.get(position).getSssl() + "");
+            ((ViewHolderBody) holder).ssslTextView.setText(branches.get(position).getJhsl() + "");//默认填上计划数量
             if (position % 2 == 0)
                 holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTableO));
             else
