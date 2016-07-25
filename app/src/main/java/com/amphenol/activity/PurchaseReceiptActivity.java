@@ -1,19 +1,13 @@
 package com.amphenol.activity;
 
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Branch;
 import com.amphenol.entity.Mater;
-import com.amphenol.entity.Receipt;
+import com.amphenol.entity.Purchase;
 import com.amphenol.fragment.PurchaseReceiptMainFragment;
 import com.amphenol.fragment.PurchaseReceiptSecondFragment;
-import com.amphenol.ui.LoadingDialog;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 采购收货
@@ -38,8 +32,8 @@ public class PurchaseReceiptActivity extends BaseActivity {
     public void initListeners() {
         mainFragmentCallBack = new PurchaseReceiptMainFragment.MainFragmentCallBack() {
             @Override
-            public void gotoSecondFragment(Mater mater) {
-                mPurchaseReceiptSecondFragment = new PurchaseReceiptSecondFragment(secondFragemntCallBack, mater);
+            public void gotoSecondFragment(Purchase.PurchaseItem purchaseItem) {
+                mPurchaseReceiptSecondFragment = new PurchaseReceiptSecondFragment(secondFragemntCallBack, purchaseItem);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReceiptSecondFragment);
                 transaction.addToBackStack(null);

@@ -40,10 +40,10 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ViewHolderBody) {
-            ((ViewHolderBody) holder).cgdhxcTextView.setText(maters.get(position).getPo());
-            ((ViewHolderBody) holder).wlTextView.setText(maters.get(position).getMate_number());
-            ((ViewHolderBody) holder).slTextView.setText(maters.get(position).getPlan_quantity()+"");
-            ((ViewHolderBody) holder).dwTextView.setText(maters.get(position).getPurchase_unit());
+//            ((ViewHolderBody) holder).cgdhxcTextView.setText(maters.get(position).getPo());
+//            ((ViewHolderBody) holder).wlTextView.setText(maters.get(position).getMate_number());
+//            ((ViewHolderBody) holder).slTextView.setText(maters.get(position).getPlan_quantity()+"");
+//            ((ViewHolderBody) holder).dwTextView.setText(maters.get(position).getPurchase_unit());
             if(position%2 == 0)
                 holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext,R.color.colorTableO));
             else

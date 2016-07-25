@@ -5,14 +5,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,11 +25,10 @@ import android.widget.Toast;
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
-import com.amphenol.adapter.SecondReceiptAdapter;
+import com.amphenol.adapter.PurchaseItemAdapter;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Branch;
 import com.amphenol.entity.Mater;
-import com.amphenol.entity.Receipt;
+import com.amphenol.entity.Purchase;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
@@ -40,9 +38,7 @@ import com.baoyz.actionsheet.ActionSheet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.amphenol.amphenol.R.id.fragment_purchase_receipt_second_sjdz_in_et;
@@ -55,25 +51,26 @@ public class PurchaseReceiptSecondFragment extends Fragment {
     private static final int REQUEST_CODE_RECEIPT_CLOSE = 0x11;
     private View rootView = null;
     private RecyclerView mRecyclerView;
-    private SecondReceiptAdapter mSecondReceiptAdapter;
+    private PurchaseItemAdapter mSecondReceiptAdapter;
     private SecondFragemntCallBack mSecondFragemntCallBack;
     private View.OnClickListener mOnClickListener;
+    private PurchaseItemAdapter.OnBranchItemActualQuantityChangedListener mOnBranchItemActualQuantityChangedListener;
     private ActionSheet.ActionSheetListener mActionSheetListener;
     private Button mCloseReceiptButton, mSureReceiptButton, mAddBranchButton;
     private TextView mMaterNumberTextView, mIsBranchTextView, mStatusTextView,
             mMaterDescTextView, mPurchaseUnitTextView, mShardTextView,
             mPlainQuantityTextView, mActualSingleUnitTextView, mTotalWeightTextView;
-    private EditText mLocationEditText, mactualSingleEditText, mactualQuantityEditText;
+    private EditText mLocationEditText, mActualSingleEditText, mActualQuantityEditText;
     private View dialogView;//弹窗dialog视图
-    private Mater mater;
+    private Purchase.PurchaseItem mPurchaseItem;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
     private MyHandler myHandler = new MyHandler();
 
 
-    public PurchaseReceiptSecondFragment(SecondFragemntCallBack mSecondFragemntCallBack, Mater mater) {
+    public PurchaseReceiptSecondFragment(SecondFragemntCallBack mSecondFragemntCallBack, Purchase.PurchaseItem mPurchaseItem) {
         this.mSecondFragemntCallBack = mSecondFragemntCallBack;
-        this.mater = mater;
+        this.mPurchaseItem = mPurchaseItem;
     }
 
     @Override
@@ -178,18 +175,18 @@ public class PurchaseReceiptSecondFragment extends Fragment {
 //                            Toast.makeText(getContext(), "收货库位无效", Toast.LENGTH_SHORT).show();
 //                            return;
 //                        }
-                        final double singleBefore = mater.getActualSingle();
+                        final double singleBefore = mPurchaseItem.getMater().getSingle();
                         double singleAfter = 0;
                         double actualQuantity = 0;
                         try {
-                            singleAfter = Double.parseDouble(mactualSingleEditText.getText().toString().trim());
+                            singleAfter = Double.parseDouble(mActualSingleEditText.getText().toString().trim());
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(getContext(), "实际单重无效", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         try {
-                            actualQuantity = Double.parseDouble(mactualQuantityEditText.getText().toString().trim());
+                            actualQuantity = Double.parseDouble(mActualQuantityEditText.getText().toString().trim());
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(getContext(), "实收总数无效", Toast.LENGTH_SHORT).show();
@@ -217,16 +214,17 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                                     }
                                 }
                                 String branchListJsonString = "";
-                                if (mater.getBranch_control() == Mater.BRANCH_CONTROL && mater.getBranches() != null && mater.getBranches().size() > 0) {
+                                if (mPurchaseItem.getMater().getBranchControl() == Mater.BRANCH_CONTROL && mPurchaseItem.getPurchaseItemBranchItems() != null && mPurchaseItem.getPurchaseItemBranchItems().size() > 0) {
                                     try {
                                         JSONObject branchListJsonObject = new JSONObject();
                                         JSONArray branchListJsonArray = new JSONArray();
-                                        for (Branch branch : mater.getBranches()) {
+                                        for (Purchase.PurchaseItem.PurchaseItemBranchItem purchaseItemBranchItem : mPurchaseItem.getPurchaseItemBranchItems()) {
+                                            Mater.Branch branch = purchaseItemBranchItem.getBranch();
                                             JSONObject branchJsonObject = new JSONObject();
-                                            branchJsonObject.put("branch_number", branch.getBranchNumber());
-                                            branchJsonObject.put("branch_desc", branch.getScpc());
-                                            branchJsonObject.put("plan_quantity", branch.getJhsl());
-                                            branchJsonObject.put("actual_quantity", branch.getSssl());
+                                            branchJsonObject.put("branch_number", branch.getNumber());
+                                            branchJsonObject.put("branch_desc", branch.getPo());
+                                            branchJsonObject.put("plan_quantity", branch.getQuantity());
+                                            branchJsonObject.put("actual_quantity", purchaseItemBranchItem.getActualQuantity());
                                             branchListJsonArray.put(branchJsonObject);
                                         }
                                         branchListJsonObject.put("branch_list", branchListJsonArray);
@@ -235,7 +233,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
-                                handlerSureMater(mater.getShdhm(), mater.getShdhh(), finalSingleAfter, finalActualQuantity, mater.getLocation(), branchListJsonString, update);
+                                handlerSureMater(mPurchaseItem.getPurchase().getNumber(), mPurchaseItem.getNumber(), finalSingleAfter, finalActualQuantity, mPurchaseItem.getMater().getLocation(), branchListJsonString, update);
                             }
                         });
                         builder2.create().show();
@@ -265,7 +263,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                         builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                handlerCloseMater(mater.getShdhm(), mater.getShdhh());
+                                handlerCloseMater(mPurchaseItem.getPurchase().getNumber(), mPurchaseItem.getNumber());
                             }
                         });
                         builder.create().show();
@@ -273,6 +271,24 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                 }
             }
         };
+
+        mOnBranchItemActualQuantityChangedListener = new PurchaseItemAdapter.OnBranchItemActualQuantityChangedListener() {
+            @Override
+            public void onBranchActualQuantityChanged() {
+                UpdateActualQuantity();
+            }
+        };
+    }
+
+    /**
+     * 实收总数随着更改
+     */
+    private void UpdateActualQuantity() {
+        double count = 0;
+        for (Purchase.PurchaseItem.PurchaseItemBranchItem purchaseItemBranchItem : mPurchaseItem.getPurchaseItemBranchItems()) {
+            count += purchaseItemBranchItem.getActualQuantity();
+        }
+        mActualQuantityEditText.setText(count + "");
     }
 
     private void initViews() {
@@ -282,9 +298,9 @@ public class PurchaseReceiptSecondFragment extends Fragment {
         mStatusTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_zj_in_tv);
         mPurchaseUnitTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_cgdw_in_tv);
         mPlainQuantityTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_jhsl_in_tv);
-        mactualSingleEditText = (EditText) rootView.findViewById(fragment_purchase_receipt_second_sjdz_in_et);
+        mActualSingleEditText = (EditText) rootView.findViewById(fragment_purchase_receipt_second_sjdz_in_et);
         mActualSingleUnitTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_sjdzdw_tv);
-        mactualQuantityEditText = (EditText) rootView.findViewById(R.id.fragment_purchase_receipt_second_sszs_in_et);
+        mActualQuantityEditText = (EditText) rootView.findViewById(R.id.fragment_purchase_receipt_second_sszs_in_et);
         mTotalWeightTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_shzzl_in_tv);
         mShardTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_shzk_in_tv);
         mLocationEditText = (EditText) rootView.findViewById(R.id.fragment_purchase_receipt_second_shkw_et);
@@ -292,25 +308,24 @@ public class PurchaseReceiptSecondFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_purchase_receipt_second_content_rl);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if (mater.getBranch_control() == Mater.BRANCH_CONTROL)
-            mactualQuantityEditText.setEnabled(false);
+        if (mPurchaseItem.getMater().getBranchControl() == Mater.BRANCH_CONTROL)
+            mActualQuantityEditText.setEnabled(false);
     }
 
     private void initData() {
-        mSecondReceiptAdapter = new SecondReceiptAdapter(getContext(), mater.getBranches());
+        mSecondReceiptAdapter = new PurchaseItemAdapter(getContext(), mPurchaseItem.getPurchaseItemBranchItems(), mOnBranchItemActualQuantityChangedListener);
         mRecyclerView.setAdapter(mSecondReceiptAdapter);
-
-        mMaterNumberTextView.setText(mater.getMate_number().trim());
-        mMaterDescTextView.setText(mater.getMate_desc().trim());
-        mPurchaseUnitTextView.setText(mater.getPurchase_unit().trim());
-        mPlainQuantityTextView.setText(mater.getPlan_quantity() + "");
-        mIsBranchTextView.setText(mater.getBranch_control() == Mater.BRANCH_CONTROL ? "是" : mater.getBranch_control() == Mater.BRANCH_NO_CONTROL ? "否" : "--");
-        mStatusTextView.setText(mater.getStatus() == Mater.STATUS_CLOSED ? "已关闭" : mater.getStatus() == Mater.STATUS_HAS_RECEIPT ? "已收货" : mater.getStatus() == Mater.STATUS_NO_RECEIPT ? "未收货" : "--");
-        mactualSingleEditText.setText(mater.getActualQuantity() + "");
-        mActualSingleUnitTextView.setText(mater.getActualUnit());
-        mShardTextView.setText(mater.getShard());
-        mLocationEditText.setText(mater.getLocation());
-        mactualQuantityEditText.setText(mater.getPlan_quantity() + "");//默认填上计划总数
+        mMaterNumberTextView.setText(mPurchaseItem.getMater().getNumber().trim());
+        mMaterDescTextView.setText(mPurchaseItem.getMater().getDesc().trim());
+        mPurchaseUnitTextView.setText(mPurchaseItem.getUnit());
+        mPlainQuantityTextView.setText(mPurchaseItem.getQuantity() + "");
+        mIsBranchTextView.setText(mPurchaseItem.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? "是" : mPurchaseItem.getMater().getBranchControl() == Mater.BRANCH_NO_CONTROL ? "否" : "--");
+        mStatusTextView.setText(mPurchaseItem.getState() == Purchase.PurchaseItem.STATUS_CLOSED ? "已关闭" : mPurchaseItem.getState() == Purchase.PurchaseItem.STATUS_HAS_RECEIPT ? "已收货" : mPurchaseItem.getState() == Purchase.PurchaseItem.STATUS_NO_RECEIPT ? "未收货" : "--");
+        mActualSingleEditText.setText(mPurchaseItem.getMater().getSingle() + "");
+        mActualSingleUnitTextView.setText(mPurchaseItem.getMater().getUnit());
+        mShardTextView.setText(mPurchaseItem.getMater().getShard());
+        mLocationEditText.setText(mPurchaseItem.getMater().getLocation());
+        mActualQuantityEditText.setText(mPurchaseItem.getQuantity() + "");//默认填上计划总数
         rootView.findViewById(R.id.toolbar_menu).setOnClickListener(mOnClickListener);
 
     }
@@ -328,27 +343,26 @@ public class PurchaseReceiptSecondFragment extends Fragment {
     /**
      * 增加批次， 在本地的item集合中追加branch ，不进行联网操作，确认收货时完成提交新增的branch
      *
-     * @param branchNumber   批次号
-     * @param acutalQuantity 实收数量
+     * @param branchPO       批次号
+     * @param actualQuantity 实收数量
      */
-    private void addBranch(String branchNumber, String acutalQuantity) {
+    private void addBranch(String branchPO, String actualQuantity) {
         double num = 0;
-        if (TextUtils.isEmpty(branchNumber)) {
+        if (TextUtils.isEmpty(branchPO)) {
             Toast.makeText(getContext(), "批次增加失败:批次号不能为空", Toast.LENGTH_SHORT).show();
             return;
         } else {
             try {
-                num = Double.parseDouble(acutalQuantity);
+                num = Double.parseDouble(actualQuantity);
             } catch (Exception e) {
                 Toast.makeText(getContext(), "批次增加失败:实收数量输入非法", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
-        if (mater != null && mater.getBranches() != null) {
-            mater.getBranches().add(new Branch("-1", branchNumber, 0, num));
-            mSecondReceiptAdapter.notifyDataSetChanged();
-            Toast.makeText(getContext(), "增加成功", Toast.LENGTH_SHORT).show();
-        }
+        mPurchaseItem.getPurchaseItemBranchItems().add(new Purchase.PurchaseItem.PurchaseItemBranchItem(new Mater.Branch("-1", branchPO, 0), num));
+        mSecondReceiptAdapter.notifyDataSetChanged();
+        UpdateActualQuantity();
+        Toast.makeText(getContext(), "增加成功", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -410,7 +424,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                     if (mSecondFragemntCallBack != null) {
                         if (bundle.getInt("code") == 1) {
                             Toast.makeText(getContext(), "收货成功", Toast.LENGTH_SHORT).show();
-                            mSecondFragemntCallBack.itemBeenSured(mater.getShdhh());
+                            mSecondFragemntCallBack.itemBeenSured(mPurchaseItem.getNumber());
                         } else {
                             Toast.makeText(getContext(), "收货失败", Toast.LENGTH_SHORT).show();
                         }
@@ -420,7 +434,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                     if (mSecondFragemntCallBack != null) {
                         if (bundle.getInt("code") == 1) {
                             Toast.makeText(getContext(), "关闭成功", Toast.LENGTH_SHORT).show();
-                            mSecondFragemntCallBack.itemBeenClosed(mater.getShdhh());
+                            mSecondFragemntCallBack.itemBeenClosed(mPurchaseItem.getNumber());
 
                         } else {
                             Toast.makeText(getContext(), "关闭失败", Toast.LENGTH_SHORT).show();

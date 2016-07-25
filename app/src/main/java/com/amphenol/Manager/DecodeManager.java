@@ -1,25 +1,20 @@
 package com.amphenol.Manager;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 
-import com.amphenol.entity.Branch;
 import com.amphenol.entity.Mater;
-import com.amphenol.entity.Receipt;
-import com.amphenol.fragment.PurchaseReceiptMainFragment;
-import com.amphenol.fragment.PurchaseReceiptSecondFragment;
+import com.amphenol.entity.Purchase;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -113,35 +108,37 @@ public class DecodeManager {
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            Receipt receipt = new Receipt();
-            String firm = jsonObject.optString("firm");
-            String receipt_number = jsonObject.optString("receipt_number");
-            int status_code = jsonObject.optInt("status_code");
-            receipt.setFirm(firm.trim());
-            receipt.setReceiptNumber(receipt_number.trim());
-            receipt.setStatus(status_code);
+            Purchase purchase = new Purchase();
+            String firm = jsonObject.optString("firm");//送货厂商
+            String receipt_number = jsonObject.optString("receipt_number");//送货单号
+            int status_code = jsonObject.optInt("status_code");//送货单状态
+            purchase.setFirm(firm.trim());
+            purchase.setNumber(receipt_number.trim());
+            purchase.setStatus(status_code);
             JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
-            ArrayList<Mater> mater_list = new ArrayList<>();
+            ArrayList<Purchase.PurchaseItem> purchaseItems = new ArrayList<>();
             if (materJsonArray != null) {
                 for (int i = 0; i < materJsonArray.length(); i++) {
                     JSONObject materJsonObject1 = materJsonArray.optJSONObject(i);
-                    String materPO = materJsonObject1.optString("mater_po");
-                    String number = materJsonObject1.optString("number");
-                    String mate = materJsonObject1.optString("mate");
-                    String unit = materJsonObject1.optString("unit");
-                    double quantity = materJsonObject1.optDouble("quantity", 0);
+                    String materPO = materJsonObject1.optString("mater_po");//采购单项次
+                    String number = materJsonObject1.optString("number");//采购单行号
+                    String mate = materJsonObject1.optString("mate");//物料编号
+                    String unit = materJsonObject1.optString("unit");//单位
+                    double quantity = materJsonObject1.optDouble("quantity", 0);//数量
+                    Purchase.PurchaseItem purchaseItem = new Purchase.PurchaseItem();
+                    purchaseItem.setPurchase(purchase);
+                    purchaseItem.setPo(materPO.trim());
+                    purchaseItem.setNumber(number.trim());
                     Mater mater = new Mater();
-                    mater.setPo(materPO);
-                    mater.setShdhm(receipt_number.trim());
-                    mater.setShdhh(number.trim());
-                    mater.setMate_number(mate.trim());
-                    mater.setPlan_quantity(quantity);
-                    mater.setPurchase_unit(unit.trim());
-                    mater_list.add(mater);
+                    mater.setNumber(mate.trim());
+                    mater.setUnit(unit.trim());
+                    mater.setQuantity(quantity);
+                    purchaseItem.setMater(mater);
+                    purchaseItems.add(purchaseItem);
                 }
             }
-            receipt.setMaters(mater_list);
-            data.putSerializable("receipt", receipt);
+            purchase.setPurchaseItems(purchaseItems);
+            data.putSerializable("purchase", purchase);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -161,51 +158,65 @@ public class DecodeManager {
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            String mateNumber = jsonObject.optString("mate_number");
-            String mateDesc = jsonObject.optString("mate_desc");
-            String purchaseUnit = jsonObject.optString("purchase_unit");
-            double planQuantity = jsonObject.optDouble("plan_quantity");
-            int branchControl = jsonObject.optInt("branch_control", Mater.BRANCH_NO_CONTROL);//批次控制默认为不控制
-            int status = jsonObject.optInt("status", Mater.STATUS_CLOSED);//收货状态默认为已关闭
-            double actualSingle = jsonObject.optDouble("actual_single");
-            String actual_unit = jsonObject.optString("actual_unit");
-            double actualQuantity = jsonObject.optDouble("actual_quantity");
-            String shard = jsonObject.optString("shard");
-            String location = jsonObject.optString("location");
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+
+            Purchase purchase = new Purchase();
+            purchase.setNumber(params.get("receipt_number").trim());
+
+            String mateNumber = jsonObject.optString("mate_number");//物料编号
+            String mateDesc = jsonObject.optString("mate_desc");//物料描述
+            String purchaseUnit = jsonObject.optString("purchase_unit");//采购单位
+            double planQuantity = jsonObject.optDouble("plan_quantity");//采购数量
+            int branchControl = jsonObject.optInt("branch_control", Mater.BRANCH_NO_CONTROL);//批次控制  默认为不控制
+            int status = jsonObject.optInt("status", Purchase.PurchaseItem.STATUS_CLOSED);//收货状态   默认为已关闭
+            double actualSingle = jsonObject.optDouble("actual_single");//实际单重
+            String actual_unit = jsonObject.optString("actual_unit");//实际单重单位
+            double actualQuantity = jsonObject.optDouble("actual_quantity");//实际总数
+            String shard = jsonObject.optString("shard");//收货子库
+            String location = jsonObject.optString("location");//收货库位
+
+            Purchase.PurchaseItem purchaseItem = new Purchase.PurchaseItem();
+            purchaseItem.setUnit(purchaseUnit.trim());
+            purchaseItem.setQuantity(planQuantity);
+            purchaseItem.setState(status);
+            purchaseItem.setNumber(params.get("receipt_line").trim());
+
             Mater mater = new Mater();
-            mater.setMate_number(mateNumber.trim());
-            mater.setMate_desc(mateDesc.trim());
-            mater.setPurchase_unit(purchaseUnit.trim());
-            mater.setPlan_quantity(planQuantity);
-            mater.setBranch_control(branchControl);
-            mater.setStatus(status);
-            mater.setActualSingle(actualSingle);
-            mater.setActualQuantity(actualQuantity);
+            mater.setNumber(mateNumber.trim());
+            mater.setDesc(mateDesc.trim());
+            mater.setBranchControl(branchControl);
+            mater.setUnit(actual_unit.trim());
+            mater.setSingle(actualSingle);
+            mater.setQuantity(actualQuantity);
             mater.setShard(shard.trim());
             mater.setLocation(location.trim());
-            HashMap<String,String> params = (HashMap<String, String>) jsonObject.get("params");
-            mater.setShdhh(params.get("receipt_line").trim());
-            mater.setShdhm(params.get("receipt_number").trim());
 
             JSONArray branchJsonArray = jsonObject.optJSONArray("branch_list");
+            ArrayList<Purchase.PurchaseItem.PurchaseItemBranchItem> purchaseItemBranchItems = new ArrayList<>();
             if (branchJsonArray != null && branchJsonArray.length() > 0) {
-                ArrayList<Branch> branchArrayList = new ArrayList<>();
                 for (int i = 0; i < branchJsonArray.length(); i++) {
                     JSONObject branchJsonObject = branchJsonArray.optJSONObject(i);
-                    String branch_number = branchJsonObject.optString("branch_number");
-                    String branch_desc = branchJsonObject.optString("branch_desc");
-                    double plan_quantity = branchJsonObject.optDouble("plan_quantity");
-                    double actual_quantity = branchJsonObject.optDouble("actual_quantity");
-                    Branch branch = new Branch(branch_number.trim(),branch_desc.trim(),plan_quantity,actual_quantity);
-                    branchArrayList.add(branch);
+                    String branch_number = branchJsonObject.optString("branch_number");//批次行号
+                    String branch_desc = branchJsonObject.optString("branch_desc");//批次号
+                    double plan_quantity = branchJsonObject.optDouble("plan_quantity");//数量
+                    Mater.Branch branch = new Mater.Branch();
+                    branch.setNumber(branch_number);
+                    branch.setPo(branch_desc);
+                    branch.setQuantity(plan_quantity);
+                    Purchase.PurchaseItem.PurchaseItemBranchItem purchaseItemBranchItem = new Purchase.PurchaseItem.PurchaseItemBranchItem(branch,plan_quantity);
+                    purchaseItemBranchItems.add(purchaseItemBranchItem);
                 }
-                mater.setBranches(branchArrayList);
             }
-            data.putSerializable("mater",mater);
+            purchaseItem.setMater(mater);
+            purchaseItem.setPurchase(purchase);
+            purchaseItem.setPurchaseItemBranchItems(purchaseItemBranchItems);
+            data.putSerializable("purchaseItem", purchaseItem);
+
         }
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
@@ -214,6 +225,7 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeReceiptClose(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
@@ -236,6 +248,7 @@ public class DecodeManager {
 //    msg.setData(data);
 //    handler.sendMessage(msg);
 //    }
+
     /**
      * 完成code ,desc,params(Map) 响应字段的读取,存入bundle
      *

@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,23 +30,18 @@ import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
-import com.amphenol.adapter.FirstReceiptAdapter;
+import com.amphenol.adapter.PurchaseAdapter;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Branch;
 import com.amphenol.entity.Mater;
-import com.amphenol.entity.Receipt;
+import com.amphenol.entity.Purchase;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -58,8 +51,8 @@ public class PurchaseReceiptMainFragment extends Fragment {
     private static final int REQUEST_CODE_QUERY_RECEIPT_ITEM = 0x13;
     private View rootView = null;
     private RecyclerView mRecyclerView;
-    private FirstReceiptAdapter mFirstReceiptAdapter;
-    private FirstReceiptAdapter.OnItemClickListener mOnItemClickListener;
+    private PurchaseAdapter mFirstReceiptAdapter;
+    private PurchaseAdapter.OnItemClickListener mOnItemClickListener;
     private TextView.OnEditorActionListener mOnEditorActionListener;
     private View.OnClickListener mOnClickListener;
     private MainFragmentCallBack mainFragmentCallBack;
@@ -69,7 +62,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
     private TextView mFirmTextView, mPurchaseNumberTextView, mStatusTextView;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
-    private Receipt receipt = new Receipt();
+    private Purchase purchase = new Purchase();
     private MyHandler myHandler = new MyHandler();
 
     public PurchaseReceiptMainFragment(MainFragmentCallBack mainFragmentCallBack) {
@@ -109,10 +102,10 @@ public class PurchaseReceiptMainFragment extends Fragment {
     }
 
     private void initListeners() {
-        mOnItemClickListener = new FirstReceiptAdapter.OnItemClickListener() {
+        mOnItemClickListener = new PurchaseAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                handleInquireMater(receipt.getMaters().get(position).getShdhm(), receipt.getMaters().get(position).getShdhh());
+                handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(position).getNumber());
             }
         };
         mOnEditorActionListener = new TextView.OnEditorActionListener() {
@@ -141,8 +134,8 @@ public class PurchaseReceiptMainFragment extends Fragment {
                     case R.id.fragment_purchase_receipt_inquire_bt://查询按钮
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
                         if (state) {//当前按钮状态为“清除”
-                            receipt = new Receipt();
-                            refreshShow(receipt);
+                            purchase = new Purchase();
+                            refreshShow(purchase);
                         } else {
                             handleScanCode(mCodeEditText.getText().toString().trim());
                         }
@@ -225,7 +218,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
     }
 
     private void initData() {
-        mFirstReceiptAdapter = new FirstReceiptAdapter(getContext(), receipt.getMaters(), mOnItemClickListener);
+        mFirstReceiptAdapter = new PurchaseAdapter(getContext(), purchase.getPurchaseItems(), mOnItemClickListener);
         mRecyclerView.setAdapter(mFirstReceiptAdapter);
     }
 
@@ -238,7 +231,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
             return;
         if (!PurchaseReceiptMainFragment.this.isVisible())
             return;
-        if (TextUtils.isEmpty(receipt.getReceiptNumber())) {//当前收货单为空，扫码查询收货单
+        if (TextUtils.isEmpty(purchase.getNumber())) {//当前收货单为空，扫码查询收货单
             code = decodeScanString("P", code);
             if (code == null) return;
             mCodeEditText.setText(code);
@@ -252,9 +245,9 @@ public class PurchaseReceiptMainFragment extends Fragment {
             if (code == null) return;
             mCodeEditText.setText("");
 
-            for (int i = 0; i < receipt.getMaters().size(); i++) {
-                if (TextUtils.equals(receipt.getMaters().get(i).getMate_number(), code)) {
-                    handleInquireMater(receipt.getMaters().get(i).getShdhm(), receipt.getMaters().get(i).getShdhh());
+            for (int i = 0; i < purchase.getPurchaseItems().size(); i++) {
+                if (TextUtils.equals(purchase.getPurchaseItems().get(i).getMater().getNumber(), code)) {
+                    handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(i).getNumber());
                     break;
                 }else{
                     Toast.makeText(getContext(),"无效物料标签",Toast.LENGTH_SHORT).show();
@@ -289,17 +282,17 @@ public class PurchaseReceiptMainFragment extends Fragment {
     /**
      * 查询物料详细信息
      *
-     * @param shdhm
-     * @param shdhh
+     * @param purchaseNumber 送货单号码
+     * @param purchaseItemNumber 送货单行号
      */
-    private void handleInquireMater(final String shdhm, final String shdhh) {
+    private void handleInquireMater(final String purchaseNumber, final String purchaseItemNumber) {
         if (!PurchaseReceiptMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
-        param.put("receipt_number", shdhm);
-        param.put("receipt_line", shdhh);
+        param.put("receipt_number", purchaseNumber);
+        param.put("receipt_line", purchaseItemNumber);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT_ITEM, getContext()), param, REQUEST_CODE_QUERY_RECEIPT_ITEM, mRequestTaskListener);
 
     }
@@ -307,18 +300,18 @@ public class PurchaseReceiptMainFragment extends Fragment {
     /**
      * 刷新显示
      */
-    private void refreshShow(Receipt receipt) {
-        this.receipt = receipt;
+    private void refreshShow(Purchase receipt) {
+        this.purchase = receipt;
         //开始更新界面
         mFirmTextView.setText(receipt.getFirm().trim());
-        mPurchaseNumberTextView.setText(receipt.getReceiptNumber().trim());
-        mStatusTextView.setText(receipt.getStatus() == Receipt.STATUS_FIINISHED ? "收货完成" : receipt.getStatus() == Receipt.STATUS_NO_RECEIPT ? "未收货" : receipt.getStatus() == Receipt.STATUS_PART_RECEIPT ? "部分收货" : "");
+        mPurchaseNumberTextView.setText(receipt.getNumber().trim());
+        mStatusTextView.setText(receipt.getStatus() == Purchase.STATUS_FIINISHED ? "收货完成" : receipt.getStatus() == Purchase.STATUS_NO_RECEIPT ? "未收货" : receipt.getStatus() == Purchase.STATUS_PART_RECEIPT ? "部分收货" : "");
 
-        mFirstReceiptAdapter.setMaters(receipt.getMaters());
+        mFirstReceiptAdapter.setDate(receipt.getPurchaseItems());
         mFirstReceiptAdapter.notifyDataSetChanged();
 
 
-        if (TextUtils.isEmpty(receipt.getReceiptNumber())) {
+        if (TextUtils.isEmpty(receipt.getNumber())) {
             mInquireButton.setTag(false);
             mInquireButton.setText("查询");
             mCodeEditText.getText().clear();
@@ -335,12 +328,12 @@ public class PurchaseReceiptMainFragment extends Fragment {
 
     /**
      * 移除了一个物料，刷新list
-     * @param deletedMater
+     * @param purchaseItemNumber 送货单行号
      */
-    public void refreshShow(String deletedMater) {
-        for (int i = 0; i < receipt.getMaters().size(); i++) {
-            if (TextUtils.equals(receipt.getMaters().get(i).getShdhh(), deletedMater)) {
-                receipt.getMaters().remove(i);
+    public void refreshShow(String purchaseItemNumber) {
+        for (int i = 0; i < purchase.getPurchaseItems().size(); i++) {
+            if (TextUtils.equals(purchase.getPurchaseItems().get(i).getNumber(), purchaseItemNumber)) {
+                purchase.getPurchaseItems().remove(i);
                 mFirstReceiptAdapter.notifyDataSetChanged();
                 break;
             }
@@ -360,7 +353,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
     }
 
     public interface MainFragmentCallBack {
-        void gotoSecondFragment(Mater mater);
+        void gotoSecondFragment(Purchase.PurchaseItem purchaseItem);
     }
 
     private class MyHandler extends Handler {
@@ -370,17 +363,17 @@ public class PurchaseReceiptMainFragment extends Fragment {
             switch (msg.what) {
                 case REQUEST_CODE_QUERY_RECEIPT:
                     if (bundle.getInt("code") == 1) {
-                        receipt = (Receipt) bundle.getSerializable("receipt");
-                        refreshShow(receipt);
+                        purchase = (Purchase) bundle.getSerializable("purchase");
+                        refreshShow(purchase);
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("无效收货单");
                     }
                     break;
                 case REQUEST_CODE_QUERY_RECEIPT_ITEM:
                     if (bundle.getInt("code") == 1) {
-                        Mater mater = (Mater) bundle.get("mater");
+                        Purchase.PurchaseItem purchaseItem = (Purchase.PurchaseItem) bundle.get("purchaseItem");
                         if (mainFragmentCallBack != null) {
-                            mainFragmentCallBack.gotoSecondFragment(mater);
+                            mainFragmentCallBack.gotoSecondFragment(purchaseItem);
                         }
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("获取物料明细失败");
