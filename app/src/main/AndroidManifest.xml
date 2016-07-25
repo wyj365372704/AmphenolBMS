@@ -9,15 +9,21 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!--**********蒲公英sdk部分-->
-    <!-- 必选-->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 获取网络状态 -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 网络通信-->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />  <!-- 获取设备信息 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 获取MAC地址-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 读写sdcard，storage等等 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 允许程序录制音频 -->
-    <!--**********-->
+    <!-- **********蒲公英sdk部分 -->
+    <!-- 必选 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 获取网络状态 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 网络通信 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 获取设备信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 获取MAC地址 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 读写sdcard，storage等等 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 允许程序录制音频 -->
+    <!-- ********** -->
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -58,13 +64,13 @@
             android:screenOrientation="portrait"
             android:supportsRtl="true"
             android:theme="@style/AppTheme.Notitle.FullScreen" />
-        <activity android:name="com.amphenol.activity.CreateRequisitionActivity"></activity>
-        <!--*********蒲公英配置部分-->
+        <activity android:name="com.amphenol.activity.CreateRequisitionActivity" />
+        <!-- *********蒲公英配置部分 -->
         <meta-data
             android:name="PGYER_APPID"
-            android:value="08b9b62f516c5d04bda1e44e969988b5" >
-        </meta-data>
-        <!--************-->
+            android:value="08b9b62f516c5d04bda1e44e969988b5"></meta-data>
+        <!-- ************ -->
+        <activity android:name="com.amphenol.activity.SetUpActivity"></activity>
     </application>
 
 </manifest>
