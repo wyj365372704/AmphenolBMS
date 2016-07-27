@@ -3,6 +3,8 @@ package com.amphenol.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,10 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
         this.date = requisitionItems;
         this.mContext = mContext;
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setDate(List<Requisition.RequisitionItem> date) {
+        this.date = date;
     }
 
     @Override
@@ -75,8 +81,34 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (onItemClickListener != null) {
+                    date.get(position).setChecked(isChecked);
                     onItemClickListener.OnItemCheckedChanged(position, isChecked);
                 }
+            }
+        };
+        TextWatcher mTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double quantity = 0;
+                try {
+                    quantity = Double.parseDouble(s.toString());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                date.get(position).setQuantity(quantity);
+                if (onItemClickListener != null)
+                    onItemClickListener.OnRequisitionQuantityChanged(position, quantity);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         };
 
@@ -87,6 +119,7 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
             branchTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_branch_tv);
             unitTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_unit_tv);
             quantityEditText = (EditText) itemView.findViewById(R.id.create_requisition_main_item_body_quantity_et);
+            quantityEditText.addTextChangedListener(mTextWatcher);
             checkBox = (CheckBox) itemView.findViewById(R.id.create_requisition_main_item_body_cb);
             checkBox.setOnCheckedChangeListener(mOnCheckedChangeListener);
             itemView.setOnClickListener(mOnClickListener);
@@ -97,5 +130,7 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
         void OnItemClick(int position);
 
         void OnItemCheckedChanged(int position, boolean isChecked);
+
+        void OnRequisitionQuantityChanged(int position, double quantity);
     }
 }

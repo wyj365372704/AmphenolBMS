@@ -17,8 +17,10 @@ public class Mater implements Serializable {
     private double quantity = 0;//数量
     private int branchControl = 0;//批次管控
     private double single = 0;//单重
+    private String warehouse = "";//仓库
     private String shard = "";//收货子库
     private String location = "";//收货库位
+
     private List<Branch> branches = new ArrayList<>();//批次信息
 
     public String getNumber() {
@@ -99,6 +101,14 @@ public class Mater implements Serializable {
 
     public void setBranches(List<Branch> branches) {
         this.branches = branches;
+    }
+
+    public String getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(String warehouse) {
+        this.warehouse = warehouse;
     }
 
     public static class Branch {

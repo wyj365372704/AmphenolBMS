@@ -35,6 +35,8 @@ public class PropertiesUtil {
     public static final String ACTION_RECEIPT_CLOSE = "ACTION_RECEIPT_CLOSE";//action 后缀，关闭物料收货
 
     public static final String ACTION_CREATE_REQUISITION_GET_MATER_LIST = "ACTION_CREATE_REQUISITION_GET_MATER_LIST";//action 后缀,创建调拨单,查询物料列表
+    public static final String ACTION_CREATE_REQUISITION_GET_MATER = "ACTION_CREATE_REQUISITION_GET_MATER";//action 后缀,创建调拨单,查询物料明细
+    public static final String ACTION_CREATE_REQUISITION_COMMIT = "ACTION_CREATE_REQUISITION_COMMIT";//action 后缀,创建调拨单,提交
 
 
 

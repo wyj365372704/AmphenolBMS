@@ -1,22 +1,26 @@
 package com.amphenol.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.amphenol.amphenol.R;
+import com.amphenol.entity.Requisition;
 import com.amphenol.fragment.CreateRequisitionMainFragment;
-import com.amphenol.fragment.PurchaseReceiptMainFragment;
+import com.amphenol.fragment.CreateRequisitionSecondFragment;
+import com.amphenol.fragment.PurchaseReceiptSecondFragment;
 
 /**
  * 创建调拨单
  */
 public class CreateRequisitionActivity extends BaseActivity {
-    private CreateRequisitionMainFragment createRequisitionMainFragment ;
+    private CreateRequisitionMainFragment mCreateRequisitionMainFragment;
+    private CreateRequisitionSecondFragment mCreateRequisitionSecondFragment;
+    private CreateRequisitionMainFragment.MainFragmentCallBack mainFragmentCallBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createRequisitionMainFragment = new CreateRequisitionMainFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.activity_create_requisition_fl, createRequisitionMainFragment).commit();
+        mCreateRequisitionMainFragment = new CreateRequisitionMainFragment(mainFragmentCallBack);
+        getSupportFragmentManager().beginTransaction().replace(R.id.activity_create_requisition_fl, mCreateRequisitionMainFragment).commit();
     }
 
     @Override
@@ -31,7 +35,16 @@ public class CreateRequisitionActivity extends BaseActivity {
 
     @Override
     public void initListeners() {
-
+        mainFragmentCallBack = new CreateRequisitionMainFragment.MainFragmentCallBack() {
+            @Override
+            public void gotoSecondFragment(Requisition.RequisitionItem requisitionItem) {
+                mCreateRequisitionSecondFragment = new CreateRequisitionSecondFragment(requisitionItem);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_create_requisition_fl, mCreateRequisitionSecondFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        };
     }
 
     @Override

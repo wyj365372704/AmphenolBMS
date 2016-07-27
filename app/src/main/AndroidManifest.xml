@@ -68,10 +68,11 @@
         <!-- *********蒲公英配置部分 -->
         <meta-data
             android:name="PGYER_APPID"
-            android:value="08b9b62f516c5d04bda1e44e969988b5"></meta-data>
+            android:value="08b9b62f516c5d04bda1e44e969988b5" />
         <!-- ************ -->
-        <activity android:name="com.amphenol.activity.SystemSetUpActivity"></activity>
-        <activity android:name="com.amphenol.activity.WareHouseSetUpActivity"></activity>
+        <activity android:name="com.amphenol.activity.SystemSetUpActivity" />
+        <activity android:name="com.amphenol.activity.WareHouseSetUpActivity" />
+        <activity android:name="com.amphenol.activity.FastRequisitionActivity"></activity>
     </application>
 
 </manifest>

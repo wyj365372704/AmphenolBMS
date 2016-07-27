@@ -139,7 +139,6 @@ public class PurchaseReceiptMainFragment extends Fragment {
                         } else {
                             handleScanCode(mCodeEditText.getText().toString().trim());
                         }
-
                         break;
                 }
             }

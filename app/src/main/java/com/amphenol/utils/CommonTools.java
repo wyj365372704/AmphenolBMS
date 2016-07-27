@@ -1,6 +1,7 @@
 package com.amphenol.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -23,6 +24,8 @@ public class CommonTools {
      * @return
      */
     public static String decodeScanString(String prefix, String code) {
+        if(TextUtils.isEmpty(code))
+            return "";
         int startIndex = code.indexOf("*" + prefix);
         if (startIndex == -1) {//不含prefix的字符串，直接使用code进行查询
 

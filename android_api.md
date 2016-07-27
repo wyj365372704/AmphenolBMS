@@ -230,8 +230,9 @@
 	请求方式：get
 	参数：
 		warehouse	仓库
-		shard	子库
-		location	库位，允许不存在或者传递空，当为空时，查询子库下面的所有物料批次；当不为空时，查询库位下面的所有物料批次信息 ,物料区分精度达到批次级别。
+		shard	子库,允许为空
+		location	库位，允许为空
+		mater 物料编号 ,允许为空
 	action=create_requisition_get_mater_list
 
 返回
@@ -239,11 +240,12 @@
 	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。
 		Map<String,Object>
 			mate: String 物料编号
-			location:String 库位
 			branch:批次号
+			location:String 当前库位
+			target_shard:String	目标子库
+			target_location:String	目标库位
 			quantity： Double 库存数量
 			unit： String 库存单位
-
 
 ##创建调拨单-查询物料明细
 	请求方式：get
@@ -265,15 +267,15 @@
 ##创建调拨单-提交
 	请求方式：get
 	参数：
-		from_warehouse 来源仓库
-		from_shard 来源子库
-		from_location 来源库位
 		mater_list 调拨物料批次集合的json字符串，服务器进行json解析，说明如下
 			mater_list：List<Map<String,Object>> 调拨物料列表，按此生成json字符串
 				Map<String,Object>:调拨物料描述
+					from_warehouse:String 来源仓库
+					from_shard:String 来源子库
+					from_location:String 来源库位
 					target_warehouse:String 目标仓库
 					target_shard:String 目标子库
-					target_location:String 库位
+					target_location:String 来源库位
 					mater:String 物料编号
 					branch:String 批次号
 					quantity:double 调拨数量，调拨数量不允许大于该物料批次的库存数量

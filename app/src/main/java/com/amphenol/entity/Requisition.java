@@ -14,7 +14,7 @@ public class Requisition implements Serializable{
     private String founder = "";//创建人
     private String department = "";//创建部门
     private String date = "";//创建日期
-    private int status = STATUS_NO_REQUISITION;//采购单状态 默认为未收货
+    private int status = STATUS_NO_REQUISITION;//状态
     private List<RequisitionItem> requisitionItems = new ArrayList<>();
 
     public String getNumber() {
@@ -72,6 +72,8 @@ public class Requisition implements Serializable{
         private Requisition requisition ;//所在调拨单
         private double quantity = 0;//调拨数量
         private String number = "";//调拨单行号
+        private String shard = "";//目标子库
+        private String location = "";//目标库位
         private Mater.Branch branch = new Mater.Branch();
         private boolean isChecked = false;
 
@@ -93,6 +95,22 @@ public class Requisition implements Serializable{
 
         public String getNumber() {
             return number;
+        }
+
+        public String getShard() {
+            return shard;
+        }
+
+        public void setShard(String shard) {
+            this.shard = shard;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
         }
 
         public void setNumber(String number) {

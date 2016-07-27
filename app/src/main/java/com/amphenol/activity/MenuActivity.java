@@ -63,6 +63,9 @@ public class MenuActivity extends BaseActivity {
                     case MenuItem.MENU_CODE_CREATE_REQUISITION:
                         componentName = new ComponentName(MenuActivity.this, CreateRequisitionActivity.class);
                         break;
+                    case MenuItem.MENU_CODE_FAST_REQUISITION:
+                        componentName = new ComponentName(MenuActivity.this, FastRequisitionActivity.class);
+                        break;
                 }
                 if (componentName != null) {
                     intent.setComponent(componentName);

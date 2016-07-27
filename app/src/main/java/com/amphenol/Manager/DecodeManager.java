@@ -282,18 +282,21 @@ public class DecodeManager {
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            HashMap<String,String> params = (HashMap<String, String>) jsonObject.get("params");
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
             String shard = params.get("shard");
+            String warehouse = params.get("warehouse");
             ArrayList<Requisition.RequisitionItem> requisitionItems = new ArrayList<>();
             JSONArray jsonArray = jsonObject.optJSONArray("mater_list");
             for (int i = 0; i < jsonArray.length(); i++) {
                 Requisition.RequisitionItem requisitionItem = new Requisition.RequisitionItem();
-                JSONObject jsonObject1 = jsonArray.optJSONObject(i);
-                String mate = jsonObject1.optString("mate");
-                String location = jsonObject1.optString("location");
-                String branchPo = jsonObject1.optString("branch");
-                Double quantity = jsonObject1.optDouble("quantity");
-                String unit = jsonObject1.optString("unit");
+                JSONObject requisitionItemJsonObject = jsonArray.optJSONObject(i);
+                String mate = requisitionItemJsonObject.optString("mate");
+                String location = requisitionItemJsonObject.optString("location");
+                String branchPo = requisitionItemJsonObject.optString("branch");
+                Double quantity = requisitionItemJsonObject.optDouble("quantity");
+                String unit = requisitionItemJsonObject.optString("unit");
+                String target_shard = requisitionItemJsonObject.optString("target_shard");
+                String target_location = requisitionItemJsonObject.optString("target_location");
                 requisitionItem.setQuantity(quantity);
                 Mater.Branch branch = new Mater.Branch();
                 branch.setQuantity(quantity);
@@ -301,18 +304,74 @@ public class DecodeManager {
                 Mater mater = new Mater();
                 mater.setNumber(mate.trim());
                 mater.setShard(shard.trim());
+                mater.setWarehouse(warehouse.trim());
                 mater.setLocation(location.trim());
                 mater.setUnit(unit.trim());
                 branch.setMater(mater);
                 requisitionItem.setBranch(branch);
+                requisitionItem.setShard(target_shard);
+                requisitionItem.setLocation(target_location);
                 requisitionItems.add(requisitionItem);
             }
-            data.putSerializable("requisitionItems",requisitionItems);
+            data.putSerializable("requisitionItems", requisitionItems);
         }
         msg.setData(data);
         handler.sendMessage(msg);
     }
 
+    public static void decodeCreaetRequisitionGetMater(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+            String from_warehouse = params.get("warehouse");
+            String from_shard = params.get("shard");
+            String from_location = params.get("location");
+            String mate = params.get("mate");
+            String branch_po = params.get("branch");
+            double quantity = 0;
+            try {
+                quantity = Double.parseDouble(params.get("quantity"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String unit = params.get("unit");
+            String mater_desc = jsonObject.optString("mater_desc");
+            String mater_format = jsonObject.optString("mater_format");
+            String target_shard = jsonObject.optString("target_shard");
+            String target_location = jsonObject.optString("target_location");
+            Requisition.RequisitionItem requisitionItem = new Requisition.RequisitionItem();
+            Mater mater = new Mater();
+            mater.setWarehouse(from_warehouse);
+            mater.setShard(from_shard);
+            mater.setLocation(from_location);
+            mater.setNumber(mate);
+            mater.setDesc(mater_desc);
+            mater.setFormat(mater_format);
+            mater.setUnit(unit);
+            Mater.Branch branch = new Mater.Branch();
+            branch.setPo(branch_po);
+            branch.setQuantity(quantity);
+            branch.setMater(mater);
+            requisitionItem.setBranch(branch);
+            requisitionItem.setShard(target_shard);
+            requisitionItem.setLocation(target_location);
+            data.putSerializable("requisitionItem", requisitionItem);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeCreaetRequisitionCommit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();
@@ -334,8 +393,8 @@ public class DecodeManager {
      * @param jsonObject
      */
     private static void insertRecInformation(Bundle bundle, JSONObject jsonObject) throws Exception {
-        int code = jsonObject.getInt("code");
-        String desc = jsonObject.getString("desc");
+        int code = jsonObject.optInt("code");
+        String desc = jsonObject.optString("desc");
         bundle.putInt("code", code);
         bundle.putString("desc", desc.trim());
         bundle.putSerializable("params", (HashMap<String, String>) (jsonObject.get("params")));
