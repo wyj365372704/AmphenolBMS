@@ -26,11 +26,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         this.menuDrawer = menuItems;
         this.onMenuItemClickListener = onMenuItemClickListener;
     }
-
-    public void setMenuDrawer(List<List<MenuItem>> menuDrawer) {
-        this.menuDrawer = menuDrawer;
-    }
-
     @Override
     public MenuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MenuViewHolder menuViewHolder = new MenuViewHolder(LayoutInflater.from(mContext).inflate(R.layout.menu_item_layout, parent, false));

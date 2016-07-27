@@ -102,6 +102,7 @@ public class Mater implements Serializable {
     }
 
     public static class Branch {
+        private Mater mater ;//所在物料
         private String number;//批次行号
         private String po;//批次号
         private double quantity;//数量 ,
@@ -137,6 +138,14 @@ public class Mater implements Serializable {
 
         public void setQuantity(double quantity) {
             this.quantity = quantity;
+        }
+
+        public Mater getMater() {
+            return mater;
+        }
+
+        public void setMater(Mater mater) {
+            this.mater = mater;
         }
     }
 }

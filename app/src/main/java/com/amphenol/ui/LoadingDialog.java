@@ -86,10 +86,15 @@ public class LoadingDialog{
         circleView = (View) layout.findViewById(R.id.loading_dialog);
         layout_bg = (LinearLayout) layout.findViewById(R.id.loading_back);
         popupDialog = new PopupWindow(layout, ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
-        View parentView = ((Activity) context).getWindow().findViewById(Window.ID_ANDROID_CONTENT);
-        popupDialog.showAtLocation(parentView, Gravity.CENTER, 0, 0);
-        layout_bg.startAnimation(alphaAnim_in);
-        circleView.startAnimation(rotateAnim);
+        final View parentView = ((Activity) context).getWindow().findViewById(Window.ID_ANDROID_CONTENT);
+        parentView.post(new Runnable() {
+            @Override
+            public void run() {
+                popupDialog.showAtLocation(parentView, Gravity.CENTER, 0, 0);
+                layout_bg.startAnimation(alphaAnim_in);
+                circleView.startAnimation(rotateAnim);
+            }
+        });
     }
 
     /**

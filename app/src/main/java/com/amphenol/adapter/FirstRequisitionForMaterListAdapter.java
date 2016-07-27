@@ -6,76 +6,96 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
+import com.amphenol.entity.Requisition;
 
 import java.util.List;
 
 /**
  * Created by Carl on 2016/7/12/012.
- * 创建调拨单页面，物料列表适配器
+ * 创建调拨单页面，列表适配器
  */
-public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter {
-    private List<Mater> maters;
-    private OnItemClickListener onItemClickListener ;
+public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<FirstRequisitionForMaterListAdapter.ViewHolderBody> {
+    private List<Requisition.RequisitionItem> date;
+    private OnItemClickListener onItemClickListener;
     private Context mContext;
 
-    public void setMaters(List<Mater> maters) {
-        this.maters = maters;
-    }
-
-    public FirstRequisitionForMaterListAdapter(Context mContext, List<Mater> maters, OnItemClickListener onItemClickListener) {
-        this.maters = maters;
+    public FirstRequisitionForMaterListAdapter(Context mContext, List<Requisition.RequisitionItem> requisitionItems, OnItemClickListener onItemClickListener) {
+        this.date = requisitionItems;
         this.mContext = mContext;
-        this.onItemClickListener = onItemClickListener ;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolderBody(LayoutInflater.from(mContext).inflate(R.layout.pruchase_receipt_main_item_body, parent, false));
+    public FirstRequisitionForMaterListAdapter.ViewHolderBody onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolderBody(LayoutInflater.from(mContext).inflate(R.layout.create_requisition_main_item_body, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof ViewHolderBody) {
-//            ((ViewHolderBody) holder).cgdhxcTextView.setText(maters.get(position).getPo());
-//            ((ViewHolderBody) holder).wlTextView.setText(maters.get(position).getMate_number());
-//            ((ViewHolderBody) holder).slTextView.setText(maters.get(position).getPlan_quantity()+"");
-//            ((ViewHolderBody) holder).dwTextView.setText(maters.get(position).getPurchase_unit());
-            if(position%2 == 0)
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext,R.color.colorTableO));
-            else
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext,R.color.colorTableE));
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(onItemClickListener!=null){
-                        onItemClickListener.OnItemClick(position);
-                    }
-                }
-            });
-        }
+    public void onBindViewHolder(FirstRequisitionForMaterListAdapter.ViewHolderBody holder, final int position) {
+        holder.position = position;
+        holder.locationTextView.setText(date.get(position).getBranch().getMater().getLocation());
+        holder.materTextView.setText(date.get(position).getBranch().getMater().getNumber());
+        holder.branchTextView.setText(date.get(position).getBranch().getPo());
+        holder.unitTextView.setText(date.get(position).getBranch().getMater().getUnit());
+        holder.quantityEditText.setText(date.get(position).getQuantity() + "");
+        holder.checkBox.setChecked(date.get(position).isChecked());
+        if (position % 2 == 0)
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTableO));
+        else
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTableE));
     }
 
     @Override
     public int getItemCount() {
-        return maters == null ? 0 : maters.size();
+        return date == null ? 0 : date.size();
     }
 
     class ViewHolderBody extends RecyclerView.ViewHolder {
-        TextView cgdhxcTextView, wlTextView, slTextView, dwTextView;
+        int position;
+        TextView locationTextView, materTextView, branchTextView, unitTextView;
+        EditText quantityEditText;
+        CheckBox checkBox;
+
+        View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.OnItemClick(position);
+                }
+            }
+        };
+        CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.OnItemCheckedChanged(position, isChecked);
+                }
+            }
+        };
+
         public ViewHolderBody(View itemView) {
             super(itemView);
-            cgdhxcTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_cgdxc_tv);
-            wlTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_wl_tv);
-            slTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_sl_tv);
-            dwTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_dw_tv);
+            locationTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_location_tv);
+            materTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_mater_tv);
+            branchTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_branch_tv);
+            unitTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_unit_tv);
+            quantityEditText = (EditText) itemView.findViewById(R.id.create_requisition_main_item_body_quantity_et);
+            checkBox = (CheckBox) itemView.findViewById(R.id.create_requisition_main_item_body_cb);
+            checkBox.setOnCheckedChangeListener(mOnCheckedChangeListener);
+            itemView.setOnClickListener(mOnClickListener);
         }
     }
-    public interface OnItemClickListener{
+
+    public interface OnItemClickListener {
         void OnItemClick(int position);
+
+        void OnItemCheckedChanged(int position, boolean isChecked);
     }
 }

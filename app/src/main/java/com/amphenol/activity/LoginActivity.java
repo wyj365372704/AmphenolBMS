@@ -23,6 +23,7 @@ import com.pgyersdk.update.PgyUpdateManager;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.activity_login_bt:
-                        if(mStringArrayAdapter == null ||mStringArrayAdapter.getCount() == 0){
+                        if (mStringArrayAdapter == null || mStringArrayAdapter.getCount() == 0) {
                             ShowToast("环境加载失败，不可登录");
                             return;
                         }
@@ -92,7 +93,7 @@ public class LoginActivity extends BaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     ShowToast("服务器返回错误");
-                }finally {
+                } finally {
                     if (mLoadingDialog != null) {
                         mLoadingDialog.dismiss();
                         mLoadingDialog = null;
@@ -135,7 +136,7 @@ public class LoginActivity extends BaseActivity {
         } else {
             Map<String, String> param = new HashMap<>();
             param.put("username", username);
-            param.put("password",password);
+            param.put("password", password);
             param.put("env", env);
             NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_LOGIN_CHECK, getApplicationContext()), param, REQUEST_CODE_LOGIN_CHECK, mRequestTaskListener);
         }
@@ -167,15 +168,20 @@ public class LoginActivity extends BaseActivity {
             Bundle bundle = msg.getData();
             switch (msg.what) {
                 case REQUEST_CODE_LOGIN_CHECK:
-                    if(bundle.getInt("code") == 1){
-                        HashMap<String,String> params = (HashMap<String, String>) bundle.getSerializable("params");
+                    if (bundle.getInt("code") == 1) {
+                        HashMap<String, String> params = (HashMap<String, String>) bundle.getSerializable("params");
                         String username = params.get("username");
-                        String env  = params.get("env");
-                        SessionManager.setUserName(username,getApplicationContext());
-                        SessionManager.setEnv(env,getApplicationContext());
+                        String env = params.get("env");
+                        if (!TextUtils.equals(username, SessionManager.getUserName(getApplicationContext()))) {//若登入用户发送了改变,清空原有的warehouse以及warehouse_list信息
+                            SessionManager.setWarehouse("",getApplicationContext());
+                            SessionManager.setWarehouse_list(new ArrayList<String>(),getApplicationContext());
+                        }
+                        SessionManager.setUserName(username, getApplicationContext());
+                        SessionManager.setEnv(env, getApplicationContext());
+
                         startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                         finish();
-                    }else if(bundle.getInt("code") == 2){
+                    } else if (bundle.getInt("code") == 2) {
                         ShowToast("用户名或密码错误");
                     }
                     break;

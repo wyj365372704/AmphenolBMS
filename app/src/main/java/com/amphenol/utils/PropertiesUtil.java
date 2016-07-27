@@ -22,11 +22,20 @@ public class PropertiesUtil {
     public static final String ACTION_GET_ENV = "ACTION_GET_ENV";//action 后缀，获取登录环境map集
     public static final String ACTION_LOGIN_CHECK = "ACTION_LOGIN_CHECK";//action 后缀，获取登录环境map集
     public static final String ACTION_GET_MENU = "ACTION_GET_MENU";//action 后缀，获取功能菜单
+
+    public static final String ACTION_QUERY_WAREHOUSE = "ACTION_QUERY_WAREHOUSE";//action 后缀，获取仓库及仓库列表
+    public static final String ACTION_QUERY_SHARD_LIST = "ACTION_QUERY_SHARD_LIST";//action 后缀，获取子库列表
+
+
+
     public static final String ACTION_QUERY_RECEIPT = "ACTION_QUERY_RECEIPT";//action 后缀，查询收货单
     public static final String ACTION_QUERY_RECEIPT_ITEM = "ACTION_QUERY_RECEIPT_ITEM";//action 后缀，查询收货单物料明细
 
     public static final String ACTION_RECEIPT_CONFIRM = "ACTION_RECEIPT_CONFIRM";//action 后缀，确认物料收货
     public static final String ACTION_RECEIPT_CLOSE = "ACTION_RECEIPT_CLOSE";//action 后缀，关闭物料收货
+
+    public static final String ACTION_CREATE_REQUISITION_GET_MATER_LIST = "ACTION_CREATE_REQUISITION_GET_MATER_LIST";//action 后缀,创建调拨单,查询物料列表
+
 
 
     private static PropertiesUtil mPropertiesUtil;

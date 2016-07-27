@@ -2,9 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="#909ba1"
-    android:padding="8dp">
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/purchase_receipt_main_item_cgdxc_tv"
@@ -53,6 +56,7 @@
         android:text="调拨数量"
         android:textColor="@android:color/black"
         android:textSize="@dimen/normal_font_size" />
+
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -33,59 +33,13 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
+
             android:paddingTop="@dimen/activity_vertical_margin">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/fragment_create_requisition_main_warehouse_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="仓库:"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
-
-                <TextView
-                    android:id="@+id/fragment_create_requisition_main_warehouse_show_tv"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
-
-                <Spinner
-                    android:id="@+id/fragment_create_requisition_main_shard_spinner"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="4dp"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
-
-                <TextView
-                    android:id="@+id/fragment_create_requisition_main_shard_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/fragment_create_requisition_main_shard_spinner"
-                    android:text="子库:"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
-
-            </RelativeLayout>
 
             <RelativeLayout
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:layout_width="match_parent"
                 android:layout_height="56dp">
 
@@ -126,13 +80,66 @@
                     android:textSize="@dimen/normal_font_size" />
             </RelativeLayout>
 
+
+            <RelativeLayout
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/fragment_create_requisition_main_warehouse_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="仓库:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size" />
+
+                <TextView
+                    android:id="@+id/fragment_create_requisition_main_warehouse_show_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size" />
+
+                <Spinner
+                    android:id="@+id/fragment_create_requisition_main_shard_spinner"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/spinner_back"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size" />
+
+                <TextView
+                    android:id="@+id/fragment_create_requisition_main_shard_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/fragment_create_requisition_main_shard_spinner"
+                    android:text="子库:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size" />
+
+            </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/colorDevideLine" />
 
             <include
-                layout="@layout/pruchase_receipt_main_item_head"
+                layout="@layout/create_requisition_main_item_head"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" />

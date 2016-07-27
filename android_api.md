@@ -67,6 +67,9 @@
 	menu_list: List<Map<Strig,String>>  菜单编号
 		11：采购收货
 		12：采购退货
+		31:创建调拨单
+		32:审核调拨单
+		33:快速调拨
 
 	示例：
 	{
@@ -262,12 +265,15 @@
 ##创建调拨单-提交
 	请求方式：get
 	参数：
-		warehouse 仓库
-		shard 子库
+		from_warehouse 来源仓库
+		from_shard 来源子库
+		from_location 来源库位
 		mater_list 调拨物料批次集合的json字符串，服务器进行json解析，说明如下
 			mater_list：List<Map<String,Object>> 调拨物料列表，按此生成json字符串
 				Map<String,Object>:调拨物料描述
-					location:String 库位
+					target_warehouse:String 目标仓库
+					target_shard:String 目标子库
+					target_location:String 库位
 					mater:String 物料编号
 					branch:String 批次号
 					quantity:double 调拨数量，调拨数量不允许大于该物料批次的库存数量

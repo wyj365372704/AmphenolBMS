@@ -5,17 +5,17 @@
     android:gravity="center"
     android:minHeight="40dp"
     android:orientation="horizontal"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp">
 
     <TextView
-        android:id="@+id/create_requisition_main_item_body_shard_tv"
+        android:id="@+id/create_requisition_main_item_body_location_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:text="--"
         android:textColor="@android:color/black"
         android:textSize="@dimen/normal_font_size" />
@@ -26,8 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:text="--"
         android:textColor="@android:color/black"
         android:textSize="@dimen/normal_font_size" />
@@ -38,8 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
         android:text="--"
         android:textColor="@android:color/black"
         android:textSize="@dimen/normal_font_size" />
@@ -49,25 +49,21 @@
         android:layout_height="match_parent"
         android:layout_weight="2"
         android:paddingBottom="4dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
         android:paddingTop="4dp">
 
         <TextView
-            android:layout_marginLeft="4dp"
             android:id="@+id/create_requisition_main_item_body_unit_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="14dp"
             android:gravity="center"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="G" />
+            android:textColor="@android:color/black"/>
 
         <EditText
             android:id="@+id/create_requisition_main_item_body_quantity_et"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/create_requisition_main_item_body_unit_tv"
             android:background="@drawable/spinner_back"
@@ -89,6 +85,8 @@
         android:gravity="center">
 
         <CheckBox
+            android:scaleX="0.9"
+            android:scaleY="0.9"
             android:id="@+id/create_requisition_main_item_body_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

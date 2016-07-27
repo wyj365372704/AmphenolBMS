@@ -3,6 +3,9 @@ package com.amphenol.Manager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Carl on 2016/7/15/015.
  */
@@ -29,6 +32,4 @@ public class SPManager {
     public String getSP(String key, String defaultValue) {
         return mSharedPreferences.getString(key, defaultValue);
     }
-
-    ;
 }

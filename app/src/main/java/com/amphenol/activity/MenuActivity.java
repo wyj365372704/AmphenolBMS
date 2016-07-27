@@ -1,17 +1,13 @@
 package com.amphenol.activity;
 
-import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -20,7 +16,6 @@ import com.amphenol.amphenol.R;
 import com.amphenol.entity.MenuItem;
 import com.amphenol.ui.MenuItemDecoration;
 import com.amphenol.utils.CommonTools;
-import com.amphenol.utils.MenuCode;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
 
@@ -38,6 +33,7 @@ public class MenuActivity extends BaseActivity {
     private MenuAdapter.OnMenuItemClickListener onMenuItemClickListener;
     private List<List<MenuItem>> menuDrawer = new ArrayList<>();//菜单抽屉集合
     private static final int REQUEST_CODE_GET_MENU = 0X10;
+    private static final int REQUEST_CODE_QUERY_WAREHOUSE = 0X11;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private MyHandler myHandler = new MyHandler();
     private Toolbar mToolbar;
@@ -46,6 +42,7 @@ public class MenuActivity extends BaseActivity {
     public void setContentView() {
         setContentView(R.layout.activity_menu);
     }
+
     @Override
     public void initListeners() {
         onMenuItemClickListener = new MenuAdapter.OnMenuItemClickListener() {
@@ -54,11 +51,17 @@ public class MenuActivity extends BaseActivity {
                 Intent intent = new Intent();
                 ComponentName componentName = null;
                 switch (menuCode) {
-                    case MenuCode.MENU_CODE_PURCHASE_RECEIPT:
+                    case MenuItem.MENU_CODE_PURCHASE_RECEIPT:
                         componentName = new ComponentName(MenuActivity.this, PurchaseReceiptActivity.class);
                         break;
-                    case MenuCode.MENU_CODE_PURCHASE_RETURN:
+                    case MenuItem.MENU_CODE_PURCHASE_RETURN:
 
+                        break;
+                    case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
+                        componentName = new ComponentName(MenuActivity.this, WareHouseSetUpActivity.class);
+                        break;
+                    case MenuItem.MENU_CODE_CREATE_REQUISITION:
+                        componentName = new ComponentName(MenuActivity.this, CreateRequisitionActivity.class);
                         break;
                 }
                 if (componentName != null) {
@@ -89,6 +92,14 @@ public class MenuActivity extends BaseActivity {
                             ShowToast("服务器返回错误");
                         }
                         break;
+                    case REQUEST_CODE_QUERY_WAREHOUSE:
+                        try {
+                            DecodeManager.decodeQueryWarehouse(jsonObject, requestCode, myHandler);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ShowToast("服务器返回错误");
+                        }
+                        break;
                 }
             }
 
@@ -102,6 +113,7 @@ public class MenuActivity extends BaseActivity {
             }
         };
     }
+
     @Override
     public void initViews() {
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_menu_rv);
@@ -115,10 +127,6 @@ public class MenuActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        List<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("采购收货", MenuCode.MENU_CODE_PURCHASE_RECEIPT, R.mipmap.menu_icon_shouhuo));
-        menuItems.add(new MenuItem("采购退货", MenuCode.MENU_CODE_PURCHASE_RETURN, R.mipmap.menu_icon_tuihuo));
-        menuDrawer.add(menuItems);
         menuAdapter = new MenuAdapter(this, menuDrawer, onMenuItemClickListener);
         mRecyclerView.setAdapter(menuAdapter);
     }
@@ -130,6 +138,7 @@ public class MenuActivity extends BaseActivity {
         InquireMenu();
     }
 
+
     /**
      * 根据
      *
@@ -138,9 +147,9 @@ public class MenuActivity extends BaseActivity {
      */
     private int getMenuDrawID(int i) {
         switch (i) {
-            case MenuCode.MENU_CODE_PURCHASE_RECEIPT:
+            case MenuItem.MENU_CODE_PURCHASE_RECEIPT:
                 return R.mipmap.menu_icon_shouhuo;
-            case MenuCode.MENU_CODE_PURCHASE_RETURN:
+            case MenuItem.MENU_CODE_PURCHASE_RETURN:
                 return R.mipmap.menu_icon_tuihuo;
         }
         return R.mipmap.ic_launcher;
@@ -155,6 +164,13 @@ public class MenuActivity extends BaseActivity {
         param.put("username", SessionManager.getUserName(getApplicationContext()));
         param.put("env", SessionManager.getEnv(getApplicationContext()));
         NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_GET_MENU, getApplicationContext()), param, REQUEST_CODE_GET_MENU, mRequestTaskListener);
+    }
+
+    private void InquireWareHouse() {
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getApplicationContext()));
+        param.put("env", SessionManager.getEnv(getApplicationContext()));
+        NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getApplicationContext()), param, REQUEST_CODE_QUERY_WAREHOUSE, mRequestTaskListener);
     }
 
     private class MyHandler extends Handler {
@@ -178,11 +194,24 @@ public class MenuActivity extends BaseActivity {
                                     menuDrawer.add(menuItems);
                                 }
                             }
+                            List<MenuItem> setUpMenu = new ArrayList<>();
+                            setUpMenu.add(new MenuItem("仓库设置", MenuItem.MENU_CODE_SET_UP_WAREHOUSE, getMenuDrawID(MenuItem.MENU_CODE_SET_UP_WAREHOUSE)));
+                            menuDrawer.add(setUpMenu);
                         }
-                        menuAdapter.setMenuDrawer(menuDrawer);
-                        menuAdapter.notifyDataSetChanged();
+                        InquireWareHouse();
                     } else {
                         ShowToast("获取功能菜单失败");
+                    }
+                    break;
+                case REQUEST_CODE_QUERY_WAREHOUSE:
+                    if (bundle.getInt("code") == 1) {
+                        String warehouse = bundle.getString("warehouse");
+                        List<String> warehouseStringlist = bundle.getStringArrayList("warehouse_list");
+                        SessionManager.setWarehouse(warehouse,getApplicationContext());
+                        SessionManager.setWarehouse_list(warehouseStringlist,getApplicationContext());
+                        menuAdapter.notifyDataSetChanged();
+                    }else{
+                        ShowToast("获取仓库列表失败");
                     }
                     break;
             }
