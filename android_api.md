@@ -232,7 +232,7 @@
 		warehouse	仓库
 		shard	子库,允许为空
 		location	库位，允许为空
-		mater 物料编号 ,允许为空
+		mate 物料编号 ,允许为空
 	action=create_requisition_get_mater_list
 
 返回
@@ -241,6 +241,7 @@
 		Map<String,Object>
 			mate: String 物料编号
 			branch:批次号
+			shard:String 当钱子库
 			location:String 当前库位
 			target_shard:String	目标子库
 			target_location:String	目标库位
@@ -325,7 +326,10 @@
 	form_location:String	来源库位
 	target_shard:String	目标子库
 	target_location:String	目标库位
-	target_shard_list:List<String> 目标子库列表
+	target_shard_list:List<Map<String,Object>> 目标子库列表
+		Map<String,Object> 子库
+			shard:String 子库名
+			
 		
 ##审核调拨单-确认过账
 	

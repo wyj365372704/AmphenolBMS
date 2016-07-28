@@ -464,6 +464,8 @@ public class CreateRequisitionMainFragment extends Fragment {
                 case REQUEST_CODE_COMMIT:
                     if (bundle.getInt("code") == 1) {
                         ((BaseActivity) getActivity()).ShowToast("调拨单创建成功");
+                        requisition = new Requisition();
+                        refreshShow();
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("调拨单创建失败");
                     }

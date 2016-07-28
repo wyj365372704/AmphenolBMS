@@ -20,12 +20,12 @@
             android:text="快速调拨"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
+
         <ImageButton
-            android:layout_marginRight="16dp"
             android:layout_width="32dp"
-            android:layout_gravity="right"
             android:layout_height="32dp"
-            />
+            android:layout_gravity="right"
+            android:layout_marginRight="16dp" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -60,8 +60,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -70,8 +68,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0.8"
                     android:orientation="horizontal">
 
                     <TextView
@@ -90,6 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
+                        android:text="--"
                         android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
@@ -115,7 +113,7 @@
                     <EditText
                         android:id="@+id/fragment_fast_requisition_main_mater_in_et"
                         android:layout_width="match_parent"
-                        android:layout_height="32dp"
+                        android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
                         android:background="@drawable/spinner_back"
@@ -129,7 +127,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -139,8 +136,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0.8"
                     android:orientation="horizontal">
 
                     <TextView
@@ -156,7 +152,7 @@
                     <EditText
                         android:id="@+id/fragment_fast_requisition_main_from_shard_et"
                         android:layout_width="match_parent"
-                        android:layout_height="32dp"
+                        android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
                         android:background="@drawable/spinner_back"
@@ -184,7 +180,7 @@
                     <EditText
                         android:id="@+id/fragment_fast_requisition_main_target_shard_et"
                         android:layout_width="match_parent"
-                        android:layout_height="32dp"
+                        android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
                         android:layout_toRightOf="@id/fragment_fast_requisition_main_from_shard_tv"
@@ -199,7 +195,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -208,17 +204,17 @@
 
                 <Button
                     android:layout_width="0dp"
+                    android:id="@+id/fragment_fast_requisition_main_inquire_bt"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_weight="1"
                     android:text="查询" />
 
                 <Button
+                    android:id="@+id/fragment_fast_requisition_main_submit_bt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
                     android:layout_weight="1"
                     android:text="立即调拨" />
             </LinearLayout>
@@ -234,7 +230,7 @@
                 layout="@layout/create_requisition_main_item_head"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="8dp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/fragment_purchase_receipt_content_rl"

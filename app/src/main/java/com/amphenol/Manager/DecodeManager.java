@@ -283,7 +283,6 @@ public class DecodeManager {
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
             HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
-            String shard = params.get("shard");
             String warehouse = params.get("warehouse");
             ArrayList<Requisition.RequisitionItem> requisitionItems = new ArrayList<>();
             JSONArray jsonArray = jsonObject.optJSONArray("mater_list");
@@ -291,6 +290,7 @@ public class DecodeManager {
                 Requisition.RequisitionItem requisitionItem = new Requisition.RequisitionItem();
                 JSONObject requisitionItemJsonObject = jsonArray.optJSONObject(i);
                 String mate = requisitionItemJsonObject.optString("mate");
+                String shard = requisitionItemJsonObject.optString("shard");
                 String location = requisitionItemJsonObject.optString("location");
                 String branchPo = requisitionItemJsonObject.optString("branch");
                 Double quantity = requisitionItemJsonObject.optDouble("quantity");
