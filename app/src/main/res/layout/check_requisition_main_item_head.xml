@@ -8,18 +8,6 @@
     android:paddingTop="12dp">
 
     <TextView
-        android:id="@+id/purchase_receipt_main_item_cgdxc_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="库位"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/normal_font_size" />
-
-    <TextView
         android:id="@+id/purchase_receipt_main_item_wl_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -62,6 +50,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
+        android:text="单位"
         android:textColor="@android:color/black"
         android:textSize="@dimen/normal_font_size" />
 </LinearLayout>

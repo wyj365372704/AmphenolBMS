@@ -22,8 +22,10 @@
             android:textSize="18sp" />
 
         <ImageButton
+            android:id="@+id/toolbar_menu"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:background="@drawable/icon_camera"
             android:layout_gravity="right"
             android:layout_marginRight="16dp" />
 
@@ -37,7 +39,7 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:background="@drawable/creaate_requisition_bt"
+        android:background="@drawable/positive_button_background"
         android:text="生成调拨单"
         android:textColor="@android:color/white"
         android:textSize="18sp"
@@ -68,12 +70,12 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/fragment_fast_requisition_main_warehouse_tv"
-                        android:layout_width="52dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:gravity="right"
@@ -87,7 +89,6 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
-                        android:text="--"
                         android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
@@ -116,6 +117,8 @@
                         android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
+                        android:hint="输入物料编号"
+                        android:imeOptions="actionDone"
                         android:background="@drawable/spinner_back"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
@@ -136,12 +139,12 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/fragment_fast_requisition_main_from_shard_tv"
-                        android:layout_width="52dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:gravity="right"
@@ -155,8 +158,10 @@
                         android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
+                        android:imeOptions="actionDone"
                         android:background="@drawable/spinner_back"
                         android:singleLine="true"
+                        android:hint="输入从库位编号"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/normal_font_size" />
                 </LinearLayout>
@@ -183,9 +188,11 @@
                         android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
+                        android:imeOptions="actionDone"
                         android:layout_toRightOf="@id/fragment_fast_requisition_main_from_shard_tv"
                         android:background="@drawable/spinner_back"
                         android:singleLine="true"
+                        android:hint="输入到库位编号"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/normal_font_size" />
                 </LinearLayout>
@@ -203,20 +210,26 @@
                 android:paddingRight="@dimen/activity_horizontal_margin">
 
                 <Button
-                    android:layout_width="0dp"
                     android:id="@+id/fragment_fast_requisition_main_inquire_bt"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
                     android:layout_marginRight="16dp"
                     android:layout_weight="1"
-                    android:text="查询" />
+                    android:background="@drawable/positive_button_background"
+                    android:text="查询"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/fragment_fast_requisition_main_submit_bt"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="38dp"
                     android:layout_marginLeft="16dp"
                     android:layout_weight="1"
-                    android:text="立即调拨" />
+                    android:background="@drawable/negative_button_background"
+                    android:text="立即调拨"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <View
@@ -230,7 +243,7 @@
                 layout="@layout/create_requisition_main_item_head"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="16dp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/fragment_purchase_receipt_content_rl"

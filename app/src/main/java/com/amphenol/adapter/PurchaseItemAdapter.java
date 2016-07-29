@@ -47,9 +47,9 @@ public class PurchaseItemAdapter extends RecyclerView.Adapter {
         ((ViewHolderBody) holder).jhslTextView.setText(date.get(position).getBranch().getQuantity() + ""); //计划数量
         ((ViewHolderBody) holder).ssslEditText.setText(date.get(position).getActualQuantity() + "");//如果是新增批次
         if (position % 2 == 0)
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTableO));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_o));
         else
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTableE));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_e));
     }
 
     @Override

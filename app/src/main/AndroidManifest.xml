@@ -70,9 +70,10 @@
             android:name="PGYER_APPID"
             android:value="08b9b62f516c5d04bda1e44e969988b5" />
         <!-- ************ -->
-        <activity android:name="com.amphenol.activity.SystemSetUpActivity" />
-        <activity android:name="com.amphenol.activity.WareHouseSetUpActivity" />
-        <activity android:name="com.amphenol.activity.FastRequisitionActivity"></activity>
+        <activity android:name="com.amphenol.activity.SystemSetUpActivity" android:windowSoftInputMode="adjustPan"/>
+        <activity android:name="com.amphenol.activity.WareHouseSetUpActivity" android:windowSoftInputMode="adjustPan" />
+        <activity android:name="com.amphenol.activity.FastRequisitionActivity" android:windowSoftInputMode="adjustPan"></activity>
+        <activity android:name="com.amphenol.activity.CheckRequisitionActivity" android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

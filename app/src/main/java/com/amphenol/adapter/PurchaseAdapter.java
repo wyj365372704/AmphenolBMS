@@ -46,9 +46,9 @@ public class PurchaseAdapter extends RecyclerView.Adapter {
         ((ViewHolderBody) holder).slTextView.setText(date.get(position).getMater().getQuantity() + "");
         ((ViewHolderBody) holder).dwTextView.setText(date.get(position).getMater().getUnit());
         if (position % 2 == 0)
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTableO));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_o));
         else
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTableE));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_e));
     }
 
     @Override

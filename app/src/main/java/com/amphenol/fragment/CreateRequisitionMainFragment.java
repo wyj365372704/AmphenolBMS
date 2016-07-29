@@ -62,7 +62,7 @@ public class CreateRequisitionMainFragment extends Fragment {
     private View.OnClickListener mOnClickListener;
     private LoadingDialog mLoadingDialog;
     private ArrayAdapter<String> mStringArrayAdapter;
-    private List<String> shardStrings;
+    private List<String> shardStrings = new ArrayList<>();
     private FirstRequisitionForMaterListAdapter mFirstRequisitionForMaterListAdapter;
     private FirstRequisitionForMaterListAdapter.OnItemClickListener mOnItemClickListener;
     private Requisition requisition = new Requisition();
@@ -97,7 +97,6 @@ public class CreateRequisitionMainFragment extends Fragment {
 
     private void initData() {
         myHandler = new MyHandler();
-        shardStrings = new ArrayList<>();
         mStringArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, shardStrings);
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -377,6 +376,10 @@ public class CreateRequisitionMainFragment extends Fragment {
             param.put("username", SessionManager.getUserName(getContext()));
             param.put("env", SessionManager.getEnv(getContext()));
             param.put("warehouse", SessionManager.getWarehouse(getContext()));
+            if(mStringArrayAdapter.getCount()<1){
+                ((BaseActivity)getActivity()).ShowToast("库位列表为空,不可创建调拨单");
+                return ;
+            }
             param.put("shard", mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition()));
             param.put("location", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);

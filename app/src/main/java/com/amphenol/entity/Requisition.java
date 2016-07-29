@@ -9,12 +9,12 @@ import java.util.List;
  * 调拨单实体
  */
 public class Requisition implements Serializable{
-    public static final int STATUS_NO_REQUISITION =10,STATUS_HAS_REQUISITION  = 20;//调拨单状态
+    public static final int STATUS_NO_REQUISITION =10,STATUS_HAS_REQUISITION  = 50, STATUS_CANCELED = 99,STATUS_CLOSED = 60;//调拨单状态 10 已创建,50 已完成,99已取消,60 已关闭
     private String number = "";//调拨单号码
     private String founder = "";//创建人
     private String department = "";//创建部门
     private String date = "";//创建日期
-    private int status = STATUS_NO_REQUISITION;//状态
+    private int status = 0;//状态
     private List<RequisitionItem> requisitionItems = new ArrayList<>();
 
     public String getNumber() {
@@ -71,6 +71,7 @@ public class Requisition implements Serializable{
     public static class RequisitionItem implements Serializable{
         private Requisition requisition ;//所在调拨单
         private double quantity = 0;//调拨数量
+        private double actualQuantity = 0 ;//实收数量
         private String number = "";//调拨单行号
         private String shard = "";//目标子库
         private String location = "";//目标库位
@@ -131,6 +132,14 @@ public class Requisition implements Serializable{
 
         public void setChecked(boolean checked) {
             isChecked = checked;
+        }
+
+        public double getActualQuantity() {
+            return actualQuantity;
+        }
+
+        public void setActualQuantity(double actualQuantity) {
+            this.actualQuantity = actualQuantity;
         }
     }
 }

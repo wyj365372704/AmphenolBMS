@@ -19,7 +19,7 @@ public class FastRequisitionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFastRequisitionMainFragment = new FastRequisitionMainFragment(mainFragmentCallBack);
-        getSupportFragmentManager().beginTransaction().replace(R.id.activity_fast_requisition_fl, mFastRequisitionMainFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.activity_fast_requisition_fl, mFastRequisitionMainFragment).commitAllowingStateLoss();
 
     }
 
@@ -42,7 +42,7 @@ public class FastRequisitionActivity extends BaseActivity {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_fast_requisition_fl, mFastRequisitionSecondFragment);
                 transaction.addToBackStack(null);
-                transaction.commit();
+                transaction.commitAllowingStateLoss();
             }
         };
     }

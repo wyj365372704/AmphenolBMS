@@ -66,6 +66,9 @@ public class MenuActivity extends BaseActivity {
                     case MenuItem.MENU_CODE_FAST_REQUISITION:
                         componentName = new ComponentName(MenuActivity.this, FastRequisitionActivity.class);
                         break;
+                    case MenuItem.MENU_CODE_CHECK_REQUISITION:
+                        componentName = new ComponentName(MenuActivity.this, CheckRequisitionActivity.class);
+                        break;
                 }
                 if (componentName != null) {
                     intent.setComponent(componentName);
@@ -154,6 +157,14 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.menu_icon_shouhuo;
             case MenuItem.MENU_CODE_PURCHASE_RETURN:
                 return R.mipmap.menu_icon_tuihuo;
+            case MenuItem.MENU_CODE_CHECK_REQUISITION:
+                return R.mipmap.check_requisition;
+            case MenuItem.MENU_CODE_CREATE_REQUISITION:
+                return R.mipmap.create_requisition;
+            case MenuItem.MENU_CODE_FAST_REQUISITION:
+                return R.mipmap.fast_requisition;
+            case MenuItem.MENU_CODE_SET_UP_SYSTEM:
+            case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
         }
         return R.mipmap.ic_launcher;
     }
@@ -210,10 +221,10 @@ public class MenuActivity extends BaseActivity {
                     if (bundle.getInt("code") == 1) {
                         String warehouse = bundle.getString("warehouse");
                         List<String> warehouseStringlist = bundle.getStringArrayList("warehouse_list");
-                        SessionManager.setWarehouse(warehouse,getApplicationContext());
-                        SessionManager.setWarehouse_list(warehouseStringlist,getApplicationContext());
+                        SessionManager.setWarehouse(warehouse, getApplicationContext());
+                        SessionManager.setWarehouse_list(warehouseStringlist, getApplicationContext());
                         menuAdapter.notifyDataSetChanged();
-                    }else{
+                    } else {
                         ShowToast("获取仓库列表失败");
                     }
                     break;

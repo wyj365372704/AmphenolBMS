@@ -241,12 +241,14 @@
 		Map<String,Object>
 			mate: String 物料编号
 			branch:批次号
-			shard:String 当钱子库
+			shard:String 当前子库
 			location:String 当前库位
 			target_shard:String	目标子库
 			target_location:String	目标库位
 			quantity： Double 库存数量
 			unit： String 库存单位
+	code 
+		5 没有结果集
 
 ##创建调拨单-查询物料明细
 	请求方式：get
@@ -276,7 +278,7 @@
 					from_location:String 来源库位
 					target_warehouse:String 目标仓库
 					target_shard:String 目标子库
-					target_location:String 来源库位
+					target_location:String 目标库位
 					mater:String 物料编号
 					branch:String 批次号
 					quantity:double 调拨数量，调拨数量不允许大于该物料批次的库存数量
@@ -284,8 +286,8 @@
 		
 返回
 	
-	code = 1 成功
-	code = 2 失败，错误原因：调拨数量大于库存数量
+	code 
+		6 目标库位不存在
 
 ##审核调拨单
 
@@ -298,6 +300,7 @@
 
 	state:int 调拨单状态
 		10 已创建
+		60 已关闭
 	founder:String 创建人
 	department:String 创建部门
 	date：String 创建日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
@@ -308,6 +311,8 @@
 			branch:Striing	批次
 			quantity:double	调拨数量
 			unit:String	单位
+	code
+		5 查无此调拨单
 	
 ##审核调拨单-物料明细查询
 	
@@ -338,8 +343,12 @@
 		requisition 调拨单号
 		requisition_line 调拨单行	
 		actual_quantity 实收数量，double类型
+		target_warehouse 目标仓库
 		target_shard 目标子库
 		target_location 目标库位
+		update 是否更新目标子库或库位
+			0 不更新
+			1 更新
 	action=check_requisition_sure
 
 返回
@@ -353,7 +362,7 @@
 	参数：
 		requisition 调拨单号
 		requisition_line 调拨单行	
-	action=cation=check_requisition_cancel
+	action=check_requisition_cancel
 
 返回
 

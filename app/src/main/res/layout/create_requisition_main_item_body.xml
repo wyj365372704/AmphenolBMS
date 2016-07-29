@@ -3,10 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:minHeight="40dp"
-    android:orientation="horizontal"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp">
+    android:minHeight="46dp"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/create_requisition_main_item_body_location_tv"
@@ -63,7 +61,7 @@
         <EditText
             android:id="@+id/create_requisition_main_item_body_quantity_et"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="28dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/create_requisition_main_item_body_unit_tv"
             android:background="@drawable/spinner_back"
@@ -85,8 +83,6 @@
         android:gravity="center">
 
         <CheckBox
-            android:scaleX="0.9"
-            android:scaleY="0.9"
             android:id="@+id/create_requisition_main_item_body_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

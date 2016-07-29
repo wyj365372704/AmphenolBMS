@@ -37,6 +37,11 @@ public class PropertiesUtil {
     public static final String ACTION_CREATE_REQUISITION_GET_MATER_LIST = "ACTION_CREATE_REQUISITION_GET_MATER_LIST";//action 后缀,创建调拨单,查询物料列表
     public static final String ACTION_CREATE_REQUISITION_GET_MATER = "ACTION_CREATE_REQUISITION_GET_MATER";//action 后缀,创建调拨单,查询物料明细
     public static final String ACTION_CREATE_REQUISITION_COMMIT = "ACTION_CREATE_REQUISITION_COMMIT";//action 后缀,创建调拨单,提交
+    public static final String ACTION_CHECK_REQUISITION_GET_MATER_LIST = "ACTION_CHECK_REQUISITION_GET_MATER_LIST";//action 后缀,审核调拨单,查询物料列表
+    public static final String ACTION_CHECK_REQUISITION_GET_MATER_DETAIL = "ACTION_CHECK_REQUISITION_GET_MATER_DETAIL";//action 后缀,审核调拨单,查询物料明细
+    public static final String ACTION_CHECK_REQUISITION_SURE = "ACTION_CHECK_REQUISITION_SURE";//action 后缀,审核调拨单,确认过账
+    public static final String ACTION_CHECK_REQUISITION_CANCEL = "ACTION_CHECK_REQUISITION_CANCEL";//action 后缀,审核调拨单,终止过账
+
 
 
 

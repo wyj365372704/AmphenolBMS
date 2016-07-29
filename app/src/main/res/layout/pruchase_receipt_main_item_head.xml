@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="#909ba1"
-    android:padding="8dp">
+    android:background="@color/colorTableM"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <TextView
         android:id="@+id/purchase_receipt_main_item_cgdxc_tv"

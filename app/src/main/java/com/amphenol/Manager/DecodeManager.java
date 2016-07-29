@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -365,6 +366,134 @@ public class DecodeManager {
     }
 
     public static void decodeCreaetRequisitionCommit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeCheckRequisitionGetMaterList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Requisition requisition = new Requisition();
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            String requisitionNumber = params.get("requisition");
+            requisition.setNumber(requisitionNumber);
+            int state = jsonObject.optInt("state", Requisition.STATUS_NO_REQUISITION);
+            String founder = jsonObject.optString("founder");
+            String department = jsonObject.optString("department");
+            String date = jsonObject.optString("date");
+            requisition.setStatus(state);
+            requisition.setFounder(founder);
+            requisition.setDepartment(department);
+            requisition.setDate(date);
+            ArrayList<Requisition.RequisitionItem> requisitionItems = new ArrayList<>();
+            JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
+            if (materJsonArray != null) {
+
+                for (int i = 0; i < materJsonArray.length(); i++) {
+                    Requisition.RequisitionItem requisitionItem = new Requisition.RequisitionItem();
+                    JSONObject materObject = materJsonArray.optJSONObject(i);
+                    String requisition_line = materObject.optString("requisition_line");
+                    String materNumber = materObject.optString("mater");
+                    String branchPo = materObject.optString("branch");
+                    double quantity = materObject.optDouble("quantity");
+                    String unit = materObject.optString("unit");
+                    requisitionItem.setNumber(requisition_line.trim());
+                    requisitionItem.setQuantity(quantity);
+                    Mater mater = new Mater();
+                    mater.setNumber(materNumber.trim());
+                    mater.setUnit(unit.trim());
+                    Mater.Branch branch = new Mater.Branch();
+                    branch.setPo(branchPo.trim());
+                    branch.setMater(mater);
+                    requisitionItem.setBranch(branch);
+                    requisitionItems.add(requisitionItem);
+                }
+
+            }
+            requisition.setRequisitionItems(requisitionItems);
+            data.putSerializable("requisition", requisition);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeCheckRequisitionGetMater(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Requisition requisition = new Requisition();
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+            String requisitionNumber = params.get("requisition");
+            requisition.setNumber(requisitionNumber.trim());
+            String requisitionItemNumber = params.get("requisition_line");
+            String mate = params.get("mate");
+            String branch_po = params.get("branch");
+            double quantity = 0;
+            try {
+                quantity = Double.parseDouble(params.get("quantity"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String unit = params.get("unit");
+            String mater_desc = jsonObject.optString("mater_desc");
+            String mater_format = jsonObject.optString("mater_format");
+            String from_warehouse = jsonObject.optString("from_warehouse");
+            String from_shard = jsonObject.optString("form_shard");
+            String from_location = jsonObject.optString("form_location");
+            String target_shard = jsonObject.optString("target_shard");
+            String target_location = jsonObject.optString("target_location");
+            Requisition.RequisitionItem requisitionItem = new Requisition.RequisitionItem();
+            Mater mater = new Mater();
+            mater.setWarehouse(from_warehouse.trim());
+            mater.setShard(from_shard.trim());
+            mater.setLocation(from_location.trim());
+            mater.setNumber(mate.trim());
+            mater.setDesc(mater_desc.trim());
+            mater.setFormat(mater_format.trim());
+            mater.setUnit(unit.trim());
+            Mater.Branch branch = new Mater.Branch();
+            branch.setPo(branch_po.trim());
+            branch.setMater(mater);
+            requisitionItem.setBranch(branch);
+            requisitionItem.setShard(target_shard.trim());
+            requisitionItem.setLocation(target_location.trim());
+            requisitionItem.setQuantity(quantity);
+            requisitionItem.setActualQuantity(quantity);
+            requisitionItem.setNumber(requisitionItemNumber.trim());
+            requisitionItem.setRequisition(requisition);
+            data.putSerializable("requisitionItem", requisitionItem);
+            ArrayList<String> shardStrings = new ArrayList<>();
+            JSONArray shardJsonArray = jsonObject.optJSONArray("target_shard_list");
+            for (int i = 0; i < shardJsonArray.length(); i++) {
+                JSONObject shardJsonObject = shardJsonArray.optJSONObject(i);
+                String shard = shardJsonObject.optString("shard");
+                shardStrings.add(shard.trim());
+            }
+            data.putStringArrayList("target_shard_list", shardStrings);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeCheckRequisitionSure(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeCheckRequisitionCancel(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
         msg.what = messageWhat;

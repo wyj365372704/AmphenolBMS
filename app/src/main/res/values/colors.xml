@@ -5,9 +5,13 @@
     <!--<color name="colorAccent">#FF4081</color>-->
     <color name="colorAccent">#0063A7</color>
     <color name="colorDevideLine">#d8d8d8</color>
+    <!--table标题底色-->
+    <color name="colorTableM">#c00063A7</color>
     <!--偶数数table底色-->
-    <color name="colorTableE">#e3ecf1</color>
+    <color name="colorTableE_normal">#e3ecf1</color>
+    <color name="colorTableE_pressed">#a0e3ecf1</color>
     <!--奇数table底色-->
-    <color name="colorTableO">#ffffff</color>
+    <color name="colorTableO_normal">#ffffaf</color>
+    <color name="colorTableO_pressed">#a0ffffaf</color>
 
 </resources>
