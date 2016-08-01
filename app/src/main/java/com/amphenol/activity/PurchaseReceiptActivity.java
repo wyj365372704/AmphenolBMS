@@ -33,7 +33,7 @@ public class PurchaseReceiptActivity extends BaseActivity {
         mainFragmentCallBack = new PurchaseReceiptMainFragment.MainFragmentCallBack() {
             @Override
             public void gotoSecondFragment(Purchase.PurchaseItem purchaseItem) {
-                mPurchaseReceiptSecondFragment = new PurchaseReceiptSecondFragment(secondFragemntCallBack, purchaseItem);
+                mPurchaseReceiptSecondFragment = PurchaseReceiptSecondFragment.newInstance(secondFragemntCallBack, purchaseItem);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReceiptSecondFragment);
                 transaction.addToBackStack(null);
@@ -66,7 +66,7 @@ public class PurchaseReceiptActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPurchaseReceiptMainFragment = new PurchaseReceiptMainFragment(mainFragmentCallBack);
+        mPurchaseReceiptMainFragment = PurchaseReceiptMainFragment.newInstance(mainFragmentCallBack);
         getSupportFragmentManager().beginTransaction().replace(R.id.activity_purchase_receipt_fl, mPurchaseReceiptMainFragment).commitAllowingStateLoss();
     }
 }

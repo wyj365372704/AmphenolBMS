@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,6 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +74,23 @@ public class FastRequisitionMainFragment extends Fragment {
     private MainFragmentCallBack mainFragmentCallBack;
     private ActionSheet.ActionSheetListener mActionSheetListener;
 
-    public FastRequisitionMainFragment(MainFragmentCallBack mainFragmentCallBack) {
-        this.mainFragmentCallBack = mainFragmentCallBack;
+    public static FastRequisitionMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
+
+        Bundle args = new Bundle();
+        args.putSerializable("mainFragmentCallBack", mainFragmentCallBack);
+        FastRequisitionMainFragment fragment = new FastRequisitionMainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            mainFragmentCallBack = (MainFragmentCallBack) args.getSerializable("mainFragmentCallBack");
+        }
+
     }
 
     @Override
@@ -124,19 +141,19 @@ public class FastRequisitionMainFragment extends Fragment {
                 switch (v.getId()) {
                     case R.id.fragment_fast_requisition_main_mater_in_et:
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            handleScanMater(v,materEditText.getText().toString());
+                            handleScanMater(v, materEditText.getText().toString());
                             return true;
                         }
                         break;
                     case R.id.fragment_fast_requisition_main_from_shard_et:
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            handleScanFromLocation(v,fromLocationEditText.getText().toString());
+                            handleScanFromLocation(v, fromLocationEditText.getText().toString());
                             return true;
                         }
                         break;
                     case R.id.fragment_fast_requisition_main_target_shard_et:
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            handleScanTargetLocation(v,targetLocationEditText.getText().toString());
+                            handleScanTargetLocation(v, targetLocationEditText.getText().toString());
                             return true;
                         }
                         break;
@@ -225,7 +242,7 @@ public class FastRequisitionMainFragment extends Fragment {
 
             @Override
             public void onOtherButtonClick(ActionSheet actionSheet, int index) {
-                switch (index){
+                switch (index) {
                     case 0:
                         startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN_MATER);
                         break;
@@ -321,17 +338,17 @@ public class FastRequisitionMainFragment extends Fragment {
         };
     }
 
-    private void handleScanTargetLocation(TextView v,String code) {
+    private void handleScanTargetLocation(TextView v, String code) {
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
-        code = CommonTools.decodeScanString("L",code);
+        code = CommonTools.decodeScanString("L", code);
         targetLocationEditText.setText(code);
         targetLocationEditText.requestFocus();
     }
 
-    private void handleScanFromLocation(TextView v,String code) {
+    private void handleScanFromLocation(TextView v, String code) {
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
@@ -341,29 +358,29 @@ public class FastRequisitionMainFragment extends Fragment {
         targetLocationEditText.requestFocus();
     }
 
-    private void handleScanMater(TextView v,String code) {
+    private void handleScanMater(TextView v, String code) {
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
-        String mater = CommonTools.decodeScanString("M",code);
-        String branch =  CommonTools.decodeScanString("B", code);
+        String mater = CommonTools.decodeScanString("M", code);
+        String branch = CommonTools.decodeScanString("B", code);
         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
         if (state) {//当前按钮状态为“清除” ,扫码选中物料
-            int position  = 0;
-            for(Requisition.RequisitionItem requisitionItem:requisition.getRequisitionItems()){
-                if(TextUtils.equals(requisitionItem.getBranch().getPo(),branch) && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(),mater)){
-
-                    handleInquireMater(requisition.getRequisitionItems().get(position).getBranch().getMater().getWarehouse(), requisition.getRequisitionItems().get(position).getBranch().getMater().getShard(), requisition.getRequisitionItems().get(position).getBranch().getMater().getLocation(), requisition.getRequisitionItems().get(position).getBranch().getMater().getNumber(), requisition.getRequisitionItems().get(position).getBranch().getPo(), requisition.getRequisitionItems().get(position).getBranch().getQuantity(), requisition.getRequisitionItems().get(position).getBranch().getMater().getUnit());
+            int position = 0;
+            for (Requisition.RequisitionItem requisitionItem : requisition.getRequisitionItems()) {
+                if (TextUtils.equals(requisitionItem.getBranch().getPo(), branch) && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)) {
+                    requisitionItem.setChecked(true);
+                    firstRequisitionForMaterListAdapter.notifyItemChanged(position);
                     break;
                 }
                 position++;
             }
-            if(position == requisition.getRequisitionItems().size()){
-                ((BaseActivity)getActivity()).ShowToast("扫描的物料标签不在调拨单中");
+            if (position == requisition.getRequisitionItems().size()) {
+                ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
             }
-              materEditText.getText().clear();
-        }else{
+            materEditText.getText().clear();
+        } else {
             materEditText.setText(mater);
             fromLocationEditText.requestFocus();
         }
@@ -447,15 +464,15 @@ public class FastRequisitionMainFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_FOR_SCAN_MATER && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
-          handleScanMater(materEditText,code);
+            handleScanMater(materEditText, code);
         }
         if (requestCode == REQUEST_CODE_FOR_SCAN_FROM_LOCATION && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
-           handleScanFromLocation(fromLocationEditText,code);
+            handleScanFromLocation(fromLocationEditText, code);
         }
         if (requestCode == REQUEST_CODE_FOR_SCAN_TARGET_LOCATION && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
-           handleScanTargetLocation(targetLocationEditText,code);
+            handleScanTargetLocation(targetLocationEditText, code);
         }
     }
 
@@ -500,7 +517,7 @@ public class FastRequisitionMainFragment extends Fragment {
         }
     }
 
-    public interface MainFragmentCallBack {
+    public interface MainFragmentCallBack extends Serializable {
         void gotoSecondFragment(Requisition.RequisitionItem requisitionItem);
     }
 }

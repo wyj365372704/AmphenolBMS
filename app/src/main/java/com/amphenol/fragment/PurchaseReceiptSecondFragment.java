@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ import com.baoyz.actionsheet.ActionSheet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,10 +69,24 @@ public class PurchaseReceiptSecondFragment extends Fragment {
     private LoadingDialog mLoadingDialog;
     private MyHandler myHandler = new MyHandler();
 
+    public static PurchaseReceiptSecondFragment newInstance(SecondFragemntCallBack mSecondFragemntCallBack, Purchase.PurchaseItem mPurchaseItem) {
 
-    public PurchaseReceiptSecondFragment(SecondFragemntCallBack mSecondFragemntCallBack, Purchase.PurchaseItem mPurchaseItem) {
-        this.mSecondFragemntCallBack = mSecondFragemntCallBack;
-        this.mPurchaseItem = mPurchaseItem;
+        Bundle args = new Bundle();
+        args.putSerializable("mSecondFragemntCallBack",mSecondFragemntCallBack);
+        args.putSerializable("mPurchaseItem",mPurchaseItem);
+        PurchaseReceiptSecondFragment fragment = new PurchaseReceiptSecondFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if(args!=null){
+            mSecondFragemntCallBack = (SecondFragemntCallBack) args.getSerializable("mSecondFragemntCallBack");
+            mPurchaseItem = (Purchase.PurchaseItem) args.getSerializable("mPurchaseItem");
+        }
     }
 
     @Override
@@ -399,7 +415,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_RECEIPT_CONFIRM, getContext()), param, REQUEST_CODE_RECEIPT_CONFIRM, mRequestTaskListener);
     }
 
-    public interface SecondFragemntCallBack {
+    public interface SecondFragemntCallBack extends Serializable{
         /**
          * 通知物料收货被关闭
          *

@@ -1,9 +1,12 @@
 package com.amphenol.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,12 +22,14 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
+import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.CheckRequisitionAdapter;
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Requisition;
@@ -35,6 +40,7 @@ import com.amphenol.utils.PropertiesUtil;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +48,9 @@ import java.util.Map;
 public class CheckRequisitionMainFragment extends Fragment {
     private static final int REQUEST_CODE_GET_MATER_LIST = 0x10;
     private static final int REQUEST_CODE_GET_MATER = 0x11;
+    private static final int REQUEST_CODE_FOR_SCAN = 0x12;
     private View rootView = null;
+    private ImageView mScanImageView;
     private RecyclerView mRecyclerView;
     private TextView mRequisitionTextView, mStateTextView, mCreaterTextView, mDepartmentTextView, mCreateDateTextView;
     private Button mInquireButton;
@@ -57,8 +65,22 @@ public class CheckRequisitionMainFragment extends Fragment {
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private MainFragmentCallBack mainFragmentCallBack;
 
-    public CheckRequisitionMainFragment(MainFragmentCallBack mainFragmentCallBack) {
-        this.mainFragmentCallBack = mainFragmentCallBack;
+
+    public static CheckRequisitionMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
+        
+        Bundle args = new Bundle();
+        args.putSerializable("mainFragmentCallBack",mainFragmentCallBack);
+        CheckRequisitionMainFragment fragment = new CheckRequisitionMainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if(args!=null){
+            mainFragmentCallBack = (MainFragmentCallBack) args.getSerializable("mainFragmentCallBack");
+        }
     }
 
     @Override
@@ -84,6 +106,8 @@ public class CheckRequisitionMainFragment extends Fragment {
     }
 
     private void initViews() {
+        mScanImageView = (ImageView) rootView.findViewById(R.id.fragment_scan_iv);
+        mScanImageView.setOnClickListener(mOnClickListener);
         mRequisitionEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
         mRequisitionEditText.setOnEditorActionListener(mOnEditorActionListener);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_purchase_receipt_inquire_bt);
@@ -117,6 +141,9 @@ public class CheckRequisitionMainFragment extends Fragment {
                         } else {
                             handleScanCode(mRequisitionEditText.getText().toString().trim());
                         }
+                        break;
+                    case R.id.fragment_scan_iv:
+                        startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN);
                         break;
                 }
             }
@@ -269,19 +296,6 @@ public class CheckRequisitionMainFragment extends Fragment {
                 return;
             }
             mRequisitionEditText.setText("");
-
-            for (int i = 0; i < requisition.getRequisitionItems().size(); i++) {
-
-            }
-
-//            for (int i = 0; i < purchase.getPurchaseItems().size(); i++) {
-//                if (TextUtils.equals(purchase.getPurchaseItems().get(i).getMater().getNumber(), code)) {
-//                    handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(i).getNumber());
-//                    break;
-//                }else{
-//                    Toast.makeText(getContext(),"无效物料标签",Toast.LENGTH_SHORT).show();
-//                }
-//            }
         }
     }
 
@@ -295,8 +309,18 @@ public class CheckRequisitionMainFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_FOR_SCAN && resultCode == Activity.RESULT_OK) {
+            String code = data.getStringExtra("data").trim();
+            mRequisitionEditText.setText(code);
+            handleScanCode(mRequisitionEditText.getText().toString().trim());
+        }
 
-    public interface MainFragmentCallBack {
+    }
+
+    public interface MainFragmentCallBack extends Serializable{
         void gotoSecondFragment(Requisition.RequisitionItem requisitionItem, ArrayList<String> shardStrings);
     }
 

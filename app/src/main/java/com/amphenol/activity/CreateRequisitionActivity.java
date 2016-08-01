@@ -19,7 +19,7 @@ public class CreateRequisitionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCreateRequisitionMainFragment = new CreateRequisitionMainFragment(mainFragmentCallBack);
+        mCreateRequisitionMainFragment =CreateRequisitionMainFragment.newInstance(mainFragmentCallBack);
         getSupportFragmentManager().beginTransaction().replace(R.id.activity_create_requisition_fl, mCreateRequisitionMainFragment).commitAllowingStateLoss();
     }
 
@@ -38,7 +38,7 @@ public class CreateRequisitionActivity extends BaseActivity {
         mainFragmentCallBack = new CreateRequisitionMainFragment.MainFragmentCallBack() {
             @Override
             public void gotoSecondFragment(Requisition.RequisitionItem requisitionItem) {
-                mCreateRequisitionSecondFragment = new CreateRequisitionSecondFragment(requisitionItem);
+                mCreateRequisitionSecondFragment = CreateRequisitionSecondFragment.newInstance(requisitionItem);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_create_requisition_fl, mCreateRequisitionSecondFragment);
                 transaction.addToBackStack(null);

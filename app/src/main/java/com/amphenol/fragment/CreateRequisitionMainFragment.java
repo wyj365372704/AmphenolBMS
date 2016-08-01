@@ -1,9 +1,12 @@
 package com.amphenol.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +34,7 @@ import android.widget.Toast;
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
+import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.FirstRequisitionForMaterListAdapter;
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Purchase;
@@ -43,6 +48,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,9 +58,11 @@ import javax.crypto.spec.PSource;
 
 public class CreateRequisitionMainFragment extends Fragment {
     private static final int REQUEST_CODE_COMMIT = 0X13;
+    private static final int REQUEST_CODE_FOR_SCAN = 0x14;
     private View rootView = null;
     private RecyclerView mRecyclerView;
     private Spinner mSpinner;
+    private ImageView mScanImageView;
     private TextView warehouseTextView;
     private Button mInquireButton, mCreateButton;
     private EditText mLocationEditText;
@@ -74,8 +82,22 @@ public class CreateRequisitionMainFragment extends Fragment {
     private final int REQUEST_CODE_GET_MATER = 0x12;
     private MainFragmentCallBack mainFragmentCallBack;
 
-    public CreateRequisitionMainFragment(MainFragmentCallBack mainFragmentCallBack) {
-        this.mainFragmentCallBack = mainFragmentCallBack;
+    public static CreateRequisitionMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
+
+        Bundle args = new Bundle();
+        args.putSerializable("mainFragmentCallBack",mainFragmentCallBack);
+        CreateRequisitionMainFragment fragment = new CreateRequisitionMainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if(args!=null){
+            mainFragmentCallBack = (MainFragmentCallBack) args.getSerializable("mainFragmentCallBack");
+        }
     }
 
     @Override
@@ -104,6 +126,8 @@ public class CreateRequisitionMainFragment extends Fragment {
     }
 
     private void initViews() {
+        mScanImageView = (ImageView) rootView.findViewById(R.id.fragment_scan_iv);
+        mScanImageView.setOnClickListener(mOnClickListener);
         mCreateButton = (Button) rootView.findViewById(R.id.fragment_create_requisition_create_bt);
         mCreateButton.setOnClickListener(mOnClickListener);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_purchase_receipt_inquire_bt);
@@ -153,6 +177,9 @@ public class CreateRequisitionMainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
+                    case R.id.fragment_scan_iv:
+                        startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN);
+                        break;
                     case R.id.fragment_purchase_receipt_inquire_bt:
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
                         if (state) {//当前按钮状态为“清除”
@@ -185,9 +212,9 @@ public class CreateRequisitionMainFragment extends Fragment {
                                 String branch = requisitionItem.getBranch().getPo();
 
                                 JSONObject jsonObject = new JSONObject();
-                                jsonObject.put("from_warehouse",from_warehouse);
-                                jsonObject.put("from_shard",from_shard);
-                                jsonObject.put("from_location",from_location);
+                                jsonObject.put("from_warehouse", from_warehouse);
+                                jsonObject.put("from_shard", from_shard);
+                                jsonObject.put("from_location", from_location);
                                 jsonObject.put("target_warehouse", target_warehouse);
                                 jsonObject.put("target_shard", target_shard);
                                 jsonObject.put("target_location", target_location);
@@ -376,33 +403,30 @@ public class CreateRequisitionMainFragment extends Fragment {
             param.put("username", SessionManager.getUserName(getContext()));
             param.put("env", SessionManager.getEnv(getContext()));
             param.put("warehouse", SessionManager.getWarehouse(getContext()));
-            if(mStringArrayAdapter.getCount()<1){
-                ((BaseActivity)getActivity()).ShowToast("库位列表为空,不可创建调拨单");
-                return ;
+            if (mStringArrayAdapter.getCount() < 1) {
+                ((BaseActivity) getActivity()).ShowToast("库位列表为空,不可创建调拨单");
+                return;
             }
             param.put("shard", mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition()));
             param.put("location", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
         } else {//当前物料列表不为空,扫描定位物料项
-            code = CommonTools.decodeScanString("B", code);
-            if (TextUtils.isEmpty(code)) {
-                Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
+            String mater = CommonTools.decodeScanString("M", code);
+            String branch = CommonTools.decodeScanString("B", code);
+            if (TextUtils.isEmpty(mater)) {
+                Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;
             }
             mLocationEditText.setText("");
 
             for (int i = 0; i < requisition.getRequisitionItems().size(); i++) {
-
+                if (TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getMater().getNumber(), mater) && TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getPo(), branch)) {
+                    requisition.getRequisitionItems().get(i).setChecked(true);
+                    mFirstRequisitionForMaterListAdapter.notifyItemChanged(i);
+                    return;
+                }
             }
-
-//            for (int i = 0; i < purchase.getPurchaseItems().size(); i++) {
-//                if (TextUtils.equals(purchase.getPurchaseItems().get(i).getMater().getNumber(), code)) {
-//                    handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(i).getNumber());
-//                    break;
-//                }else{
-//                    Toast.makeText(getContext(),"无效物料标签",Toast.LENGTH_SHORT).show();
-//                }
-//            }
+            Toast.makeText(getContext(), "该物料不在列表中", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -426,7 +450,18 @@ public class CreateRequisitionMainFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public interface MainFragmentCallBack {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_FOR_SCAN && resultCode == Activity.RESULT_OK) {
+            String code = data.getStringExtra("data").trim();
+            mLocationEditText.setText(code);
+            handleScanCode(mLocationEditText.getText().toString().trim());
+        }
+
+    }
+
+    public interface MainFragmentCallBack extends Serializable{
         void gotoSecondFragment(Requisition.RequisitionItem requisitionItem);
     }
 

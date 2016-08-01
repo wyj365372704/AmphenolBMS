@@ -21,7 +21,7 @@ public class CheckRequisitionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCheckRequisitionMainFragment = new CheckRequisitionMainFragment(mainFragmentCallBack);
+        mCheckRequisitionMainFragment = CheckRequisitionMainFragment.newInstance(mainFragmentCallBack);
         getSupportFragmentManager().beginTransaction().replace(R.id.activity_check_requisition_fl, mCheckRequisitionMainFragment).commitAllowingStateLoss();
     }
 
@@ -40,7 +40,7 @@ public class CheckRequisitionActivity extends BaseActivity {
         mainFragmentCallBack = new CheckRequisitionMainFragment.MainFragmentCallBack() {
             @Override
             public void gotoSecondFragment(Requisition.RequisitionItem requisitionItem , ArrayList<String> shardStrings) {
-                mCheckRequisitionSecondFragment = new CheckRequisitionSecondFragment(requisitionItem,shardStrings,mSecondFragmentCallBack);
+                mCheckRequisitionSecondFragment = CheckRequisitionSecondFragment.newInstance(requisitionItem,shardStrings,mSecondFragmentCallBack);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_check_requisition_fl, mCheckRequisitionSecondFragment);
                 transaction.addToBackStack(null);

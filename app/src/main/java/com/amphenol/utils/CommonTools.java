@@ -27,15 +27,17 @@ public class CommonTools {
         if(TextUtils.isEmpty(code))
             return "";
         int startIndex = code.indexOf("*" + prefix);
-        if (startIndex == -1) {//不含prefix的字符串，直接使用code进行查询
-
+        if (startIndex == -1) {//不含prefix的字符串
+          if(code.contains("*")){
+              return "";
+          }
         } else {
             int endIndex = code.indexOf("*", startIndex + 1);
             endIndex = endIndex == -1 ? code.length() : endIndex;
             startIndex += 2;
             if (startIndex == endIndex) {
 //                Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
-                return null;
+                return "";
             }
             code = code.substring(startIndex, endIndex);
         }

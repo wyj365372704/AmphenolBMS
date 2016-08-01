@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -163,8 +164,10 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.create_requisition;
             case MenuItem.MENU_CODE_FAST_REQUISITION:
                 return R.mipmap.fast_requisition;
-            case MenuItem.MENU_CODE_SET_UP_SYSTEM:
+//            case MenuItem.MENU_CODE_SET_UP_SYSTEM:
+
             case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
+                return R.mipmap.menu_icon_warehouse;
         }
         return R.mipmap.ic_launcher;
     }
@@ -219,9 +222,16 @@ public class MenuActivity extends BaseActivity {
                     break;
                 case REQUEST_CODE_QUERY_WAREHOUSE:
                     if (bundle.getInt("code") == 1) {
-                        String warehouse = bundle.getString("warehouse");
+                        String defaultWarehouse = bundle.getString("warehouse");
+                        String localWarehouse = SessionManager.getWarehouse(getApplicationContext());
                         List<String> warehouseStringlist = bundle.getStringArrayList("warehouse_list");
-                        SessionManager.setWarehouse(warehouse, getApplicationContext());
+                        if (!TextUtils.isEmpty(localWarehouse) && warehouseStringlist.contains(localWarehouse)) {//本地存储的warehouse不为空,且包含在服务器warehouse列表中 ,维持原样不变
+
+                        } else if (warehouseStringlist.size() > 0) {
+                            SessionManager.setWarehouse(defaultWarehouse, getApplicationContext());
+                        } else {
+                            SessionManager.setWarehouse("", getApplicationContext());
+                        }
                         SessionManager.setWarehouse_list(warehouseStringlist, getApplicationContext());
                         menuAdapter.notifyDataSetChanged();
                     } else {

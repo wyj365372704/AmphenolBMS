@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +28,6 @@ import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Mater;
-import com.amphenol.entity.Purchase;
 import com.amphenol.entity.Requisition;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -38,6 +37,8 @@ import com.amphenol.utils.PropertiesUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class CheckRequisitionSecondFragment extends Fragment {
     private Button submitButton, cancelButton;
     private Requisition.RequisitionItem mRequisitionItem;
     private ArrayAdapter<String> mStringArrayAdapter;
-    private List<String> shardStrings;
+    private ArrayList<String> shardStrings;
     private View.OnClickListener mOnClickListener;
     private TextWatcher mTextWatcher;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
@@ -64,10 +65,27 @@ public class CheckRequisitionSecondFragment extends Fragment {
     private SecondFragmentCallBack mSecondFragmentCallBack;
     private View dialogView;//弹窗dialog视图
 
-    public CheckRequisitionSecondFragment(Requisition.RequisitionItem mRequisitionItem, List<String> shards,SecondFragmentCallBack mSecondFragemntCallBack) {
-        this.mRequisitionItem = mRequisitionItem;
-        this.shardStrings = shards;
-        this.mSecondFragmentCallBack = mSecondFragemntCallBack;
+    public static CheckRequisitionSecondFragment newInstance(Requisition.RequisitionItem mRequisitionItem, ArrayList<String> shards, SecondFragmentCallBack mSecondFragmentCallBack) {
+
+        Bundle args = new Bundle();
+        args.putSerializable("mRequisitionItem",mRequisitionItem);
+        args.putSerializable("shards",shards);
+        args.putSerializable("mSecondFragmentCallBack",mSecondFragmentCallBack);
+
+        CheckRequisitionSecondFragment fragment = new CheckRequisitionSecondFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if(args!=null){
+            mRequisitionItem = (Requisition.RequisitionItem) args.getSerializable("mRequisitionItem");
+            shardStrings = (ArrayList<String>) args.getSerializable("shards");
+            mSecondFragmentCallBack = (SecondFragmentCallBack) args.getSerializable("mSecondFragmentCallBack");
+        }
     }
 
     @Override
@@ -313,7 +331,7 @@ public class CheckRequisitionSecondFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public interface SecondFragmentCallBack {
+    public interface SecondFragmentCallBack extends Serializable{
 
         /**
          *

@@ -1,6 +1,7 @@
 package com.amphenol.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,8 +22,23 @@ public class FastRequisitionSecondFragment extends Fragment {
     private TextView materNumberTextView, materDescTextView, materFormatTextView, branchTextView, quantityTextView, unitTextView, currentShardTextView, currentLocationTextView;
     private Requisition.RequisitionItem mRequisitionItem;
 
-    public FastRequisitionSecondFragment(Requisition.RequisitionItem mRequisitionItem) {
-        this.mRequisitionItem = mRequisitionItem;
+    public static FastRequisitionSecondFragment newInstance(Requisition.RequisitionItem mRequisitionItem) {
+
+        Bundle args = new Bundle();
+        args.putSerializable("mRequisitionItem",mRequisitionItem);
+        FastRequisitionSecondFragment fragment = new FastRequisitionSecondFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if(args!=null){
+            mRequisitionItem = (Requisition.RequisitionItem) args.getSerializable("mRequisitionItem");
+        }
+
     }
 
     @Override

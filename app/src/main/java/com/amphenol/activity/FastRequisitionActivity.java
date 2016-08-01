@@ -18,7 +18,7 @@ public class FastRequisitionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFastRequisitionMainFragment = new FastRequisitionMainFragment(mainFragmentCallBack);
+        mFastRequisitionMainFragment = FastRequisitionMainFragment.newInstance(mainFragmentCallBack);
         getSupportFragmentManager().beginTransaction().replace(R.id.activity_fast_requisition_fl, mFastRequisitionMainFragment).commitAllowingStateLoss();
 
     }
@@ -38,7 +38,7 @@ public class FastRequisitionActivity extends BaseActivity {
         mainFragmentCallBack = new FastRequisitionMainFragment.MainFragmentCallBack() {
             @Override
             public void gotoSecondFragment(Requisition.RequisitionItem requisitionItem) {
-                mFastRequisitionSecondFragment = new FastRequisitionSecondFragment(requisitionItem);
+                mFastRequisitionSecondFragment = FastRequisitionSecondFragment.newInstance(requisitionItem);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_fast_requisition_fl, mFastRequisitionSecondFragment);
                 transaction.addToBackStack(null);

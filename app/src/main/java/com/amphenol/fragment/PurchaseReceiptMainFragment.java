@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,6 +42,7 @@ import com.amphenol.utils.PropertiesUtil;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,8 +67,23 @@ public class PurchaseReceiptMainFragment extends Fragment {
     private Purchase purchase = new Purchase();
     private MyHandler myHandler = new MyHandler();
 
-    public PurchaseReceiptMainFragment(MainFragmentCallBack mainFragmentCallBack) {
-        this.mainFragmentCallBack = mainFragmentCallBack;
+    public static PurchaseReceiptMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
+
+        Bundle args = new Bundle();
+        args.putSerializable("mainFragmentCallBack", mainFragmentCallBack);
+        PurchaseReceiptMainFragment fragment = new PurchaseReceiptMainFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            mainFragmentCallBack = (MainFragmentCallBack) args.getSerializable("mainFragmentCallBack");
+        }
+
     }
 
     @Override
@@ -233,8 +250,8 @@ public class PurchaseReceiptMainFragment extends Fragment {
             return;
         if (TextUtils.isEmpty(purchase.getNumber())) {//当前收货单为空，扫码查询收货单
             code = CommonTools.decodeScanString("P", code);
-            if (TextUtils.isEmpty(code)){
-                Toast.makeText(getContext(),"无效查询",Toast.LENGTH_SHORT).show();
+            if (TextUtils.isEmpty(code)) {
+                Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
                 return;
             }
             mCodeEditText.setText(code);
@@ -244,9 +261,9 @@ public class PurchaseReceiptMainFragment extends Fragment {
             param.put("delive_code", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT, getContext()), param, REQUEST_CODE_QUERY_RECEIPT, mRequestTaskListener);
         } else {//当前收货单不为空，扫码查询物料
-            code = CommonTools.decodeScanString("M",code);
-            if (TextUtils.isEmpty(code)){
-                Toast.makeText(getContext(),"无效查询",Toast.LENGTH_SHORT).show();
+            code = CommonTools.decodeScanString("M", code);
+            if (TextUtils.isEmpty(code)) {
+                Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;
             }
             mCodeEditText.setText("");
@@ -254,18 +271,17 @@ public class PurchaseReceiptMainFragment extends Fragment {
             for (int i = 0; i < purchase.getPurchaseItems().size(); i++) {
                 if (TextUtils.equals(purchase.getPurchaseItems().get(i).getMater().getNumber(), code)) {
                     handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(i).getNumber());
-                    break;
-                }else{
-                    Toast.makeText(getContext(),"无效物料标签",Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
+            Toast.makeText(getContext(), "该物料不在列表中", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
      * 查询物料详细信息
      *
-     * @param purchaseNumber 送货单号码
+     * @param purchaseNumber     送货单号码
      * @param purchaseItemNumber 送货单行号
      */
     private void handleInquireMater(final String purchaseNumber, final String purchaseItemNumber) {
@@ -311,6 +327,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
 
     /**
      * 移除了一个物料，刷新list
+     *
      * @param purchaseItemNumber 送货单行号
      */
     public void refreshShow(String purchaseItemNumber) {
@@ -327,7 +344,6 @@ public class PurchaseReceiptMainFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("wyj", "onactivity result and the requecode is " + requestCode);
         if (requestCode == REQUEST_CODE_FOR_SCAN && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
             mCodeEditText.setText(code);
@@ -335,7 +351,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
         }
     }
 
-    public interface MainFragmentCallBack {
+    public interface MainFragmentCallBack extends Serializable {
         void gotoSecondFragment(Purchase.PurchaseItem purchaseItem);
     }
 

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -51,8 +52,22 @@ public class CreateRequisitionSecondFragment extends Fragment {
     private TextView materNumberTextView, materDescTextView, materFormatTextView, branchTextView, quantityTextView, unitTextView, currentShardTextView, currentLocationTextView, targetShardTextView, targetLocationTextView;
     private Requisition.RequisitionItem mRequisitionItem;
 
-    public CreateRequisitionSecondFragment(Requisition.RequisitionItem mRequisitionItem) {
-        this.mRequisitionItem = mRequisitionItem;
+    public static CreateRequisitionSecondFragment newInstance(Requisition.RequisitionItem mRequisitionItem) {
+
+        Bundle args = new Bundle();
+        args.putSerializable("mRequisitionItem",mRequisitionItem);
+        CreateRequisitionSecondFragment fragment = new CreateRequisitionSecondFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if(args!=null){
+            mRequisitionItem = (Requisition.RequisitionItem) args.getSerializable("mRequisitionItem");
+        }
     }
 
     @Override
