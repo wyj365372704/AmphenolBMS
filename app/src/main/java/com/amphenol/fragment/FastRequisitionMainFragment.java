@@ -221,7 +221,7 @@ public class FastRequisitionMainFragment extends Fragment {
                             e.printStackTrace();
                         }
                         materListString = materListJsonObject.toString();
-                        handlerCreateRequsition(materListString);
+                        handlerFastRequisition(materListString);
                         break;
                     case R.id.toolbar_menu:
                         ActionSheet.createBuilder(getContext(), getFragmentManager())
@@ -366,17 +366,18 @@ public class FastRequisitionMainFragment extends Fragment {
         String branch = CommonTools.decodeScanString("B", code);
         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
         if (state) {//当前按钮状态为“清除” ,扫码选中物料
-            int position = 0;
+            int count  = 0;
             for (Requisition.RequisitionItem requisitionItem : requisition.getRequisitionItems()) {
                 if (TextUtils.equals(requisitionItem.getBranch().getPo(), branch) && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)) {
                     requisitionItem.setChecked(true);
-                    firstRequisitionForMaterListAdapter.notifyItemChanged(position);
-                    break;
+                    count++;
                 }
-                position++;
             }
-            if (position == requisition.getRequisitionItems().size()) {
+            if (count == 0) {
                 ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
+            }else{
+                firstRequisitionForMaterListAdapter.notifyDataSetChanged();
+                ((BaseActivity)getActivity()).ShowToast("扫描选中了"+count+"个物料");
             }
             materEditText.getText().clear();
         } else {
@@ -448,14 +449,14 @@ public class FastRequisitionMainFragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER, getContext()), param, REQUEST_CODE_GET_MATER, mRequestTaskListener);
     }
 
-    private void handlerCreateRequsition(String materListString) {
+    private void handlerFastRequisition(String materListString) {
         if (!FastRequisitionMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("mater_list", materListString);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_COMMIT, getContext()), param, REQUEST_CODE_COMMIT, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_FAST_REQUISITION_COMMIT, getContext()), param, REQUEST_CODE_COMMIT, mRequestTaskListener);
     }
 
     @Override
@@ -493,13 +494,13 @@ public class FastRequisitionMainFragment extends Fragment {
                     break;
                 case REQUEST_CODE_COMMIT:
                     if (bundle.getInt("code") == 1) {
-                        ((BaseActivity) getActivity()).ShowToast("调拨单创建成功");
+                        ((BaseActivity) getActivity()).ShowToast("调拨成功");
                         requisition = new Requisition();
                         refreshShow();
                     } else if (bundle.getInt("code") == 6) {
-                        ((BaseActivity) getActivity()).ShowToast("调拨单创建失败:到库位不存在");
+                        ((BaseActivity) getActivity()).ShowToast("调拨失败:到库位不存在");
                     } else {
-                        ((BaseActivity) getActivity()).ShowToast("调拨单创建失败");
+                        ((BaseActivity) getActivity()).ShowToast("调拨失败");
                     }
                     break;
                 case REQUEST_CODE_GET_MATER:

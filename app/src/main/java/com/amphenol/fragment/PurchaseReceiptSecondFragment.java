@@ -181,14 +181,14 @@ public class PurchaseReceiptSecondFragment extends Fragment {
             public void onOtherButtonClick(ActionSheet actionSheet, int index) {
                 switch (index) {
                     case 0://确认收货
-//                        if (TextUtils.isEmpty(mShardTextView.getText().toString())) {
-//                            Toast.makeText(getContext(), "收货子库无效", Toast.LENGTH_SHORT).show();
-//                            return;
-//                        }
-//                        if (TextUtils.isEmpty(mLocationEditText.getText().toString())) {
-//                            Toast.makeText(getContext(), "收货库位无效", Toast.LENGTH_SHORT).show();
-//                            return;
-//                        }
+                        if (TextUtils.isEmpty(mShardTextView.getText().toString())) {
+                            Toast.makeText(getContext(), "收货子库无效", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (TextUtils.isEmpty(mLocationEditText.getText().toString())) {
+                            Toast.makeText(getContext(), "收货库位无效", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         final double singleBefore = mPurchaseItem.getMater().getSingle();
                         double singleAfter = 0;
                         double actualQuantity = 0;
@@ -247,7 +247,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
-                                handlerSureMater(mPurchaseItem.getPurchase().getNumber(), mPurchaseItem.getNumber(), finalSingleAfter, finalActualQuantity, mPurchaseItem.getMater().getLocation(), branchListJsonString, update);
+                                handlerSureMater(mPurchaseItem.getPurchase().getNumber(), mPurchaseItem.getNumber(), finalSingleAfter, finalActualQuantity,mLocationEditText.getText().toString(), branchListJsonString, update);
                             }
                         });
                         builder2.create().show();

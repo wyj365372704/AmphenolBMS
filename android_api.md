@@ -226,7 +226,7 @@
 
 
 
-##创建调拨单-查询物料列表
+##创建调拨单/快速调拨 - 查询物料列表
 	请求方式：get
 	参数：
 		warehouse	仓库
@@ -250,7 +250,7 @@
 	code 
 		5 没有结果集
 
-##创建调拨单-查询物料明细
+##创建调拨单/快速调拨 - 查询物料明细
 	请求方式：get
 	参数：
 		warehouse 仓库
@@ -267,7 +267,7 @@
 	target_shard:String	目标子库
 	target_location:String	目标库位
 	
-##创建调拨单-提交
+##创建调拨单 - 提交
 	请求方式：get
 	参数：
 		mater_list 调拨物料批次集合的json字符串，服务器进行json解析，说明如下
@@ -285,9 +285,30 @@
 	action=create_requisition_commit
 		
 返回
+	default
+
+##快速调拨 - 提交
+	请求方式：get
+	参数：
+		mater_list 调拨物料批次集合的json字符串，服务器进行json解析，说明如下
+			mater_list：List<Map<String,Object>> 调拨物料列表，按此生成json字符串
+				Map<String,Object>:调拨物料描述
+					from_warehouse:String 来源仓库
+					from_shard:String 来源子库
+					from_location:String 来源库位
+					target_warehouse:String 目标仓库
+					target_shard:String 目标子库
+					target_location:String 目标库位
+					mater:String 物料编号
+					branch:String 批次号
+					quantity:double 调拨数量，调拨数量不允许大于该物料批次的库存数量
+	action=fast_requisition_commit
+		
+返回
 	
 	code 
-		6 目标库位不存在
+		5 目标库位不存在
+
 
 ##审核调拨单
 
@@ -354,7 +375,7 @@
 返回
 
 	code = 1 成功
-	code = 2 目标库位不存在
+	code = 5 目标子库和库位不匹配
 
 ##审核调拨单-终止过账
 

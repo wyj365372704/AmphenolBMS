@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,6 +80,7 @@ public class CheckRequisitionSecondFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d("wyj","second onCreate");
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
@@ -90,6 +92,7 @@ public class CheckRequisitionSecondFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("wyj","second onCreateView");
         if (rootView != null)
             return rootView;
         rootView = inflater.inflate(R.layout.fragment_check_requisition_second, container, false);
@@ -310,11 +313,12 @@ public class CheckRequisitionSecondFragment extends Fragment {
         actualQuantityEditText.setText(mRequisitionItem.getActualQuantity() + "");
         targetLocationEditText.setText(mRequisitionItem.getLocation());
 
-        if (shardStrings != null) {
+        if (shardStrings != null && shardStrings.contains(mRequisitionItem.getShard())) {
             mStringArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, shardStrings);
             //第三步：为适配器设置下拉列表下拉时的菜单样式。
             mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             targetShardSpinner.setAdapter(mStringArrayAdapter);
+            targetShardSpinner.setSelection(mStringArrayAdapter.getPosition(mRequisitionItem.getShard()));
         }
         targetLocationEditText.setText(mRequisitionItem.getLocation());
     }
@@ -357,7 +361,6 @@ public class CheckRequisitionSecondFragment extends Fragment {
                         } else {
                             Toast.makeText(getContext(), "终止过账失败", Toast.LENGTH_SHORT).show();
                         }
-
                     }
                     break;
                 case REQUEST_CODE_SUBMIT:
@@ -365,7 +368,9 @@ public class CheckRequisitionSecondFragment extends Fragment {
                         if (bundle.getInt("code") == 1) {
                             Toast.makeText(getContext(), "过账成功", Toast.LENGTH_SHORT).show();
                             mSecondFragmentCallBack.itemBeenSured(mRequisitionItem.getNumber());
-                        } else {
+                        } else if(bundle.getInt("code") == 5){
+                            Toast.makeText(getContext(), "过账失败,目标子库和库位不匹配", Toast.LENGTH_SHORT).show();
+                        }else {
                             Toast.makeText(getContext(), "过账失败", Toast.LENGTH_SHORT).show();
                         }
                     }

@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.CheckRequisitionAdapter;
 import com.amphenol.amphenol.R;
+import com.amphenol.entity.Mater;
 import com.amphenol.entity.Requisition;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -77,6 +79,7 @@ public class CheckRequisitionMainFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d("wyj","main onCreate");
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
@@ -86,6 +89,7 @@ public class CheckRequisitionMainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("wyj","main onCreateView");
         if (rootView != null)
             return rootView;
         rootView = inflater.inflate(R.layout.fragment_check_requisition_main, container, false);
@@ -98,6 +102,12 @@ public class CheckRequisitionMainFragment extends Fragment {
         initViews();
 //        refreshShow();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mRequisitionEditText.requestFocus();
     }
 
     private void initData() {
@@ -238,7 +248,7 @@ public class CheckRequisitionMainFragment extends Fragment {
     private void refreshShow() {
         mCheckRequisitionAdapter.setDate(requisition.getRequisitionItems());
         mCheckRequisitionAdapter.notifyDataSetChanged();
-
+        mRequisitionEditText.requestFocus();
         mRequisitionTextView.setText(requisition.getNumber());
         mStateTextView.setText(requisition.getStatus() == Requisition.STATUS_NO_REQUISITION ? "已创建" : requisition.getStatus() == Requisition.STATUS_HAS_REQUISITION ? "已完成" : requisition.getStatus() == Requisition.STATUS_CANCELED ? "已取消" : requisition.getStatus() == Requisition.STATUS_CLOSED ? "已关闭" : "");
         mCreaterTextView.setText(requisition.getFounder());
@@ -249,7 +259,6 @@ public class CheckRequisitionMainFragment extends Fragment {
             mInquireButton.setText("查询");
             mRequisitionEditText.getText().clear();
             mRequisitionEditText.setHint("输入调拨单号");
-            mRequisitionEditText.requestFocus();
         } else {
             mInquireButton.setText("清除");
             mInquireButton.setTag(true);
@@ -281,21 +290,35 @@ public class CheckRequisitionMainFragment extends Fragment {
             return;
         if (!CheckRequisitionMainFragment.this.isVisible())
             return;
-        if (requisition.getRequisitionItems().size() == 0) {//当前物料列表为空,查询物料列表
-            code = CommonTools.decodeScanString("L", code);
+        if (TextUtils.isEmpty(requisition.getNumber())) {//查询物料列表
+            code = CommonTools.decodeScanString("F", code);
             mRequisitionEditText.setText(code);
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
             param.put("env", SessionManager.getEnv(getContext()));
             param.put("requisition", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CHECK_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
-        } else {//当前物料列表不为空,扫描定位物料项
-            code = CommonTools.decodeScanString("B", code);
-            if (TextUtils.isEmpty(code)) {
-                Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
+        } else {//扫描定位物料项
+            mRequisitionEditText.setText("");
+            String mater = CommonTools.decodeScanString("M", code);
+            String branch = CommonTools.decodeScanString("B", code);
+            if (TextUtils.isEmpty(mater)) {
+                Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;
             }
-            mRequisitionEditText.setText("");
+
+            int position = 0;
+            for (Requisition.RequisitionItem requisitionItem : requisition.getRequisitionItems()) {
+                if (TextUtils.equals(requisitionItem.getBranch().getPo(), branch) && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)) {
+                    handleInquireMater(requisition.getNumber(), requisition.getRequisitionItems().get(position).getNumber(), requisition.getRequisitionItems().get(position).getBranch().getMater().getNumber(), requisition.getRequisitionItems().get(position).getBranch().getPo(), requisition.getRequisitionItems().get(position).getQuantity(), requisition.getRequisitionItems().get(position).getBranch().getMater().getUnit());
+                    mCheckRequisitionAdapter.notifyItemChanged(position);
+                    break;
+                }
+                position++;
+            }
+            if (position == requisition.getRequisitionItems().size()) {
+                ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
+            }
         }
     }
 

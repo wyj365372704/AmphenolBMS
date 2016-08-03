@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -37,7 +36,6 @@ import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.FirstRequisitionForMaterListAdapter;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Purchase;
 import com.amphenol.entity.Requisition;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -54,10 +52,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.crypto.spec.PSource;
-
 public class CreateRequisitionMainFragment extends Fragment {
-    private static final int REQUEST_CODE_COMMIT = 0X13;
+    private static final int REQUEST_CODE_CREATE_REQUISITION = 0X13;
     private static final int REQUEST_CODE_FOR_SCAN = 0x14;
     private View rootView = null;
     private RecyclerView mRecyclerView;
@@ -227,7 +223,7 @@ public class CreateRequisitionMainFragment extends Fragment {
                             e.printStackTrace();
                         }
                         materListString = materListJsonObject.toString();
-                        handlerCreateRequsition(materListString);
+                        handlerCreateRequisition(materListString);
                         break;
                 }
             }
@@ -277,7 +273,7 @@ public class CreateRequisitionMainFragment extends Fragment {
                         case REQUEST_CODE_GET_MATER:
                             DecodeManager.decodeCreaetRequisitionGetMater(jsonObject, requestCode, myHandler);
                             break;
-                        case REQUEST_CODE_COMMIT:
+                        case REQUEST_CODE_CREATE_REQUISITION:
                             DecodeManager.decodeCreaetRequisitionCommit(jsonObject, requestCode, myHandler);
                             break;
                     }
@@ -417,26 +413,30 @@ public class CreateRequisitionMainFragment extends Fragment {
                 return;
             }
             mLocationEditText.setText("");
-
+            int count  = 0;
             for (int i = 0; i < requisition.getRequisitionItems().size(); i++) {
                 if (TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getMater().getNumber(), mater) && TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getPo(), branch)) {
                     requisition.getRequisitionItems().get(i).setChecked(true);
-                    mFirstRequisitionForMaterListAdapter.notifyItemChanged(i);
-                    return;
+                    count++;
                 }
             }
-            Toast.makeText(getContext(), "该物料不在列表中", Toast.LENGTH_SHORT).show();
+            if (count == 0) {
+                ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
+            }else{
+                mFirstRequisitionForMaterListAdapter.notifyDataSetChanged();
+                ((BaseActivity)getActivity()).ShowToast("扫描选中了"+count+"个物料");
+            }
         }
     }
 
-    private void handlerCreateRequsition(String materListString) {
+    private void handlerCreateRequisition(String materListString) {
         if (!CreateRequisitionMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("mater_list", materListString);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_COMMIT, getContext()), param, REQUEST_CODE_COMMIT, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_COMMIT, getContext()), param, REQUEST_CODE_CREATE_REQUISITION, mRequestTaskListener);
     }
 
     @Override
@@ -498,7 +498,7 @@ public class CreateRequisitionMainFragment extends Fragment {
                         ((BaseActivity) getActivity()).ShowToast("获取物料明细失败");
                     }
                     break;
-                case REQUEST_CODE_COMMIT:
+                case REQUEST_CODE_CREATE_REQUISITION:
                     if (bundle.getInt("code") == 1) {
                         ((BaseActivity) getActivity()).ShowToast("调拨单创建成功");
                         requisition = new Requisition();

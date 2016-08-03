@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -38,6 +39,7 @@ public class MenuActivity extends BaseActivity {
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private MyHandler myHandler = new MyHandler();
     private Toolbar mToolbar;
+    private long exitTime = 0;
 
     @Override
     public void setContentView() {
@@ -148,6 +150,20 @@ public class MenuActivity extends BaseActivity {
         InquireMenu();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > Double.parseDouble(PropertiesUtil.getInstance(this).getValue(PropertiesUtil.EXIST_TIME_INTERVAL_MILL,"2000"))) {
+                ShowToast("再按一次退出程序");
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     /**
      * 根据
@@ -168,7 +184,8 @@ public class MenuActivity extends BaseActivity {
             case MenuItem.MENU_CODE_FAST_REQUISITION:
                 return R.mipmap.fast_requisition;
 //            case MenuItem.MENU_CODE_SET_UP_SYSTEM:
-
+            case MenuItem.MENU_CODE_STOCK_SEARCH:
+                return R.mipmap.menu_icon_store_search;
             case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
                 return R.mipmap.menu_icon_warehouse;
         }

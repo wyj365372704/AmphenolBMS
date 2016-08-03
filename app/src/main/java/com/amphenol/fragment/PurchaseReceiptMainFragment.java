@@ -92,8 +92,8 @@ public class PurchaseReceiptMainFragment extends Fragment {
             return rootView;
         rootView = inflater.inflate(R.layout.fragment_purchase_receipt, container, false);
         initListeners();
-        initViews();
         initData();
+        initViews();
         Toolbar mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -221,7 +221,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_purchase_receipt_content_rl);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        mRecyclerView.setAdapter(mFirstReceiptAdapter);
         mCodeEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
 
         mCodeEditText.setOnEditorActionListener(mOnEditorActionListener);
@@ -235,7 +235,6 @@ public class PurchaseReceiptMainFragment extends Fragment {
 
     private void initData() {
         mFirstReceiptAdapter = new PurchaseAdapter(getContext(), purchase.getPurchaseItems(), mOnItemClickListener);
-        mRecyclerView.setAdapter(mFirstReceiptAdapter);
     }
 
     /**
@@ -248,7 +247,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
         if (!PurchaseReceiptMainFragment.this.isVisible())
             return;
         if (TextUtils.isEmpty(purchase.getNumber())) {//当前收货单为空，扫码查询收货单
-            code = CommonTools.decodeScanString("P", code);
+            code = CommonTools.decodeScanString("S", code);
             if (TextUtils.isEmpty(code)) {
                 Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
                 return;
@@ -304,17 +303,15 @@ public class PurchaseReceiptMainFragment extends Fragment {
         mFirmTextView.setText(receipt.getFirm().trim());
         mPurchaseNumberTextView.setText(receipt.getNumber().trim());
         mStatusTextView.setText(receipt.getStatus() == Purchase.STATUS_FIINISHED ? "收货完成" : receipt.getStatus() == Purchase.STATUS_NO_RECEIPT ? "未收货" : receipt.getStatus() == Purchase.STATUS_PART_RECEIPT ? "部分收货" : "");
-
+        mCodeEditText.requestFocus();
         mFirstReceiptAdapter.setDate(receipt.getPurchaseItems());
         mFirstReceiptAdapter.notifyDataSetChanged();
-
-
         if (TextUtils.isEmpty(receipt.getNumber())) {
             mInquireButton.setTag(false);
             mInquireButton.setText("查询");
             mCodeEditText.getText().clear();
             mCodeEditText.setHint("输入送货单号");
-            mCodeEditText.requestFocus();
+
         } else {
             mInquireButton.setText("清除");
             mInquireButton.setTag(true);

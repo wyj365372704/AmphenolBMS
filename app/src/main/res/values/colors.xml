@@ -6,12 +6,21 @@
     <color name="colorAccent">#0063A7</color>
     <color name="colorDevideLine">#d8d8d8</color>
     <!--table标题底色-->
-    <color name="colorTableM">#c00063A7</color>
+    <color name="colorTableM">#d00063A7</color>
     <!--偶数数table底色-->
     <color name="colorTableE_normal">#e3ecf1</color>
-    <color name="colorTableE_pressed">#a0e3ecf1</color>
+    <color name="colorTableE_pressed">#d0e3ecf1</color>
     <!--奇数table底色-->
     <color name="colorTableO_normal">#ffffaf</color>
-    <color name="colorTableO_pressed">#a0ffffaf</color>
+    <color name="colorTableO_pressed">#d0ffffaf</color>
+    <!-- 确认属性按钮正常状态时背景色 -->
+    <color name="color_negative_button_background_normal">#03B50C</color>
+    <color name="color_negative_button_background_pressed">#D003B50C</color>
+    <!-- 取消属性按钮正常状态时背景色 -->
+    <color name="color_positive_button_background_normal">#ED6258</color>
+    <color name="color_positive_button_background_pressed">#D0ED6258</color>
+    <!-- 登录界面按钮背景色 -->
+    <color name="color_login_button_background_normal">#0063A7</color>
+    <color name="color_login_button_background_pressed">#d00063A7</color>
 
 </resources>

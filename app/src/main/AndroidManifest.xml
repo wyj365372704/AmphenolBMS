@@ -37,7 +37,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.amphenol.activity.SplashActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Notitle.FullScreen">

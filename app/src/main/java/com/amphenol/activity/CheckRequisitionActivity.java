@@ -24,8 +24,10 @@ public class CheckRequisitionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            return;
         mCheckRequisitionMainFragment = CheckRequisitionMainFragment.newInstance(mainFragmentCallBack);
-        getSupportFragmentManager().beginTransaction().replace(R.id.activity_check_requisition_fl, mCheckRequisitionMainFragment).commitAllowingStateLoss();
+        getSupportFragmentManager().beginTransaction().replace(R.id.activity_check_requisition_fl, mCheckRequisitionMainFragment).commit();
     }
 
     @Override
