@@ -1,6 +1,7 @@
 package com.amphenol.activity;
 
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.v4.app.FragmentTransaction;
 
 import com.amphenol.amphenol.R;
@@ -8,6 +9,7 @@ import com.amphenol.entity.Requisition;
 import com.amphenol.fragment.CheckRequisitionMainFragment;
 import com.amphenol.fragment.CheckRequisitionSecondFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -15,9 +17,10 @@ import java.util.ArrayList;
  */
 public class CheckRequisitionActivity extends BaseActivity {
     private CheckRequisitionMainFragment mCheckRequisitionMainFragment;
-    private CheckRequisitionSecondFragment mCheckRequisitionSecondFragment ;
+    private CheckRequisitionSecondFragment mCheckRequisitionSecondFragment;
     private CheckRequisitionMainFragment.MainFragmentCallBack mainFragmentCallBack;
-    private CheckRequisitionSecondFragment.SecondFragmentCallBack mSecondFragmentCallBack ;
+    private CheckRequisitionSecondFragment.SecondFragmentCallBack mSecondFragmentCallBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,21 +40,23 @@ public class CheckRequisitionActivity extends BaseActivity {
 
     @Override
     public void initListeners() {
+
         mainFragmentCallBack = new CheckRequisitionMainFragment.MainFragmentCallBack() {
             @Override
-            public void gotoSecondFragment(Requisition.RequisitionItem requisitionItem , ArrayList<String> shardStrings) {
-                mCheckRequisitionSecondFragment = CheckRequisitionSecondFragment.newInstance(requisitionItem,shardStrings,mSecondFragmentCallBack);
+            public void gotoSecondFragment(Requisition.RequisitionItem requisitionItem, ArrayList<String> shardStrings) {
+                mCheckRequisitionSecondFragment = CheckRequisitionSecondFragment.newInstance(requisitionItem, shardStrings, mSecondFragmentCallBack);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_check_requisition_fl, mCheckRequisitionSecondFragment);
                 transaction.addToBackStack(null);
                 transaction.commitAllowingStateLoss();
             }
         };
+
         mSecondFragmentCallBack = new CheckRequisitionSecondFragment.SecondFragmentCallBack() {
             @Override
             public void itemBeenClosed(String requisitionItemNumber) {
                 getSupportFragmentManager().popBackStack();//当前fragment退栈
-                if(mCheckRequisitionMainFragment!=null){
+                if (mCheckRequisitionMainFragment != null) {
                     mCheckRequisitionMainFragment.refreshShow(requisitionItemNumber);
                 }
             }
@@ -59,11 +64,12 @@ public class CheckRequisitionActivity extends BaseActivity {
             @Override
             public void itemBeenSured(String requisitionItemNumber) {
                 getSupportFragmentManager().popBackStack();//当前fragment退栈
-                if(mCheckRequisitionMainFragment!=null){
+                if (mCheckRequisitionMainFragment != null) {
                     mCheckRequisitionMainFragment.refreshShow(requisitionItemNumber);
                 }
             }
         };
+
     }
 
     @Override

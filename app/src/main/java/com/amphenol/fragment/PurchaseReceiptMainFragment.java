@@ -70,8 +70,8 @@ public class PurchaseReceiptMainFragment extends Fragment {
     public static PurchaseReceiptMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mainFragmentCallBack", mainFragmentCallBack);
         PurchaseReceiptMainFragment fragment = new PurchaseReceiptMainFragment();
+        fragment.mainFragmentCallBack = mainFragmentCallBack ;
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,7 +81,6 @@ public class PurchaseReceiptMainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            mainFragmentCallBack = (MainFragmentCallBack) args.getSerializable("mainFragmentCallBack");
         }
 
     }

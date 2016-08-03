@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,7 +53,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
     private View rootView = null;
     private RecyclerView mRecyclerView;
     private PurchaseItemAdapter mSecondReceiptAdapter;
-    private SecondFragemntCallBack mSecondFragemntCallBack;
+    private SecondFragmentCallBack mSecondFragmentCallBack;
     private View.OnClickListener mOnClickListener;
     private PurchaseItemAdapter.OnBranchItemActualQuantityChangedListener mOnBranchItemActualQuantityChangedListener;
     private ActionSheet.ActionSheetListener mActionSheetListener;
@@ -69,12 +68,12 @@ public class PurchaseReceiptSecondFragment extends Fragment {
     private LoadingDialog mLoadingDialog;
     private MyHandler myHandler = new MyHandler();
 
-    public static PurchaseReceiptSecondFragment newInstance(SecondFragemntCallBack mSecondFragemntCallBack, Purchase.PurchaseItem mPurchaseItem) {
+    public static PurchaseReceiptSecondFragment newInstance(SecondFragmentCallBack mSecondFragmentCallBack, Purchase.PurchaseItem mPurchaseItem) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mSecondFragemntCallBack",mSecondFragemntCallBack);
         args.putSerializable("mPurchaseItem",mPurchaseItem);
         PurchaseReceiptSecondFragment fragment = new PurchaseReceiptSecondFragment();
+        fragment.mSecondFragmentCallBack = mSecondFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,7 +83,6 @@ public class PurchaseReceiptSecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if(args!=null){
-            mSecondFragemntCallBack = (SecondFragemntCallBack) args.getSerializable("mSecondFragemntCallBack");
             mPurchaseItem = (Purchase.PurchaseItem) args.getSerializable("mPurchaseItem");
         }
     }
@@ -262,7 +260,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
                         builder3.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (mSecondFragemntCallBack != null) {
+                                if (mSecondFragmentCallBack != null) {
                                     EditText ssslEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_sssl_et);
                                     EditText pchEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_pch_et);
                                     addBranch(pchEditText.getText().toString(), ssslEditText.getText().toString());
@@ -415,7 +413,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_RECEIPT_CONFIRM, getContext()), param, REQUEST_CODE_RECEIPT_CONFIRM, mRequestTaskListener);
     }
 
-    public interface SecondFragemntCallBack extends Serializable{
+    public interface SecondFragmentCallBack extends Serializable{
         /**
          * 通知物料收货被关闭
          *
@@ -437,20 +435,20 @@ public class PurchaseReceiptSecondFragment extends Fragment {
             Bundle bundle = msg.getData();
             switch (msg.what) {
                 case REQUEST_CODE_RECEIPT_CONFIRM:
-                    if (mSecondFragemntCallBack != null) {
+                    if (mSecondFragmentCallBack != null) {
                         if (bundle.getInt("code") == 1) {
                             Toast.makeText(getContext(), "收货成功", Toast.LENGTH_SHORT).show();
-                            mSecondFragemntCallBack.itemBeenSured(mPurchaseItem.getNumber());
+                            mSecondFragmentCallBack.itemBeenSured(mPurchaseItem.getNumber());
                         } else {
                             Toast.makeText(getContext(), "收货失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;
                 case REQUEST_CODE_RECEIPT_CLOSE:
-                    if (mSecondFragemntCallBack != null) {
+                    if (mSecondFragmentCallBack != null) {
                         if (bundle.getInt("code") == 1) {
                             Toast.makeText(getContext(), "关闭成功", Toast.LENGTH_SHORT).show();
-                            mSecondFragemntCallBack.itemBeenClosed(mPurchaseItem.getNumber());
+                            mSecondFragmentCallBack.itemBeenClosed(mPurchaseItem.getNumber());
 
                         } else {
                             Toast.makeText(getContext(), "关闭失败", Toast.LENGTH_SHORT).show();

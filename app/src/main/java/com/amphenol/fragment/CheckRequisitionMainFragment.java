@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -67,19 +68,18 @@ public class CheckRequisitionMainFragment extends Fragment {
 
 
     public static CheckRequisitionMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
-        
         Bundle args = new Bundle();
-        args.putSerializable("mainFragmentCallBack",mainFragmentCallBack);
         CheckRequisitionMainFragment fragment = new CheckRequisitionMainFragment();
+        fragment.mainFragmentCallBack = mainFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        if(args!=null){
-            mainFragmentCallBack = (MainFragmentCallBack) args.getSerializable("mainFragmentCallBack");
+        if (args != null) {
         }
     }
 
@@ -320,7 +320,7 @@ public class CheckRequisitionMainFragment extends Fragment {
 
     }
 
-    public interface MainFragmentCallBack extends Serializable{
+    public  interface MainFragmentCallBack extends Serializable{
         void gotoSecondFragment(Requisition.RequisitionItem requisitionItem, ArrayList<String> shardStrings);
     }
 

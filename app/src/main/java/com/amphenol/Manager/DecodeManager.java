@@ -319,6 +319,42 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+    public static void decodeStockSearchGetMaterList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+            String warehouse = params.get("warehouse");
+            ArrayList<Mater.Branch> branches = new ArrayList<>();
+            JSONArray jsonArray = jsonObject.optJSONArray("mater_list");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject requisitionItemJsonObject = jsonArray.optJSONObject(i);
+                String mate = requisitionItemJsonObject.optString("mate");
+                String shard = requisitionItemJsonObject.optString("shard");
+                String location = requisitionItemJsonObject.optString("location");
+                String branchPo = requisitionItemJsonObject.optString("branch");
+                Double quantity = requisitionItemJsonObject.optDouble("quantity");
+                String unit = requisitionItemJsonObject.optString("unit");
+                Mater.Branch branch = new Mater.Branch();
+                branch.setQuantity(quantity);
+                branch.setPo(branchPo.trim());
+                Mater mater = new Mater();
+                mater.setNumber(mate.trim());
+                mater.setShard(shard.trim());
+                mater.setWarehouse(warehouse.trim());
+                mater.setLocation(location.trim());
+                mater.setUnit(unit.trim());
+                branch.setMater(mater);
+                branches.add(branch);
+            }
+            data.putSerializable("branches", branches);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
 
     public static void decodeCreaetRequisitionGetMater(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
@@ -360,6 +396,44 @@ public class DecodeManager {
             requisitionItem.setShard(target_shard);
             requisitionItem.setLocation(target_location);
             data.putSerializable("requisitionItem", requisitionItem);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+    public static void decodeStockSearchGetMater(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+            String from_warehouse = params.get("warehouse");
+            String from_shard = params.get("shard");
+            String from_location = params.get("location");
+            String mate = params.get("mate");
+            String branch_po = params.get("branch");
+            double quantity = 0;
+            try {
+                quantity = Double.parseDouble(params.get("quantity"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String unit = params.get("unit");
+            String mater_desc = jsonObject.optString("mater_desc");
+            String mater_format = jsonObject.optString("mater_format");
+            Mater mater = new Mater();
+            mater.setWarehouse(from_warehouse);
+            mater.setShard(from_shard);
+            mater.setLocation(from_location);
+            mater.setNumber(mate);
+            mater.setDesc(mater_desc);
+            mater.setFormat(mater_format);
+            mater.setUnit(unit);
+            Mater.Branch branch = new Mater.Branch();
+            branch.setPo(branch_po);
+            branch.setQuantity(quantity);
+            branch.setMater(mater);
+            data.putSerializable("branch", branch);
         }
         msg.setData(data);
         handler.sendMessage(msg);

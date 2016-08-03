@@ -4,7 +4,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Mater;
 import com.amphenol.entity.Purchase;
 import com.amphenol.fragment.PurchaseReceiptMainFragment;
 import com.amphenol.fragment.PurchaseReceiptSecondFragment;
@@ -15,7 +14,7 @@ import com.amphenol.fragment.PurchaseReceiptSecondFragment;
 public class PurchaseReceiptActivity extends BaseActivity {
     private PurchaseReceiptMainFragment mPurchaseReceiptMainFragment;
     private PurchaseReceiptSecondFragment mPurchaseReceiptSecondFragment;
-    private PurchaseReceiptSecondFragment.SecondFragemntCallBack secondFragemntCallBack;
+    private PurchaseReceiptSecondFragment.SecondFragmentCallBack secondFragmentCallBack;
     private PurchaseReceiptMainFragment.MainFragmentCallBack mainFragmentCallBack;
 
     @Override
@@ -33,14 +32,14 @@ public class PurchaseReceiptActivity extends BaseActivity {
         mainFragmentCallBack = new PurchaseReceiptMainFragment.MainFragmentCallBack() {
             @Override
             public void gotoSecondFragment(Purchase.PurchaseItem purchaseItem) {
-                mPurchaseReceiptSecondFragment = PurchaseReceiptSecondFragment.newInstance(secondFragemntCallBack, purchaseItem);
+                mPurchaseReceiptSecondFragment = PurchaseReceiptSecondFragment.newInstance(secondFragmentCallBack, purchaseItem);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReceiptSecondFragment);
                 transaction.addToBackStack(null);
                 transaction.commitAllowingStateLoss();
             }
         };
-        secondFragemntCallBack = new PurchaseReceiptSecondFragment.SecondFragemntCallBack() {
+        secondFragmentCallBack = new PurchaseReceiptSecondFragment.SecondFragmentCallBack() {
             @Override
             public void itemBeenClosed(String shdhh) {
                 getSupportFragmentManager().popBackStack();//当前fragment退栈

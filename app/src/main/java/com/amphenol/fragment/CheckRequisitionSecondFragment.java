@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -68,11 +69,10 @@ public class CheckRequisitionSecondFragment extends Fragment {
     public static CheckRequisitionSecondFragment newInstance(Requisition.RequisitionItem mRequisitionItem, ArrayList<String> shards, SecondFragmentCallBack mSecondFragmentCallBack) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mRequisitionItem",mRequisitionItem);
-        args.putSerializable("shards",shards);
-        args.putSerializable("mSecondFragmentCallBack",mSecondFragmentCallBack);
-
+        args.putSerializable("mRequisitionItem", mRequisitionItem);
+        args.putSerializable("shards", shards);
         CheckRequisitionSecondFragment fragment = new CheckRequisitionSecondFragment();
+        fragment.mSecondFragmentCallBack = mSecondFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,10 +81,9 @@ public class CheckRequisitionSecondFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        if(args!=null){
+        if (args != null) {
             mRequisitionItem = (Requisition.RequisitionItem) args.getSerializable("mRequisitionItem");
             shardStrings = (ArrayList<String>) args.getSerializable("shards");
-            mSecondFragmentCallBack = (SecondFragmentCallBack) args.getSerializable("mSecondFragmentCallBack");
         }
     }
 
@@ -134,30 +133,30 @@ public class CheckRequisitionSecondFragment extends Fragment {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.fragment_check_requisition_second_submit_bt:
-                        double actualQuantity = 0 ;
-                        try{
+                        double actualQuantity = 0;
+                        try {
                             actualQuantity = Double.parseDouble(actualQuantityEditText.getText().toString());
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
-                            ((BaseActivity)getActivity()).ShowToast("实收数量输入非法");
+                            ((BaseActivity) getActivity()).ShowToast("实收数量输入非法");
                             break;
                         }
                         mRequisitionItem.setActualQuantity(actualQuantity);
-                        if(TextUtils.isEmpty(targetLocationEditText.getText().toString())){
-                            ((BaseActivity)getActivity()).ShowToast("目标库位输入不能能空");
+                        if (TextUtils.isEmpty(targetLocationEditText.getText().toString())) {
+                            ((BaseActivity) getActivity()).ShowToast("目标库位输入不能能空");
                             targetLocationEditText.requestFocus();
                             break;
                         }
 
                         final String beforeShard = mRequisitionItem.getShard();
                         final String afterShard = mStringArrayAdapter.getItem(targetShardSpinner.getSelectedItemPosition());
-                        final String beforeLocation  = mRequisitionItem.getLocation();
+                        final String beforeLocation = mRequisitionItem.getLocation();
                         final String afterLocation = targetLocationEditText.getText().toString();
 
 
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
                         builder2.setTitle("确认过账").setMessage("将要对此物料进行确认过账?");
-                        if(!TextUtils.equals(beforeShard,afterShard)||!TextUtils.equals(beforeLocation,afterLocation)){
+                        if (!TextUtils.equals(beforeShard, afterShard) || !TextUtils.equals(beforeLocation, afterLocation)) {
                             dialogView = LayoutInflater.from(getContext()).inflate(R.layout.check_requisition_sure_with_shard_or_location_changed_dialog, null, false);
                             builder2.setView(dialogView);
                         }
@@ -165,14 +164,14 @@ public class CheckRequisitionSecondFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean update = false;
-                                if (!TextUtils.equals(beforeShard,afterShard)||!TextUtils.equals(beforeLocation,afterLocation) && dialogView != null) {
+                                if (!TextUtils.equals(beforeShard, afterShard) || !TextUtils.equals(beforeLocation, afterLocation) && dialogView != null) {
                                     CheckBox checkBox = (CheckBox) dialogView.findViewById(R.id.checkbox);
                                     if (checkBox.getVisibility() == View.VISIBLE) {
                                         if (checkBox.isChecked())
                                             update = true;
                                     }
                                 }
-                                handleCheckRequisitionSure(mRequisitionItem.getRequisition().getNumber(),mRequisitionItem.getNumber(),mRequisitionItem.getActualQuantity(),mRequisitionItem.getBranch().getMater().getWarehouse(),afterShard,afterLocation,update);
+                                handleCheckRequisitionSure(mRequisitionItem.getRequisition().getNumber(), mRequisitionItem.getNumber(), mRequisitionItem.getActualQuantity(), mRequisitionItem.getBranch().getMater().getWarehouse(), afterShard, afterLocation, update);
                             }
                         });
                         builder2.create().show();
@@ -183,7 +182,7 @@ public class CheckRequisitionSecondFragment extends Fragment {
                     case R.id.fragment_check_requisition_second_cancel_bt:
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("终止过账").setMessage("将要对此物料终止过账?");
-                        builder.setNegativeButton("取消",null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 handleCheckRequisitionCancel();
@@ -268,12 +267,12 @@ public class CheckRequisitionSecondFragment extends Fragment {
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("requisition", requisition);
-        param.put("requisition_line",requisition_line);
-        param.put("actual_quantity",actualQuantity+"");
-        param.put("target_warehouse",warehouse);
-        param.put("target_shard",afterShard);
-        param.put("target_location",afterLocation);
-        param.put("update",update?"1":"0");
+        param.put("requisition_line", requisition_line);
+        param.put("actual_quantity", actualQuantity + "");
+        param.put("target_warehouse", warehouse);
+        param.put("target_shard", afterShard);
+        param.put("target_location", afterLocation);
+        param.put("update", update ? "1" : "0");
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CHECK_REQUISITION_SURE, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }
 
@@ -331,26 +330,25 @@ public class CheckRequisitionSecondFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public interface SecondFragmentCallBack extends Serializable{
-
+    public interface SecondFragmentCallBack extends Serializable {
         /**
-         *
          * @param requisitionItemNumber 调拨单行号
          */
         void itemBeenClosed(String requisitionItemNumber);
 
         /**
-         *
          * @param requisitionItemNumber 调拨单行号
          */
+
         void itemBeenSured(String requisitionItemNumber);
     }
 
-    private class MyHandler extends Handler{
+
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
-            switch (msg.what){
+            switch (msg.what) {
                 case REQUEST_CODE_CANCEL:
                     if (mSecondFragmentCallBack != null) {
                         if (bundle.getInt("code") == 1) {

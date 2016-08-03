@@ -111,7 +111,7 @@ public class Mater implements Serializable {
         this.warehouse = warehouse;
     }
 
-    public static class Branch {
+    public static class Branch implements Serializable {
         private Mater mater ;//所在物料
         private String number;//批次行号
         private String po;//批次号

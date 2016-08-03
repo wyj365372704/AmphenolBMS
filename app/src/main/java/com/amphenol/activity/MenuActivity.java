@@ -67,6 +67,9 @@ public class MenuActivity extends BaseActivity {
                     case MenuItem.MENU_CODE_FAST_REQUISITION:
                         componentName = new ComponentName(MenuActivity.this, FastRequisitionActivity.class);
                         break;
+                    case MenuItem.MENU_CODE_STOCK_SEARCH:
+                        componentName = new ComponentName(MenuActivity.this, StockSearchActivity.class);
+                        break;
                     case MenuItem.MENU_CODE_CHECK_REQUISITION:
                         componentName = new ComponentName(MenuActivity.this, CheckRequisitionActivity.class);
                         break;

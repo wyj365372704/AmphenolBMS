@@ -85,8 +85,8 @@ public class CreateRequisitionMainFragment extends Fragment {
     public static CreateRequisitionMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mainFragmentCallBack",mainFragmentCallBack);
         CreateRequisitionMainFragment fragment = new CreateRequisitionMainFragment();
+        fragment.mainFragmentCallBack = mainFragmentCallBack ;
         fragment.setArguments(args);
         return fragment;
     }
@@ -96,7 +96,6 @@ public class CreateRequisitionMainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if(args!=null){
-            mainFragmentCallBack = (MainFragmentCallBack) args.getSerializable("mainFragmentCallBack");
         }
     }
 
