@@ -224,8 +224,6 @@
 	code = 4 实际单重更新失败
 	code = other 确认收货失败
 
-
-
 ##创建调拨单/快速调拨 - 查询物料列表
 	请求方式：get
 	参数：
@@ -388,4 +386,83 @@
 返回
 
 	default
+
+##生产发料 - 领料项查询
+
+	请求方式：get
+	参数：
+		pick_number 领料单单号
+	action=hair_mater_get_pick_list
+
+返回
+
+	work_order:String 工单号
+	founder:String 创建人
+	department:String 创建部门
+	date：String 创建日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	type:Int 领料单类型
+		1 = 正常领料单
+		2 = 超发领料单
+		3 = 退料领料单
+	state:String 领料单状态
+		05 = 创建中
+		10 = 已创建
+		50 = 领料已经完成
+	picking_list:List<Map<String,Object>> 领料项集合
+		Map<String,Object> 领料项
+			pick_line:String 领料单行号
+			sequence:String 系统序列号
+			mater:String 物料
+			quantity:double 计划数量
+			unit:String 材料单位 ,即该物料在库存中的单位
+			warehouse:String 仓库
+			shard:String 默认子库
+			location:String 默认库位
+			state:String 领料单行状态
+			branched:int 是否需要批次控制
+				0 不需要
+				1 需要
+
+##生产发料 - 查询物料列表
+	请求方式：get
+	参数：
+		warehouse	仓库
+		mate 物料编号
+		shard	子库,允许为空
+		location	库位，允许为空
+		branch	批号,允许为空
+	action=hair_mater_get_mater_list
+
+返回
+	
+	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。
+		Map<String,Object>
+			branch:批次号
+			shard:String 当前子库
+			location:String 当前库位
+			quantity： Double 库存数量
+			unit： String 库存单位
+	code 
+		5 没有结果集
+
+##生产发料 - 提交发料
+	请求方式:get
+	参数:
+		warehouse	仓库	
+		department	生产部门
+		work_order	工号
+		sequence	系统顺序号
+		mater_list 发料物料批次集合的json字符串，服务器进行json解析，说明如下
+			mater_list：List<Map<String,Object>> 发料物料批次集合，按此生成json字符串
+				Map<String,Object>:物料
+					mater:String	物料编码
+					branch:String	批次,如果为空或者不存在,表示该物料不受批次管控
+					location:String	发料库位
+					quantity:double	发料数量
+	action=hair_mater_submit
+
+返回
+
+	default
+	
 		

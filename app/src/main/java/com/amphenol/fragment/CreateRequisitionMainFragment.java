@@ -82,7 +82,7 @@ public class CreateRequisitionMainFragment extends Fragment {
 
         Bundle args = new Bundle();
         CreateRequisitionMainFragment fragment = new CreateRequisitionMainFragment();
-        fragment.mainFragmentCallBack = mainFragmentCallBack ;
+        fragment.mainFragmentCallBack = mainFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,7 +91,7 @@ public class CreateRequisitionMainFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        if(args!=null){
+        if (args != null) {
         }
     }
 
@@ -413,7 +413,7 @@ public class CreateRequisitionMainFragment extends Fragment {
                 return;
             }
             mLocationEditText.setText("");
-            int count  = 0;
+            int count = 0;
             for (int i = 0; i < requisition.getRequisitionItems().size(); i++) {
                 if (TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getMater().getNumber(), mater) && TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getPo(), branch)) {
                     requisition.getRequisitionItems().get(i).setChecked(true);
@@ -422,9 +422,9 @@ public class CreateRequisitionMainFragment extends Fragment {
             }
             if (count == 0) {
                 ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
-            }else{
+            } else {
                 mFirstRequisitionForMaterListAdapter.notifyDataSetChanged();
-                ((BaseActivity)getActivity()).ShowToast("扫描选中了"+count+"个物料");
+                ((BaseActivity) getActivity()).ShowToast("扫描选中了" + count + "个物料");
             }
         }
     }
@@ -460,7 +460,7 @@ public class CreateRequisitionMainFragment extends Fragment {
 
     }
 
-    public interface MainFragmentCallBack extends Serializable{
+    public interface MainFragmentCallBack extends Serializable {
         void gotoSecondFragment(Requisition.RequisitionItem requisitionItem);
     }
 
