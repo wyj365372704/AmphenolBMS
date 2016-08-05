@@ -404,8 +404,8 @@
 		1 = 正常领料单
 		2 = 超发领料单
 		3 = 退料领料单
-	state:String 领料单状态
-		05 = 创建中
+	state:Int 领料单状态
+		5 = 创建中
 		10 = 已创建
 		50 = 领料已经完成
 	picking_list:List<Map<String,Object>> 领料项集合
@@ -414,11 +414,15 @@
 			sequence:String 系统序列号
 			mater:String 物料
 			quantity:double 计划数量
-			unit:String 材料单位 ,即该物料在库存中的单位
+			unit:String 材料单位 
 			warehouse:String 仓库
 			shard:String 默认子库
 			location:String 默认库位
-			state:String 领料单行状态
+			state:Int 领料单行状态
+				5 = 创建中
+				10 = 已创建
+				50 = 已完成
+				60 = 已关闭(未发料)
 			branched:int 是否需要批次控制
 				0 不需要
 				1 需要
@@ -427,7 +431,7 @@
 	请求方式：get
 	参数：
 		warehouse	仓库
-		mate 物料编号
+		mater 物料编号
 		shard	子库,允许为空
 		location	库位，允许为空
 		branch	批号,允许为空
@@ -435,6 +439,8 @@
 
 返回
 	
+	mater_dese:String 物料描述
+	mater_format:String 物料规格
 	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。
 		Map<String,Object>
 			branch:批次号
@@ -445,7 +451,7 @@
 	code 
 		5 没有结果集
 
-##生产发料 - 提交发料
+##生产发料 - 发料过账
 	请求方式:get
 	参数:
 		warehouse	仓库	
@@ -465,4 +471,16 @@
 
 	default
 	
+##生产发料 - 终止发料
+	请求方式:get
+	参数:
+		warehouse	仓库	
+		department	生产部门
+		work_order	工号
+		sequence	系统顺序号
+	action=hair_mater_cancel
+
+返回
+	
+	default
 		

@@ -76,7 +76,7 @@ public class Requisition implements Serializable{
         private String shard = "";//目标子库
         private String location = "";//目标库位
         private Mater.Branch branch = new Mater.Branch();
-        private boolean isChecked = false;
+        private boolean checked = false;
 
         public Requisition getRequisition() {
             return requisition;
@@ -127,11 +127,11 @@ public class Requisition implements Serializable{
         }
 
         public boolean isChecked() {
-            return isChecked;
+            return checked;
         }
 
         public void setChecked(boolean checked) {
-            isChecked = checked;
+            this.checked = checked;
         }
 
         public double getActualQuantity() {

@@ -66,12 +66,10 @@ public class CreateRequisitionMainFragment extends Fragment {
     private View.OnClickListener mOnClickListener;
     private LoadingDialog mLoadingDialog;
     private ArrayAdapter<String> mStringArrayAdapter;
-    private List<String> shardStrings = new ArrayList<>();
     private FirstRequisitionForMaterListAdapter mFirstRequisitionForMaterListAdapter;
     private FirstRequisitionForMaterListAdapter.OnItemClickListener mOnItemClickListener;
     private Requisition requisition = new Requisition();
     private MyHandler myHandler;
-    private final int REQUEST_CODE_QUERY_SHARD_LIST = 0X10;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private final int REQUEST_CODE_GET_MATER_LIST = 0x11;
     private int currentCheckedItemCount = 0;//当前被勾选上的item个数
@@ -108,13 +106,12 @@ public class CreateRequisitionMainFragment extends Fragment {
         initListeners();
         initData();
         initViews();
-        InquireShards();
         return rootView;
     }
 
     private void initData() {
         myHandler = new MyHandler();
-        mStringArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, shardStrings);
+        mStringArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, SessionManager.getShard_list(getContext()));
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFirstRequisitionForMaterListAdapter = new FirstRequisitionForMaterListAdapter(getContext(), requisition.getRequisitionItems(), mOnItemClickListener);
@@ -135,6 +132,7 @@ public class CreateRequisitionMainFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mFirstRequisitionForMaterListAdapter);
         mSpinner = (Spinner) rootView.findViewById(R.id.fragment_create_requisition_main_shard_spinner);
+        mSpinner.setAdapter(mStringArrayAdapter);
     }
 
     private void initListeners() {
@@ -264,9 +262,6 @@ public class CreateRequisitionMainFragment extends Fragment {
             public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
                 try {
                     switch (requestCode) {
-                        case REQUEST_CODE_QUERY_SHARD_LIST:
-                            DecodeManager.decodeQueryShardList(jsonObject, requestCode, myHandler);
-                            break;
                         case REQUEST_CODE_GET_MATER_LIST:
                             DecodeManager.decodeCreaetRequisitionGetMaterList(jsonObject, requestCode, myHandler);
                             break;
@@ -375,15 +370,6 @@ public class CreateRequisitionMainFragment extends Fragment {
         }
     }
 
-
-    private void InquireShards() {
-        Map<String, String> param = new HashMap<>();
-        param.put("username", SessionManager.getUserName(getContext()));
-        param.put("env", SessionManager.getEnv(getContext()));
-        param.put("warehouse", SessionManager.getWarehouse(getContext()));
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_SHARD_LIST, getContext()), param, REQUEST_CODE_QUERY_SHARD_LIST, mRequestTaskListener);
-    }
-
     /**
      * 处理扫描得到的二维码,执行联网查询操作
      */
@@ -469,16 +455,6 @@ public class CreateRequisitionMainFragment extends Fragment {
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
             switch (msg.what) {
-                case REQUEST_CODE_QUERY_SHARD_LIST:
-                    if (bundle.getInt("code") == 1) {
-                        shardStrings.clear();
-                        shardStrings.addAll(bundle.getStringArrayList("shardList"));
-                        mStringArrayAdapter.notifyDataSetChanged();
-                        mSpinner.setAdapter(mStringArrayAdapter);
-                    } else {
-                        ((BaseActivity) getActivity()).ShowToast("获取子库列表失败");
-                    }
-                    break;
                 case REQUEST_CODE_GET_MATER_LIST:
                     if (bundle.getInt("code") == 1) {
                         requisition = new Requisition();

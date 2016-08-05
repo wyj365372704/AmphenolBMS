@@ -16,7 +16,7 @@ public class SessionManager {
     private static String env = "";
     private static String warehouse = "";
     private static List<String> warehouse_list = new ArrayList<>();
-
+    private static List<String> shard_list = new ArrayList<>();
     public static String getUserName(Context mContext) {
         if (TextUtils.isEmpty(userName)) {
             userName = SPManager.getInstance(mContext).getSP("user_name", "");
@@ -61,8 +61,20 @@ public class SessionManager {
         return warehouse_list;
     }
 
-    public static void setWarehouse_list(List<String> warehouse_list, Context mContext) {
+    public static void  setWarehouse_list(List<String> warehouse_list, Context mContext) {
         SPManager.getInstance(mContext).putSP("warehouse_list", com.alibaba.fastjson.JSONArray.toJSONString(warehouse_list));
         SessionManager.warehouse_list = warehouse_list;
+    }
+    public static List<String> getShard_list(Context mContext) {
+        if (shard_list.size() == 0) {
+            List<String> temp = com.alibaba.fastjson.JSONArray.parseArray(SPManager.getInstance(mContext).getSP("shard_list", ""), String.class);
+            shard_list = temp == null ? shard_list : temp;
+        }
+        return shard_list;
+    }
+
+    public static void  setShard_list(List<String> shard_list, Context mContext) {
+        SPManager.getInstance(mContext).putSP("shard_list", com.alibaba.fastjson.JSONArray.toJSONString(shard_list));
+        SessionManager.shard_list = shard_list;
     }
 }

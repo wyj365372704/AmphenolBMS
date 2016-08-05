@@ -1,0 +1,260 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="生产发料"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+                <ImageView
+                    android:id="@+id/fragment_scan_iv"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/scan" />
+
+
+                <Button
+                    android:id="@+id/fragment_purchase_receipt_inquire_bt"
+                    android:layout_width="64dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/positive_button_background"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@android:color/white"
+                    android:layout_centerVertical="true"
+                    android:text="查询"
+                    android:textSize="@dimen/normal_font_size" />
+
+                <EditText
+                    android:id="@+id/purchase_receipt_main_code_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@id/fragment_purchase_receipt_inquire_bt"
+                    android:layout_toRightOf="@id/fragment_scan_iv"
+                    android:background="@drawable/spinner_back"
+                    android:ellipsize="end"
+                    android:hint="输入领料单号"
+                    android:imeOptions="actionDone"
+                    android:padding="2dp"
+                    android:singleLine="true"
+                    android:textSize="@dimen/normal_font_size" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorDevideLine" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="领料单号:"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+
+                        <TextView
+                            android:id="@+id/fragment_check_requisition_main_requisition_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="工单号:"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+
+                        <TextView
+                            android:id="@+id/fragment_check_requisition_main_state_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="创建人:"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/fragment_check_requisition_main_creater_tv"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="创建部门:"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+
+                        <TextView
+                            android:id="@+id/fragment_check_requisition_main_department_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="创建时间:"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+
+                        <TextView
+                            android:id="@+id/fragment_check_requisition_main_create_date_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="发料类型:"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+
+                        <TextView
+                            android:id="@+id/fragment_hair_mater_main_type_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/normal_font_size" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorDevideLine" />
+
+            <include
+                layout="@layout/hair_mater_main_item_head"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_purchase_receipt_content_rl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

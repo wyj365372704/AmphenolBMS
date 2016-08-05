@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MenuActivity extends BaseActivity {
+    private static final int REQUEST_CODE_QUERY_SHARD_LIST = 0x12;
     private RecyclerView mRecyclerView;
     private MenuAdapter menuAdapter;
     private MenuAdapter.OnMenuItemClickListener onMenuItemClickListener;
@@ -75,6 +76,9 @@ public class MenuActivity extends BaseActivity {
                     case MenuItem.MENU_CODE_CHECK_REQUISITION:
                         componentName = new ComponentName(MenuActivity.this, CheckRequisitionActivity.class);
                         break;
+                    case MenuItem.MENU_CODE_HAIR_MATER:
+                        componentName = new ComponentName(MenuActivity.this, HairMaterActivity.class);
+                        break;
                 }
                 if (componentName != null) {
                     intent.setComponent(componentName);
@@ -95,23 +99,21 @@ public class MenuActivity extends BaseActivity {
 
             @Override
             public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
-                switch (requestCode) {
-                    case REQUEST_CODE_GET_MENU:
-                        try {
+                try {
+                    switch (requestCode) {
+                        case REQUEST_CODE_GET_MENU:
                             DecodeManager.decodeGetMenu(jsonObject, requestCode, myHandler);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            ShowToast("服务器返回错误");
-                        }
-                        break;
-                    case REQUEST_CODE_QUERY_WAREHOUSE:
-                        try {
+                            break;
+                        case REQUEST_CODE_QUERY_WAREHOUSE:
                             DecodeManager.decodeQueryWarehouse(jsonObject, requestCode, myHandler);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            ShowToast("服务器返回错误");
-                        }
-                        break;
+                            break;
+                        case REQUEST_CODE_QUERY_SHARD_LIST:
+                            DecodeManager.decodeQueryShardList(jsonObject, requestCode, myHandler);
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowToast("服务器返回错误");
                 }
             }
 
@@ -146,14 +148,13 @@ public class MenuActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         InquireMenu();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            if ((System.currentTimeMillis() - exitTime) > Double.parseDouble(PropertiesUtil.getInstance(this).getValue(PropertiesUtil.EXIST_TIME_INTERVAL_MILL,"2000"))) {
+            if ((System.currentTimeMillis() - exitTime) > Double.parseDouble(PropertiesUtil.getInstance(this).getValue(PropertiesUtil.EXIST_TIME_INTERVAL_MILL, "2000"))) {
                 ShowToast("再按一次退出程序");
                 exitTime = System.currentTimeMillis();
             } else {
@@ -188,6 +189,8 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.menu_icon_store_search;
             case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
                 return R.mipmap.menu_icon_warehouse;
+            case MenuItem.MENU_CODE_HAIR_MATER:
+                return R.mipmap.menu_icon_hair_mater;
         }
         return R.mipmap.ic_launcher;
     }
@@ -208,6 +211,14 @@ public class MenuActivity extends BaseActivity {
         param.put("username", SessionManager.getUserName(getApplicationContext()));
         param.put("env", SessionManager.getEnv(getApplicationContext()));
         NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getApplicationContext()), param, REQUEST_CODE_QUERY_WAREHOUSE, mRequestTaskListener);
+    }
+
+    private void InquireShards() {
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getApplicationContext()));
+        param.put("env", SessionManager.getEnv(getApplicationContext()));
+        param.put("warehouse", SessionManager.getWarehouse(getApplicationContext()));
+        NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_SHARD_LIST, getApplicationContext()), param, REQUEST_CODE_QUERY_SHARD_LIST, mRequestTaskListener);
     }
 
     private class MyHandler extends Handler {
@@ -253,9 +264,18 @@ public class MenuActivity extends BaseActivity {
                             SessionManager.setWarehouse("", getApplicationContext());
                         }
                         SessionManager.setWarehouse_list(warehouseStringlist, getApplicationContext());
-                        menuAdapter.notifyDataSetChanged();
+                        InquireShards();
                     } else {
                         ShowToast("获取仓库列表失败");
+                    }
+                    break;
+                case REQUEST_CODE_QUERY_SHARD_LIST:
+                    if (bundle.getInt("code") == 1) {
+                        ArrayList<String> shardList = bundle.getStringArrayList("shardList");
+                        SessionManager.setShard_list(shardList, getApplicationContext());
+                        menuAdapter.notifyDataSetChanged();
+                    } else {
+                        ShowToast("获取子库列表失败");
                     }
                     break;
             }

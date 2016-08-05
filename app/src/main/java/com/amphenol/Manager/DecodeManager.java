@@ -7,6 +7,7 @@ import android.os.Message;
 
 
 import com.amphenol.entity.Mater;
+import com.amphenol.entity.Pick;
 import com.amphenol.entity.Purchase;
 import com.amphenol.entity.Requisition;
 
@@ -319,6 +320,7 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeStockSearchGetMaterList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
@@ -400,6 +402,7 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeStockSearchGetMater(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
@@ -572,6 +575,141 @@ public class DecodeManager {
         Bundle data = new Bundle();
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeHairMaterGetPickList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        Pick pick = new Pick();
+        HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+        String pickNumber = params.get("pick_number");
+        pick.setNumber(pickNumber);
+        if (isRequestOK(jsonObject)) {
+            String work_order = jsonObject.optString("work_order");
+            String founder = jsonObject.optString("founder");
+            String department = jsonObject.optString("department");
+            String date = jsonObject.optString("date");
+            int type = jsonObject.optInt("type", Pick.TYPE_NORMAL);
+            int state = jsonObject.optInt("state", Pick.STATE_FINISHED);
+            pick.setWorkOrder(work_order);
+            pick.setFounder(founder);
+            pick.setDepartment(department);
+            pick.setDate(date);
+            pick.setType(type);
+            pick.setState(state);
+            JSONArray pickItemJsonArray = jsonObject.optJSONArray("picking_list");
+            if (pickItemJsonArray != null && pickItemJsonArray.length() > 0) {
+                ArrayList<Pick.PickItem> pickItems = new ArrayList<>();
+                for (int i = 0; i < pickItemJsonArray.length(); i++) {
+                    JSONObject pickItemJsonObject = pickItemJsonArray.getJSONObject(i);
+                    Pick.PickItem pickItem = new Pick.PickItem();
+                    Mater.Branch branch = new Mater.Branch();
+                    Mater mater = new Mater();
+                    branch.setMater(mater);
+                    String pick_line = pickItemJsonObject.optString("pick_line");
+                    String sequence = pickItemJsonObject.optString("sequence");
+                    String materNumber = pickItemJsonObject.optString("mater");
+                    double quantity = pickItemJsonObject.optDouble("quantity", 0);
+                    String unit = pickItemJsonObject.optString("unit");
+                    String warehouse = pickItemJsonObject.optString("warehouse");
+                    String shard = pickItemJsonObject.optString("shard");
+                    String location = pickItemJsonObject.optString("location");
+                    int itemState = pickItemJsonObject.optInt("state", Pick.PickItem.STATE_CLOSED);
+                    int branched = pickItemJsonObject.optInt("branched", Pick.PickItem.BRANCHED_NO);
+                    pickItem.setPickLine(pick_line);
+                    pickItem.setSequence(sequence);
+                    pickItem.setQuantity(quantity);
+                    pickItem.setState(itemState);
+                    pickItem.setBranched(branched);
+                    pickItem.setBranch(branch);
+                    mater.setNumber(materNumber);
+                    mater.setUnit(unit);
+                    mater.setWarehouse(warehouse);
+                    mater.setShard(shard);
+                    mater.setLocation(location);
+                    pickItems.add(pickItem);
+                }
+                pick.setPickItems(pickItems);
+            }
+        }
+        data.putSerializable("pick", pick);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeHairMaterGetMaterList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        Pick pick = new Pick();
+        Pick.PickItem pickItem = new Pick.PickItem();
+        pickItem.setPick(pick);
+        Mater.Branch branch = new Mater.Branch();
+        Mater mater = new Mater();
+        branch.setMater(mater);
+        HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+        double plantQuantity = 0 ;
+        try{
+            plantQuantity = Double.parseDouble(params.get("quantity"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String department = params.get("department");
+        String workOrder = params.get("workOrder");
+        String sequence = params.get("sequence");
+        String warehouse = params.get("warehouse");
+        String mateNumber = params.get("mater");
+        String shard = params.get("shard");
+        String location = params.get("location");
+        String branchPo = params.get("branch");
+        branch.setPo(branchPo);
+        mater.setShard(shard);
+        mater.setLocation(location);
+        mater.setWarehouse(warehouse);
+        mater.setNumber(mateNumber);
+        pickItem.setBranch(branch);
+        pickItem.setSequence(sequence);
+        pickItem.setQuantity(plantQuantity);
+        pick.setDepartment(department);
+        pick.setWorkOrder(workOrder);
+        if (isRequestOK(jsonObject)) {
+            String mater_desc = jsonObject.optString("mater_desc");
+            String mater_format = jsonObject.optString("mater_format");
+            mater.setDesc(mater_desc);
+            mater.setFormat(mater_format);
+            JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
+            if (materJsonArray != null && materJsonArray.length() > 0) {
+                ArrayList<Pick.PickItem.PickItemBranchItem> pickItemBranchItems = new ArrayList<>();
+                for (int i = 0; i < materJsonArray.length(); i++) {
+                    Pick.PickItem.PickItemBranchItem pickItemBranchItem = new Pick.PickItem.PickItemBranchItem();
+                    Mater.Branch branchSecond = new Mater.Branch();
+                    Mater materSecond = new Mater();
+                    JSONObject branchObject = materJsonArray.getJSONObject(i);
+                    String branchPoSecond = branchObject.optString("branch");
+                    String shardSecond = branchObject.optString("shard");
+                    String locationSecond = branchObject.optString("location");
+                    double quantity = branchObject.optDouble("quantity");
+                    String unit = branchObject.optString("unit");
+                    materSecond.setNumber(mateNumber);
+                    materSecond.setWarehouse(warehouse);
+                    materSecond.setShard(shardSecond);
+                    materSecond.setLocation(locationSecond);
+                    materSecond.setUnit(unit);
+                    branch.setPo(branchPoSecond);
+                    branch.setQuantity(quantity);
+                    branch.setMater(materSecond);
+                    pickItemBranchItem.setBranch(branch);
+
+                }
+                pickItem.setPickItemBranchItems(pickItemBranchItems);
+            }
+        }
+        data.putSerializable("pickItem", pickItem);
         msg.setData(data);
         handler.sendMessage(msg);
     }

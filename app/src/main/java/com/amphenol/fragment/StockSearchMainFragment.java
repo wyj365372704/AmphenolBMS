@@ -57,7 +57,6 @@ public class StockSearchMainFragment extends Fragment {
     private static final int REQUEST_CODE_GET_MATER = 0x12;
     private static final int REQUEST_CODE_FOR_SCAN_MATER = 0x13;
     private static final int REQUEST_CODE_FOR_SCAN_FROM_LOCATION = 15;
-    private static final int REQUEST_CODE_QUERY_SHARD_LIST = 0x14;
     private View rootView = null;
     private TextView wareHouseTextView;
     private EditText materEditText, locationEditText;
@@ -66,7 +65,6 @@ public class StockSearchMainFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private View.OnClickListener mOnClickListener;
     private ImageButton mImageButton;
-    private List<String> shardStrings = new ArrayList<>();
     private ArrayAdapter<String> mStringArrayAdapter;
     private ArrayList<Mater.Branch> branches = new ArrayList<>();
     private StockSearchAdapter mStockSearchAdapter;
@@ -109,12 +107,11 @@ public class StockSearchMainFragment extends Fragment {
         initListeners();
         initData();
         initViews();
-        InquireShards();
         return rootView;
     }
 
     private void initData() {
-        mStringArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, shardStrings);
+        mStringArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, SessionManager.getShard_list(getContext()));
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mStockSearchAdapter = new StockSearchAdapter(getContext(), branches, mOnItemClickListener);
@@ -130,6 +127,7 @@ public class StockSearchMainFragment extends Fragment {
         locationEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_from_shard_et);
         locationEditText.setOnEditorActionListener(mOnEditorActionListener);
         shardSpinner = (Spinner) rootView.findViewById(R.id.fragment_fast_requisition_main_shard_spinner);
+        shardSpinner.setAdapter(mStringArrayAdapter);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_inquire_bt);
         mInquireButton.setOnClickListener(mOnClickListener);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_purchase_receipt_content_rl);
@@ -232,9 +230,6 @@ public class StockSearchMainFragment extends Fragment {
                         case REQUEST_CODE_GET_MATER:
                             DecodeManager.decodeStockSearchGetMater(jsonObject, requestCode, myHandler);
                             break;
-                        case REQUEST_CODE_QUERY_SHARD_LIST:
-                            DecodeManager.decodeQueryShardList(jsonObject, requestCode, myHandler);
-                            break;
                     }
 
                 } catch (Exception e) {
@@ -264,14 +259,6 @@ public class StockSearchMainFragment extends Fragment {
         };
     }
 
-
-    private void InquireShards() {
-        Map<String, String> param = new HashMap<>();
-        param.put("username", SessionManager.getUserName(getContext()));
-        param.put("env", SessionManager.getEnv(getContext()));
-        param.put("warehouse", SessionManager.getWarehouse(getContext()));
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_SHARD_LIST, getContext()), param, REQUEST_CODE_QUERY_SHARD_LIST, mRequestTaskListener);
-    }
 
     private void handleScanFromLocation(TextView v, String code) {
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -341,7 +328,7 @@ public class StockSearchMainFragment extends Fragment {
     }
 
     private void handleInquire(String mater, String location) {
-        if (shardSpinner.getCount() == 0) {
+        if (mStringArrayAdapter.getCount() == 0) {
             ((BaseActivity) getActivity()).ShowToast("子库列表为空,不可查询");
             return;
         }
@@ -351,7 +338,7 @@ public class StockSearchMainFragment extends Fragment {
         param.put("warehouse", SessionManager.getWarehouse(getContext()));
         param.put("location", location);
         param.put("mate", mater);
-        param.put("shard", shardStrings.get(shardSpinner.getSelectedItemPosition()));
+        param.put("shard",mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition()));
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
     }
 
@@ -408,16 +395,6 @@ public class StockSearchMainFragment extends Fragment {
                         }
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("获取物料明细失败");
-                    }
-                    break;
-                case REQUEST_CODE_QUERY_SHARD_LIST:
-                    if (bundle.getInt("code") == 1) {
-                        shardStrings.clear();
-                        shardStrings.addAll(bundle.getStringArrayList("shardList"));
-                        mStringArrayAdapter.notifyDataSetChanged();
-                        shardSpinner.setAdapter(mStringArrayAdapter);
-                    } else {
-                        ((BaseActivity) getActivity()).ShowToast("获取子库列表失败");
                     }
                     break;
             }

@@ -49,6 +49,10 @@ public class PropertiesUtil {
     public static final String ACTION_CHECK_REQUISITION_CANCEL = "ACTION_CHECK_REQUISITION_CANCEL";//action 后缀,审核调拨单,终止过账
 
 
+    public static final String ACTION_HAIR_MATER_GET_PICK_LIST = "ACTION_HAIR_MATER_GET_PICK_LIST";//action 后缀,生产发料 领料项查询
+    public static final String ACTION_HAIR_MATER_GET_MATER_LIST = "ACTION_HAIR_MATER_GET_MATER_LIST";//action 后缀,生产发料 物料列表查询
+
+
 
 
     private static PropertiesUtil mPropertiesUtil;
