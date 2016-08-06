@@ -1,6 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.amphenol.activity.HairMaterActivity"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
@@ -13,12 +15,14 @@
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <TextView
+            android:id="@+id/abcd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:singleLine="true"
             android:text="生产发料"
             android:textColor="@android:color/white"
+            android:onClick="abcd"
             android:textSize="18sp" />
 
     </android.support.v7.widget.Toolbar>

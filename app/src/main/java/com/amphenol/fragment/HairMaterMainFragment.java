@@ -341,7 +341,7 @@ public class HairMaterMainFragment extends Fragment {
     }
 
     public interface MainFragmentCallBack extends Serializable {
-        void gotoSecondFragment(Pick.PickItem pickItem);
+        void gotoSecondFragment(Pick.PickItem pickItem,ArrayList<String> shards);
     }
 
     private class MyHandler extends Handler {
@@ -354,7 +354,7 @@ public class HairMaterMainFragment extends Fragment {
                         pick = (Pick) bundle.getSerializable("pick");
                         refreshShow();
                     } else if (bundle.getInt("code") == 5) {
-                        ((BaseActivity) getActivity()).ShowToast("无效调拨单");
+                        ((BaseActivity) getActivity()).ShowToast("无效领料单");
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("查询失败");
                     }
@@ -362,8 +362,9 @@ public class HairMaterMainFragment extends Fragment {
                 case REQUEST_CODE_GET_PICK:
                     if (bundle.getInt("code") == 1) {
                         Pick.PickItem pickItem = (Pick.PickItem) bundle.getSerializable("pickItem");
+                        ArrayList<String> shards = bundle.getStringArrayList("shards");
                         if (mainFragmentCallBack != null) {
-                            mainFragmentCallBack.gotoSecondFragment(pickItem);
+                            mainFragmentCallBack.gotoSecondFragment(pickItem,shards);
                         }
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("获取物料明细失败");
@@ -372,4 +373,5 @@ public class HairMaterMainFragment extends Fragment {
             }
         }
     }
+
 }

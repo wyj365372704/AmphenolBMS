@@ -426,6 +426,8 @@
 			branched:int 是否需要批次控制
 				0 不需要
 				1 需要
+	code
+		5 = 无效领料单
 
 ##生产发料 - 查询物料列表
 	请求方式：get
@@ -438,9 +440,12 @@
 	action=hair_mater_get_mater_list
 
 返回
-	
+
 	mater_dese:String 物料描述
 	mater_format:String 物料规格
+	shard_list:List<Map<String,Object>> 仓库下属的子库集合
+		Map<String,Object> 子库
+			shard:String 子库名
 	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。
 		Map<String,Object>
 			branch:批次号

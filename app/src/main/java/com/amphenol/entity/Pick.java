@@ -7,10 +7,10 @@ import java.util.ArrayList;
  * 领料单实体
  * Created by Carl on 2016-08-05 005.
  */
-public class Pick implements Serializable{
+public class Pick implements Serializable {
     public static final int TYPE_NORMAL = 1, TYPE_EXCEED = 2, TYPE_RETURN = 3;
     public static final int STATE_BUILDING = 5, STATE_BUILDED = 10, STATE_FINISHED = 50;
-    private String number = "" ;
+    private String number = "";
     private String workOrder = "";
     private String founder = "";
     private String department = "";
@@ -83,14 +83,14 @@ public class Pick implements Serializable{
         this.pickItems = pickItems;
     }
 
-    public static class PickItem implements Serializable{
-        public static final int STATE_BUILDING = 5 ,STATE_BUILDED  = 10,STATE_FINISHED = 50 ,STATE_CLOSED = 60 ;
-        public static final int BRANCHED_YES = 1 ,BRANCHED_NO = 0 ;
-        private String  pickLine = "" ;
-        private String sequence = "" ;
+    public static class PickItem implements Serializable {
+        public static final int STATE_BUILDING = 5, STATE_BUILDED = 10, STATE_FINISHED = 50, STATE_CLOSED = 60;
+        public static final int BRANCHED_YES = 1, BRANCHED_NO = 0;
+        private String pickLine = "";
+        private String sequence = "";
         private Mater.Branch branch = new Mater.Branch();
-        private double quantity = 0 ;//计划数量
-        private int state = STATE_CLOSED ;//领料单行状态
+        private double quantity = 0;//计划数量
+        private int state = STATE_CLOSED;//领料单行状态
         private int branched = BRANCHED_NO;
         private ArrayList<PickItemBranchItem> pickItemBranchItems = new ArrayList<>();
         private Pick pick = new Pick();
@@ -160,10 +160,19 @@ public class Pick implements Serializable{
             this.pick = pick;
         }
 
-        public static class PickItemBranchItem  implements Serializable{
-            private Mater.Branch branch = new Mater.Branch() ;
-            private double quantity = 0 ;//发料数量
-            private boolean checked = false ;
+        public static class PickItemBranchItem implements Serializable {
+            private Mater.Branch branch = new Mater.Branch();
+            private double quantity = 0;//发料数量
+            private boolean checked = false;
+            private PickItem pickItem = new PickItem();
+
+            public PickItem getPickItem() {
+                return pickItem;
+            }
+
+            public void setPickItem(PickItem pickItem) {
+                this.pickItem = pickItem;
+            }
 
             public Mater.Branch getBranch() {
                 return branch;

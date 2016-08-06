@@ -112,10 +112,10 @@ public class Mater implements Serializable {
     }
 
     public static class Branch implements Serializable {
-        private Mater mater ;//所在物料
-        private String number;//批次行号
-        private String po;//批次号
-        private double quantity;//数量 ,
+        private Mater mater  = new Mater();//所在物料
+        private String number = "";//批次行号
+        private String po = "";//批次号
+        private double quantity = 0;//数量 ,
 
         public Branch() {
         }
