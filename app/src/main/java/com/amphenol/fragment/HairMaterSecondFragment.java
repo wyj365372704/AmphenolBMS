@@ -61,12 +61,15 @@ public class HairMaterSecondFragment extends Fragment {
     private View.OnClickListener mOnClickListener;
     private Pick.PickItem mPickItem = new Pick.PickItem();
     private ArrayList<String> shards = new ArrayList<>();
+    private HairMaterSecondTwoFragment.SecondFragmentCallBack secondFragmentCallBack;
+    private SecondFragmentCallBack selfSecondFragmentCallBack;
 
-    public static HairMaterSecondFragment newInstance(Pick.PickItem pickItem, ArrayList<String> shards) {
+    public static HairMaterSecondFragment newInstance(Pick.PickItem pickItem, ArrayList<String> shards,SecondFragmentCallBack secondFragmentCallBack) {
         Bundle args = new Bundle();
         args.putSerializable("pickItem", pickItem);
         args.putStringArrayList("shards", shards);
         HairMaterSecondFragment fragment = new HairMaterSecondFragment();
+        fragment.selfSecondFragmentCallBack = secondFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,7 +111,7 @@ public class HairMaterSecondFragment extends Fragment {
 
     private void initData() {
         hairMaterSecondOneFragment = HairMaterSecondOneFragment.newInstance(mPickItem, shards);
-        hairMaterSecondTwoFragment = HairMaterSecondTwoFragment.newInstance(mPickItem);
+        hairMaterSecondTwoFragment = HairMaterSecondTwoFragment.newInstance(secondFragmentCallBack,mPickItem);
         mPagerAdapter = new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -124,6 +127,21 @@ public class HairMaterSecondFragment extends Fragment {
                 return 2;
             }
         };
+
+    }
+
+    private void changeActionBarState(int position) {
+        switch (position) {
+            case 0:
+                mActionBarTitleTextView.setText("发料明细");
+                break;
+            case 1:
+                mActionBarTitleTextView.setText("待发列表");
+                break;
+        }
+    }
+
+    private void initListeners() {
         mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -140,25 +158,26 @@ public class HairMaterSecondFragment extends Fragment {
 
             }
         };
-    }
-
-    private void changeActionBarState(int position) {
-        switch (position) {
-            case 0:
-                mActionBarTitleTextView.setText("发料明细");
-                break;
-            case 1:
-                mActionBarTitleTextView.setText("待发列表");
-                break;
-        }
-    }
-
-    private void initListeners() {
         mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
 
+                }
+            }
+        };
+        secondFragmentCallBack = new HairMaterSecondTwoFragment.SecondFragmentCallBack() {
+            @Override
+            public void itemBeenClosed(String sequence) {
+                if(selfSecondFragmentCallBack!=null){
+                    selfSecondFragmentCallBack.itemBeenClosed(sequence);
+                }
+            }
+
+            @Override
+            public void itemBeenSured(String sequence) {
+                if(selfSecondFragmentCallBack!=null){
+                    selfSecondFragmentCallBack.itemBeenSured(sequence);
                 }
             }
         };
@@ -174,5 +193,16 @@ public class HairMaterSecondFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    public interface SecondFragmentCallBack extends Serializable {
+        /**
+         * @param sequence 系统顺序号
+         */
+        void itemBeenClosed(String sequence);
 
+        /**
+         * @param sequence 系统顺序号
+         */
+
+        void itemBeenSured(String sequence);
+    }
 }

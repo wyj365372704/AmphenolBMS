@@ -49,6 +49,7 @@ import java.util.Map;
 /**
  */
 public class HairMaterSecondOneFragment extends Fragment {
+    private static final int REQUEST_CODE_INQUIRE = 0X10;
     private View rootView;
     private TextView materNumberTextView, materDescTextView, mPlanQuantityTextView, mUnitTextView, mHairQuantityTextView,
             mWarehouseTextView;
@@ -61,7 +62,10 @@ public class HairMaterSecondOneFragment extends Fragment {
     private Pick.PickItem mPickItem = new Pick.PickItem();
     private HairMaterSecondOneAdapter hairMaterSecondOneAdapter;
     private HairMaterSecondOneAdapter.OnItemClickListener mOnItemClickListener;
-    private RecyclerView mRecyclerView ;
+    private RecyclerView mRecyclerView;
+    private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
+    private LoadingDialog mLoadingDialog;
+    private MyHandler myHandler = new MyHandler();
 
 
     public static HairMaterSecondOneFragment newInstance(Pick.PickItem pickItem, ArrayList<String> shards) {
@@ -93,6 +97,7 @@ public class HairMaterSecondOneFragment extends Fragment {
         initListeners();
         initData();
         initViews();
+        refreshShow();
         return rootView;
     }
 
@@ -115,8 +120,15 @@ public class HairMaterSecondOneFragment extends Fragment {
         mBranchEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_branch_et);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_inquire_bt);
         mAddButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_submit_bt);
+        mInquireButton.setOnClickListener(mOnClickListener);
+        mAddButton.setOnClickListener(mOnClickListener);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_purchase_receipt_content_rl);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(hairMaterSecondOneAdapter);
+        mSpinner.setAdapter(mStringArrayAdapter);
+    }
 
+    private void refreshShow() {
         materNumberTextView.setText(mPickItem.getBranch().getMater().getNumber());
         materDescTextView.setText(mPickItem.getBranch().getMater().getDesc());
         mPlanQuantityTextView.setText(mPickItem.getQuantity() + "");
@@ -124,9 +136,19 @@ public class HairMaterSecondOneFragment extends Fragment {
         mWarehouseTextView.setText(mPickItem.getBranch().getMater().getWarehouse());
         mLocationEditText.setText(mPickItem.getBranch().getMater().getLocation());
         mBranchEditText.setText(mPickItem.getBranch().getPo());
-        mSpinner.setAdapter(mStringArrayAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(hairMaterSecondOneAdapter);
+
+        hairMaterSecondOneAdapter.setDate(mPickItem.getPickItemBranchItems());
+        hairMaterSecondOneAdapter.notifyDataSetChanged();
+
+        if (mPickItem.getPickItemBranchItems().size() > 0) {
+            mInquireButton.setTag(false);
+            mInquireButton.setText("查询");
+            mLocationEditText.getText().clear();
+            mBranchEditText.getText().clear();
+        } else {
+            mInquireButton.setText("清除");
+            mInquireButton.setTag(true);
+        }
     }
 
     private void initListeners() {
@@ -134,6 +156,17 @@ public class HairMaterSecondOneFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
+                    case R.id.fragment_fast_requisition_main_inquire_bt:
+                        boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
+                        if (state) {//当前按钮状态为“清除”
+                            mPickItem = new Pick.PickItem();
+                            refreshShow();
+                        } else {
+                            handleInquireMater(mPickItem.getBranch().getMater().getWarehouse(),mPickItem.getBranch().getMater().getNumber(),mPickItem.getBranch().getMater().getShard(),mPickItem.getBranch().getMater().getLocation(),mPickItem.getBranch().getPo(),mPickItem.getQuantity(),mPickItem.getPick().getDepartment(),mPickItem.getPick().getWorkOrder(),mPickItem.getSequence());
+                        }
+                        break;
+                    case R.id.fragment_fast_requisition_main_submit_bt:
+                        break;
 
                 }
             }
@@ -150,5 +183,82 @@ public class HairMaterSecondOneFragment extends Fragment {
 
             }
         };
+
+        mRequestTaskListener = new NetWorkAccessTools.RequestTaskListener() {
+            @Override
+            public void onRequestStart(int requestCode) {
+                if (mLoadingDialog != null) {
+                    mLoadingDialog.dismiss();
+                    mLoadingDialog = null;
+                }
+                mLoadingDialog = new LoadingDialog(getActivity());
+                mLoadingDialog.show();
+            }
+
+            @Override
+            public void onRequestLoading(int requestCode, long current, long count) {
+
+            }
+
+            @Override
+            public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
+                try {
+                    switch (requestCode) {
+                        case REQUEST_CODE_INQUIRE:
+                            DecodeManager.decodeHairMaterGetMaterList(jsonObject, requestCode, myHandler);
+                            break;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ((BaseActivity) getActivity()).ShowToast("服务器返回错误");
+                } finally {
+                    if (mLoadingDialog != null) {
+                        mLoadingDialog.dismiss();
+                        mLoadingDialog = null;
+                    }
+                }
+            }
+
+            @Override
+            public void onRequestFail(int requestCode, int errorNo) {
+                if (mLoadingDialog != null) {
+                    mLoadingDialog.dismiss();
+                    mLoadingDialog = null;
+                }
+                if (errorNo == 0) {
+                    ((BaseActivity) getActivity()).ShowToast("与服务器连接失败");
+                } else {
+
+                    ((BaseActivity) getActivity()).ShowToast("服务器返回错误");
+                }
+            }
+        };
+    }
+
+    private void handleInquireMater(String warehouse,String mate, String shard,String location,String branch,double quantity,String department,String workOrder,String sequence) {
+        if (!HairMaterSecondOneFragment.this.isVisible())
+            return;
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getContext()));
+        param.put("env", SessionManager.getEnv(getContext()));
+        param.put("warehouse",warehouse);
+        param.put("mater", mate);
+        param.put("shard",shard);
+        param.put("location",location);
+        param.put("branch",branch);
+
+        param.put("quantity",quantity+"");//计划数量
+        param.put("department",department);
+        param.put("workOrder",workOrder);
+        param.put("sequence",sequence);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_GET_MATER_LIST, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
+    }
+
+    private class MyHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
     }
 }

@@ -22,7 +22,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //    testCompile 'junit:junit:4.12'
     compile files('libs/afinal_0.5.1_bin.jar')
     compile files('libs/Volley.jar')
     compile files('libs/fastjson-1.2.2.jar')

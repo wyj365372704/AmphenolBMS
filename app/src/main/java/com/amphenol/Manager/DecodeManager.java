@@ -641,6 +641,24 @@ public class DecodeManager {
         handler.sendMessage(msg);
     }
 
+    public static void decodeHairMaterSubmit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeHairMaterCancel(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
     public static void decodeHairMaterGetMaterList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();

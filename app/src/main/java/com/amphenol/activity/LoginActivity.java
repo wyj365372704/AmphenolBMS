@@ -87,7 +87,6 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
-
                 try {
                     DecodeManager.decodeLoginCheck(jsonObject, requestCode, myHandler);
                 } catch (Exception e) {

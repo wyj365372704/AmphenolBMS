@@ -273,11 +273,11 @@ public class HairMaterMainFragment extends Fragment {
     /**
      * 移除一个项
      *
-     * @param pickItemLine 领料单行号
+     * @param sequence 系统顺序号
      */
-    public void refreshShow(String pickItemLine) {
+    public void refreshShow(String sequence) {
         for (int i = 0; i <pick.getPickItems().size(); i++) {
-            if (TextUtils.equals(pick.getPickItems().get(i).getPickLine(), pickItemLine)) {
+            if (TextUtils.equals(pick.getPickItems().get(i).getSequence(), sequence)) {
                 pick.getPickItems().remove(i);
                 mHairMaterMainAdapter.notifyDataSetChanged();
                 break;

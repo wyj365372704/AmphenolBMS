@@ -90,6 +90,7 @@ public class Pick implements Serializable {
         private String sequence = "";
         private Mater.Branch branch = new Mater.Branch();
         private double quantity = 0;//计划数量
+        private double hairQuantity = 0 ;//发料数量
         private int state = STATE_CLOSED;//领料单行状态
         private int branched = BRANCHED_NO;
         private ArrayList<PickItemBranchItem> pickItemBranchItems = new ArrayList<>();
@@ -158,6 +159,14 @@ public class Pick implements Serializable {
 
         public void setPick(Pick pick) {
             this.pick = pick;
+        }
+
+        public double getHairQuantity() {
+            return hairQuantity;
+        }
+
+        public void setHairQuantity(double hairQuantity) {
+            this.hairQuantity = hairQuantity;
         }
 
         public static class PickItemBranchItem implements Serializable {

@@ -68,7 +68,13 @@ public class HairMaterSecondTwoAdapter extends RecyclerView.Adapter<HairMaterSec
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                switch (v.getId()) {
+                    case R.id.purchase_receipt_second_item_close_iv:
+                        if (onItemClickListener != null) {
+                            onItemClickListener.OnItemClosed(position);
+                        }
+                        break;
+                }
             }
         };
         TextWatcher mTextWatcher = new TextWatcher() {
