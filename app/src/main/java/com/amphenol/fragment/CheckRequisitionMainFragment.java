@@ -352,7 +352,7 @@ public class CheckRequisitionMainFragment extends Fragment {
             switch (msg.what) {
                 case REQUEST_CODE_GET_MATER_LIST:
                     if (bundle.getInt("code") == 1) {
-                        requisition = (Requisition) bundle.getSerializable("requisition");
+                        requisition =  bundle.getParcelable("requisition");
                         refreshShow();
                     } else if (bundle.getInt("code") == 5) {
                         ((BaseActivity) getActivity()).ShowToast("无效调拨单");
@@ -362,7 +362,7 @@ public class CheckRequisitionMainFragment extends Fragment {
                     break;
                 case REQUEST_CODE_GET_MATER:
                     if (bundle.getInt("code") == 1) {
-                        Requisition.RequisitionItem requisitionItem = (Requisition.RequisitionItem) bundle.get("requisitionItem");
+                        Requisition.RequisitionItem requisitionItem = bundle.getParcelable("requisitionItem");
                         ArrayList<String> shardStrings = bundle.getStringArrayList("target_shard_list");
                         if (mainFragmentCallBack != null) {
                             mainFragmentCallBack.gotoSecondFragment(requisitionItem, shardStrings);

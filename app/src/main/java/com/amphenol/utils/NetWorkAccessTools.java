@@ -18,12 +18,7 @@ import net.tsz.afinal.http.AjaxParams;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -74,7 +69,7 @@ public class NetWorkAccessTools {
      * @param url         访问地址,带上http://头, 不要跟上传递参数文本,不要跟上"?"
      * @param params      参数集合
      * @param requestCode   请求码，回调中用于区分请求
-     * @param listener  回调接受者，非UI线程
+     * @param listener  回调接受者，UI线程执行
      * */
     public void getAsyn(final String url, Map<String, String> params, final int requestCode, final RequestTaskListener listener) {
         if(params == null){
@@ -128,7 +123,7 @@ public class NetWorkAccessTools {
      * @param params        参数集合
      * @param files         需要上传的文件集合，可以置空
      * @param requestCode   请求码，回调中用于区分请求
-     * @param listener      回调接受者
+     * @param listener      回调接受者 , UI线程执行
      */
     public void postAsyn(final String url, Map<String, String> params, Map<String, File> files, final int requestCode, final RequestTaskListener listener) {
         if(params == null){

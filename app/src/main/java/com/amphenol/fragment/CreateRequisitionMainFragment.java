@@ -458,7 +458,7 @@ public class CreateRequisitionMainFragment extends Fragment {
                 case REQUEST_CODE_GET_MATER_LIST:
                     if (bundle.getInt("code") == 1) {
                         requisition = new Requisition();
-                        requisition.setRequisitionItems((ArrayList<Requisition.RequisitionItem>) bundle.getSerializable("requisitionItems"));
+                        requisition.setRequisitionItems(bundle.<Requisition.RequisitionItem>getParcelableArrayList("requisitionItems"));
                         refreshShow();
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("查询失败");
@@ -466,7 +466,7 @@ public class CreateRequisitionMainFragment extends Fragment {
                     break;
                 case REQUEST_CODE_GET_MATER:
                     if (bundle.getInt("code") == 1) {
-                        Requisition.RequisitionItem requisitionItem = (Requisition.RequisitionItem) bundle.get("requisitionItem");
+                        Requisition.RequisitionItem requisitionItem = bundle.getParcelable("requisitionItem");
                         if (mainFragmentCallBack != null) {
                             mainFragmentCallBack.gotoSecondFragment(requisitionItem);
                         }

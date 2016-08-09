@@ -47,7 +47,7 @@ public class DecodeManager {
                 for (int i = 0; i < envList.length(); i++) {
                     envArrayList.add(envList.getString(i).trim());
                 }
-                data.putSerializable("env_list", envArrayList);
+                data.putStringArrayList("env_list", envArrayList);
             }
         }
         msg.setData(data);
@@ -143,7 +143,7 @@ public class DecodeManager {
                 }
             }
             purchase.setPurchaseItems(purchaseItems);
-            data.putSerializable("purchase", purchase);
+            data.putParcelable("purchase", purchase);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -215,7 +215,7 @@ public class DecodeManager {
             purchaseItem.setMater(mater);
             purchaseItem.setPurchase(purchase);
             purchaseItem.setPurchaseItemBranchItems(purchaseItemBranchItems);
-            data.putSerializable("purchaseItem", purchaseItem);
+            data.putParcelable("purchaseItem", purchaseItem);
 
         }
         msg.setData(data);
@@ -315,7 +315,7 @@ public class DecodeManager {
                 requisitionItem.setLocation(target_location);
                 requisitionItems.add(requisitionItem);
             }
-            data.putSerializable("requisitionItems", requisitionItems);
+            data.putParcelableArrayList("requisitionItems", requisitionItems);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -351,7 +351,7 @@ public class DecodeManager {
                 branch.setMater(mater);
                 branches.add(branch);
             }
-            data.putSerializable("branches", branches);
+            data.putParcelableArrayList("branches", branches);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -397,7 +397,7 @@ public class DecodeManager {
             requisitionItem.setBranch(branch);
             requisitionItem.setShard(target_shard);
             requisitionItem.setLocation(target_location);
-            data.putSerializable("requisitionItem", requisitionItem);
+            data.putParcelable("requisitionItem", requisitionItem);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -436,7 +436,7 @@ public class DecodeManager {
             branch.setPo(branch_po);
             branch.setQuantity(quantity);
             branch.setMater(mater);
-            data.putSerializable("branch", branch);
+            data.putParcelable("branch", branch);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -495,7 +495,7 @@ public class DecodeManager {
 
             }
             requisition.setRequisitionItems(requisitionItems);
-            data.putSerializable("requisition", requisition);
+            data.putParcelable("requisition", requisition);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -547,7 +547,7 @@ public class DecodeManager {
             requisitionItem.setActualQuantity(quantity);
             requisitionItem.setNumber(requisitionItemNumber.trim());
             requisitionItem.setRequisition(requisition);
-            data.putSerializable("requisitionItem", requisitionItem);
+            data.putParcelable("requisitionItem", requisitionItem);
             ArrayList<String> shardStrings = new ArrayList<>();
             JSONArray shardJsonArray = jsonObject.optJSONArray("target_shard_list");
             for (int i = 0; i < shardJsonArray.length(); i++) {
@@ -636,7 +636,7 @@ public class DecodeManager {
                 pick.setPickItems(pickItems);
             }
         }
-        data.putSerializable("pick", pick);
+        data.putParcelable("pick", pick);
         msg.setData(data);
         handler.sendMessage(msg);
     }
@@ -738,7 +738,7 @@ public class DecodeManager {
                 pickItem.setPickItemBranchItems(pickItemBranchItems);
             }
         }
-        data.putSerializable("pickItem", pickItem);
+        data.putParcelable("pickItem", pickItem);
         data.putStringArrayList("shards",shards);
         msg.setData(data);
         handler.sendMessage(msg);

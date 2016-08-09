@@ -1,5 +1,8 @@
 package com.amphenol.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.List;
  * 物料实体类
  * Created by Carl on 2016/7/12/012.
  */
-public class Mater implements Serializable {
+public class Mater implements Parcelable {
     public static final int BRANCH_CONTROL = 1, BRANCH_NO_CONTROL = 0;//批次控制 1：控制    0：不控制
     private String number = "";//物料编号
     private String desc = "";//物料描述
@@ -20,8 +23,36 @@ public class Mater implements Serializable {
     private String warehouse = "";//仓库
     private String shard = "";//收货子库
     private String location = "";//收货库位
-
     private List<Branch> branches = new ArrayList<>();//批次信息
+
+    public Mater() {
+    }
+
+    protected Mater(Parcel in) {
+        number = in.readString();
+        desc = in.readString();
+        format = in.readString();
+        unit = in.readString();
+        quantity = in.readDouble();
+        branchControl = in.readInt();
+        single = in.readDouble();
+        warehouse = in.readString();
+        shard = in.readString();
+        location = in.readString();
+        branches = in.createTypedArrayList(Branch.CREATOR);
+    }
+
+    public static final Creator<Mater> CREATOR = new Creator<Mater>() {
+        @Override
+        public Mater createFromParcel(Parcel in) {
+            return new Mater(in);
+        }
+
+        @Override
+        public Mater[] newArray(int size) {
+            return new Mater[size];
+        }
+    };
 
     public String getNumber() {
         return number;
@@ -111,7 +142,27 @@ public class Mater implements Serializable {
         this.warehouse = warehouse;
     }
 
-    public static class Branch implements Serializable {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(number);
+        dest.writeString(desc);
+        dest.writeString(format);
+        dest.writeString(unit);
+        dest.writeDouble(quantity);
+        dest.writeInt(branchControl);
+        dest.writeDouble(single);
+        dest.writeString(warehouse);
+        dest.writeString(shard);
+        dest.writeString(location);
+        dest.writeTypedList(branches);
+    }
+
+    public static class Branch implements Parcelable {
         private Mater mater  = new Mater();//所在物料
         private String number = "";//批次行号
         private String po = "";//批次号
@@ -125,6 +176,24 @@ public class Mater implements Serializable {
             this.po = po;
             this.quantity = quantity;
         }
+
+        protected Branch(Parcel in) {
+            number = in.readString();
+            po = in.readString();
+            quantity = in.readDouble();
+        }
+
+        public static final Creator<Branch> CREATOR = new Creator<Branch>() {
+            @Override
+            public Branch createFromParcel(Parcel in) {
+                return new Branch(in);
+            }
+
+            @Override
+            public Branch[] newArray(int size) {
+                return new Branch[size];
+            }
+        };
 
         public String getNumber() {
             return number;
@@ -156,6 +225,18 @@ public class Mater implements Serializable {
 
         public void setMater(Mater mater) {
             this.mater = mater;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(number);
+            dest.writeString(po);
+            dest.writeDouble(quantity);
         }
     }
 }

@@ -358,7 +358,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
             switch (msg.what) {
                 case REQUEST_CODE_QUERY_RECEIPT:
                     if (bundle.getInt("code") == 1) {
-                        purchase = (Purchase) bundle.getSerializable("purchase");
+                        purchase = bundle.getParcelable("purchase");
                         refreshShow(purchase);
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("无效收货单");
@@ -366,7 +366,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
                     break;
                 case REQUEST_CODE_QUERY_RECEIPT_ITEM:
                     if (bundle.getInt("code") == 1) {
-                        Purchase.PurchaseItem purchaseItem = (Purchase.PurchaseItem) bundle.get("purchaseItem");
+                        Purchase.PurchaseItem purchaseItem = bundle.getParcelable("purchaseItem");
                         if (mainFragmentCallBack != null) {
                             mainFragmentCallBack.gotoSecondFragment(purchaseItem);
                         }

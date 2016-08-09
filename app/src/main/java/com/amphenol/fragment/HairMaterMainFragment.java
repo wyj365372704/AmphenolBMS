@@ -351,7 +351,7 @@ public class HairMaterMainFragment extends Fragment {
             switch (msg.what) {
                 case REQUEST_CODE_GET_PICK_LIST:
                     if (bundle.getInt("code") == 1) {
-                        pick = (Pick) bundle.getSerializable("pick");
+                        pick = bundle.getParcelable("pick");
                         refreshShow();
                     } else if (bundle.getInt("code") == 5) {
                         ((BaseActivity) getActivity()).ShowToast("无效领料单");
@@ -361,7 +361,7 @@ public class HairMaterMainFragment extends Fragment {
                     break;
                 case REQUEST_CODE_GET_PICK:
                     if (bundle.getInt("code") == 1) {
-                        Pick.PickItem pickItem = (Pick.PickItem) bundle.getSerializable("pickItem");
+                        Pick.PickItem pickItem =  bundle.getParcelable("pickItem");
                         ArrayList<String> shards = bundle.getStringArrayList("shards");
                         if (mainFragmentCallBack != null) {
                             mainFragmentCallBack.gotoSecondFragment(pickItem,shards);

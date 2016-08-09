@@ -26,7 +26,7 @@ public class StockSearchSecondFragment extends Fragment {
     public static StockSearchSecondFragment newInstance(Mater.Branch branch) {
 
         Bundle args = new Bundle();
-        args.putSerializable("branch",branch);
+        args.putParcelable("branch",branch);
         StockSearchSecondFragment fragment = new StockSearchSecondFragment();
         fragment.setArguments(args);
         return fragment;
@@ -37,7 +37,7 @@ public class StockSearchSecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if(args!=null){
-            branch = (Mater.Branch) args.getSerializable("branch");
+            branch = args.getParcelable("branch");
         }
 
     }

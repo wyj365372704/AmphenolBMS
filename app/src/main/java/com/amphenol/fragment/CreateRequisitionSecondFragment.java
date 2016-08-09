@@ -55,7 +55,7 @@ public class CreateRequisitionSecondFragment extends Fragment {
     public static CreateRequisitionSecondFragment newInstance(Requisition.RequisitionItem mRequisitionItem) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mRequisitionItem",mRequisitionItem);
+        args.putParcelable("mRequisitionItem",mRequisitionItem);
         CreateRequisitionSecondFragment fragment = new CreateRequisitionSecondFragment();
         fragment.setArguments(args);
         return fragment;
@@ -66,7 +66,7 @@ public class CreateRequisitionSecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if(args!=null){
-            mRequisitionItem = (Requisition.RequisitionItem) args.getSerializable("mRequisitionItem");
+            mRequisitionItem = (Requisition.RequisitionItem) args.getParcelable("mRequisitionItem");
         }
     }
 

@@ -25,7 +25,7 @@ public class FastRequisitionSecondFragment extends Fragment {
     public static FastRequisitionSecondFragment newInstance(Requisition.RequisitionItem mRequisitionItem) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mRequisitionItem",mRequisitionItem);
+        args.putParcelable("mRequisitionItem",mRequisitionItem);
         FastRequisitionSecondFragment fragment = new FastRequisitionSecondFragment();
         fragment.setArguments(args);
         return fragment;
@@ -36,7 +36,7 @@ public class FastRequisitionSecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if(args!=null){
-            mRequisitionItem = (Requisition.RequisitionItem) args.getSerializable("mRequisitionItem");
+            mRequisitionItem = (Requisition.RequisitionItem) args.getParcelable("mRequisitionItem");
         }
 
     }

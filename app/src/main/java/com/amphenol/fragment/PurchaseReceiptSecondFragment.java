@@ -71,7 +71,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
     public static PurchaseReceiptSecondFragment newInstance(SecondFragmentCallBack mSecondFragmentCallBack, Purchase.PurchaseItem mPurchaseItem) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mPurchaseItem",mPurchaseItem);
+        args.putParcelable("mPurchaseItem",mPurchaseItem);
         PurchaseReceiptSecondFragment fragment = new PurchaseReceiptSecondFragment();
         fragment.mSecondFragmentCallBack = mSecondFragmentCallBack;
         fragment.setArguments(args);
@@ -83,7 +83,7 @@ public class PurchaseReceiptSecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if(args!=null){
-            mPurchaseItem = (Purchase.PurchaseItem) args.getSerializable("mPurchaseItem");
+            mPurchaseItem = args.getParcelable("mPurchaseItem");
         }
     }
 

@@ -43,6 +43,12 @@ public class MenuActivity extends BaseActivity {
     private long exitTime = 0;
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        InquireMenu();
+    }
+
+    @Override
     public void setContentView() {
         setContentView(R.layout.activity_menu);
     }
@@ -59,7 +65,6 @@ public class MenuActivity extends BaseActivity {
                         componentName = new ComponentName(MenuActivity.this, PurchaseReceiptActivity.class);
                         break;
                     case MenuItem.MENU_CODE_PURCHASE_RETURN:
-
                         break;
                     case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
                         componentName = new ComponentName(MenuActivity.this, WareHouseSetUpActivity.class);
@@ -145,11 +150,6 @@ public class MenuActivity extends BaseActivity {
         mRecyclerView.setAdapter(menuAdapter);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        InquireMenu();
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

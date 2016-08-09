@@ -379,7 +379,7 @@ public class StockSearchMainFragment extends Fragment {
                 case REQUEST_CODE_GET_MATER_LIST:
                     if (bundle.getInt("code") == 1) {
                         branches.clear();
-                        branches.addAll((ArrayList<Mater.Branch>) bundle.getSerializable("branches"));
+                        branches.addAll(bundle.<Mater.Branch>getParcelableArrayList("branches"));
                         refreshShow();
                     } else if (bundle.getInt("code") == 5) {
                         ((BaseActivity) getActivity()).ShowToast("查无结果");

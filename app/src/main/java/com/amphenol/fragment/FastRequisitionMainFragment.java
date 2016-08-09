@@ -484,7 +484,7 @@ public class FastRequisitionMainFragment extends Fragment {
                 case REQUEST_CODE_GET_MATER_LIST:
                     if (bundle.getInt("code") == 1) {
                         requisition = new Requisition();
-                        requisition.setRequisitionItems((ArrayList<Requisition.RequisitionItem>) bundle.getSerializable("requisitionItems"));
+                        requisition.setRequisitionItems(bundle.<Requisition.RequisitionItem>getParcelableArrayList("requisitionItems"));
                         refreshShow();
                     } else if (bundle.getInt("code") == 5) {
                         ((BaseActivity) getActivity()).ShowToast("查无结果");
@@ -505,7 +505,7 @@ public class FastRequisitionMainFragment extends Fragment {
                     break;
                 case REQUEST_CODE_GET_MATER:
                     if (bundle.getInt("code") == 1) {
-                        Requisition.RequisitionItem requisitionItem = (Requisition.RequisitionItem) bundle.get("requisitionItem");
+                        Requisition.RequisitionItem requisitionItem = bundle.getParcelable("requisitionItem");
                         if (mainFragmentCallBack != null) {
                             mainFragmentCallBack.gotoSecondFragment(requisitionItem);
                         }

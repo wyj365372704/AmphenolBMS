@@ -1,5 +1,8 @@
 package com.amphenol.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -7,7 +10,7 @@ import java.util.ArrayList;
  * 领料单实体
  * Created by Carl on 2016-08-05 005.
  */
-public class Pick implements Serializable {
+public class Pick implements Parcelable {
     public static final int TYPE_NORMAL = 1, TYPE_EXCEED = 2, TYPE_RETURN = 3;
     public static final int STATE_BUILDING = 5, STATE_BUILDED = 10, STATE_FINISHED = 50;
     private String number = "";
@@ -18,6 +21,32 @@ public class Pick implements Serializable {
     private int type = TYPE_NORMAL;
     private int state = STATE_FINISHED;
     private ArrayList<PickItem> pickItems = new ArrayList<>();
+
+    public Pick() {
+    }
+
+    protected Pick(Parcel in) {
+        number = in.readString();
+        workOrder = in.readString();
+        founder = in.readString();
+        department = in.readString();
+        date = in.readString();
+        type = in.readInt();
+        state = in.readInt();
+        pickItems = in.createTypedArrayList(PickItem.CREATOR);
+    }
+
+    public static final Creator<Pick> CREATOR = new Creator<Pick>() {
+        @Override
+        public Pick createFromParcel(Parcel in) {
+            return new Pick(in);
+        }
+
+        @Override
+        public Pick[] newArray(int size) {
+            return new Pick[size];
+        }
+    };
 
     public String getNumber() {
         return number;
@@ -83,7 +112,24 @@ public class Pick implements Serializable {
         this.pickItems = pickItems;
     }
 
-    public static class PickItem implements Serializable {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(number);
+        dest.writeString(workOrder);
+        dest.writeString(founder);
+        dest.writeString(department);
+        dest.writeString(date);
+        dest.writeInt(type);
+        dest.writeInt(state);
+        dest.writeTypedList(pickItems);
+    }
+
+    public static class PickItem implements Parcelable {
         public static final int STATE_BUILDING = 5, STATE_BUILDED = 10, STATE_FINISHED = 50, STATE_CLOSED = 60;
         public static final int BRANCHED_YES = 1, BRANCHED_NO = 0;
         private String pickLine = "";
@@ -95,6 +141,32 @@ public class Pick implements Serializable {
         private int branched = BRANCHED_NO;
         private ArrayList<PickItemBranchItem> pickItemBranchItems = new ArrayList<>();
         private Pick pick = new Pick();
+
+        public PickItem() {
+        }
+
+        protected PickItem(Parcel in) {
+            pickLine = in.readString();
+            sequence = in.readString();
+            branch = in.readParcelable(Mater.Branch.class.getClassLoader());
+            quantity = in.readDouble();
+            hairQuantity = in.readDouble();
+            state = in.readInt();
+            branched = in.readInt();
+            pickItemBranchItems = in.createTypedArrayList(PickItemBranchItem.CREATOR);
+        }
+
+        public static final Creator<PickItem> CREATOR = new Creator<PickItem>() {
+            @Override
+            public PickItem createFromParcel(Parcel in) {
+                return new PickItem(in);
+            }
+
+            @Override
+            public PickItem[] newArray(int size) {
+                return new PickItem[size];
+            }
+        };
 
         public String getPickLine() {
             return pickLine;
@@ -169,11 +241,49 @@ public class Pick implements Serializable {
             this.hairQuantity = hairQuantity;
         }
 
-        public static class PickItemBranchItem implements Serializable {
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(pickLine);
+            dest.writeString(sequence);
+            dest.writeParcelable(branch, flags);
+            dest.writeDouble(quantity);
+            dest.writeDouble(hairQuantity);
+            dest.writeInt(state);
+            dest.writeInt(branched);
+            dest.writeTypedList(pickItemBranchItems);
+        }
+
+        public static class PickItemBranchItem implements Parcelable {
             private Mater.Branch branch = new Mater.Branch();
             private double quantity = 0;//发料数量
             private boolean checked = false;
             private PickItem pickItem = new PickItem();
+
+            public PickItemBranchItem() {
+            }
+
+            protected PickItemBranchItem(Parcel in) {
+                branch = in.readParcelable(Mater.Branch.class.getClassLoader());
+                quantity = in.readDouble();
+                checked = in.readByte() != 0;
+            }
+
+            public static final Creator<PickItemBranchItem> CREATOR = new Creator<PickItemBranchItem>() {
+                @Override
+                public PickItemBranchItem createFromParcel(Parcel in) {
+                    return new PickItemBranchItem(in);
+                }
+
+                @Override
+                public PickItemBranchItem[] newArray(int size) {
+                    return new PickItemBranchItem[size];
+                }
+            };
 
             public PickItem getPickItem() {
                 return pickItem;
@@ -205,6 +315,18 @@ public class Pick implements Serializable {
 
             public void setChecked(boolean checked) {
                 this.checked = checked;
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeParcelable(branch, flags);
+                dest.writeDouble(quantity);
+                dest.writeByte((byte) (checked ? 1 : 0));
             }
         }
     }

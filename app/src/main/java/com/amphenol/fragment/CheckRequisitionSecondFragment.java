@@ -70,7 +70,7 @@ public class CheckRequisitionSecondFragment extends Fragment {
     public static CheckRequisitionSecondFragment newInstance(Requisition.RequisitionItem mRequisitionItem, ArrayList<String> shards, SecondFragmentCallBack mSecondFragmentCallBack) {
 
         Bundle args = new Bundle();
-        args.putSerializable("mRequisitionItem", mRequisitionItem);
+        args.putParcelable("mRequisitionItem", mRequisitionItem);
         args.putSerializable("shards", shards);
         CheckRequisitionSecondFragment fragment = new CheckRequisitionSecondFragment();
         fragment.mSecondFragmentCallBack = mSecondFragmentCallBack;
@@ -84,7 +84,7 @@ public class CheckRequisitionSecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            mRequisitionItem = (Requisition.RequisitionItem) args.getSerializable("mRequisitionItem");
+            mRequisitionItem = (Requisition.RequisitionItem) args.getParcelable("mRequisitionItem");
             shardStrings = (ArrayList<String>) args.getSerializable("shards");
         }
     }
@@ -370,7 +370,9 @@ public class CheckRequisitionSecondFragment extends Fragment {
                             mSecondFragmentCallBack.itemBeenSured(mRequisitionItem.getNumber());
                         } else if(bundle.getInt("code") == 5){
                             Toast.makeText(getContext(), "过账失败,目标子库和库位不匹配", Toast.LENGTH_SHORT).show();
-                        }else {
+                        }else if(bundle.getInt("code") == 6){
+                            Toast.makeText(getContext(), "过账失败,库存数量不足", Toast.LENGTH_SHORT).show();
+                        }else{
                             Toast.makeText(getContext(), "过账失败", Toast.LENGTH_SHORT).show();
                         }
                     }

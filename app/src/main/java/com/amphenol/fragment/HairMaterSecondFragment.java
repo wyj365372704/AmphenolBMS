@@ -66,7 +66,7 @@ public class HairMaterSecondFragment extends Fragment {
 
     public static HairMaterSecondFragment newInstance(Pick.PickItem pickItem, ArrayList<String> shards,SecondFragmentCallBack secondFragmentCallBack) {
         Bundle args = new Bundle();
-        args.putSerializable("pickItem", pickItem);
+        args.putParcelable("pickItem", pickItem);
         args.putStringArrayList("shards", shards);
         HairMaterSecondFragment fragment = new HairMaterSecondFragment();
         fragment.selfSecondFragmentCallBack = secondFragmentCallBack;
@@ -79,7 +79,7 @@ public class HairMaterSecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            mPickItem = (Pick.PickItem) args.getSerializable("pickItem");
+            mPickItem =  args.getParcelable("pickItem");
             shards = args.getStringArrayList("shards");
         }
     }
