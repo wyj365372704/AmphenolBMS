@@ -354,8 +354,7 @@
             <include
                 layout="@layout/pruchase_receipt_second_item_head"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/fragment_purchase_receipt_second_content_rl"

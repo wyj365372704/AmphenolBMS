@@ -11,20 +11,33 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.amphenol.R;
+import com.amphenol.ui.LoadingDialog;
+import com.amphenol.utils.CommonTools;
+import com.amphenol.utils.NetWorkAccessTools;
+import com.amphenol.utils.PropertiesUtil;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 系统设置
  */
 public class WareHouseSetUpActivity extends BaseActivity {
+    private static final int REQUEST_CODE_QUERY_SHARD_LIST = 0x10;
     private Spinner mWareHouseSpinner;
     private String currentWareHouse = "";
     private ArrayAdapter<String> mWareHouseStringArrayAdapter;
     private AdapterView.OnItemSelectedListener mOnItemSelectedListener;
-    private MyHandler myHandler;
+    private MyHandler myHandler = new MyHandler();
+    private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
+    private LoadingDialog mLoadingDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,15 +64,66 @@ public class WareHouseSetUpActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<String> warehouseList = SessionManager.getWarehouse_list(getApplicationContext());
-                if(!TextUtils.equals(warehouseList.get(position),SessionManager.getWarehouse(getApplicationContext()))){
-                    SessionManager.setWarehouse(warehouseList.get(position),getApplicationContext());
-                    ShowToast("操作仓库修改为:"+warehouseList.get(position));
+                if (!TextUtils.equals(warehouseList.get(position), SessionManager.getWarehouse(getApplicationContext()))) {
+
+                    InquireShards(warehouseList.get(position));
+//                    SessionManager.setWarehouse(warehouseList.get(position), getApplicationContext());
+//                    ShowToast("操作仓库修改为:" + warehouseList.get(position));
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        };
+
+        mRequestTaskListener = new NetWorkAccessTools.RequestTaskListener() {
+            @Override
+            public void onRequestStart(int requestCode) {
+                if (mLoadingDialog != null) {
+                    mLoadingDialog.dismiss();
+                    mLoadingDialog = null;
+                }
+                mLoadingDialog = new LoadingDialog(WareHouseSetUpActivity.this);
+                mLoadingDialog.show();
+            }
+
+            @Override
+            public void onRequestLoading(int requestCode, long current, long count) {
+
+            }
+
+            @Override
+            public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
+                try {
+                    switch (requestCode) {
+                        case REQUEST_CODE_QUERY_SHARD_LIST:
+                            DecodeManager.decodeQueryShardList(jsonObject, requestCode, myHandler);
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ShowToast("服务器返回错误");
+                } finally {
+                    if (mLoadingDialog != null) {
+                        mLoadingDialog.dismiss();
+                        mLoadingDialog = null;
+                    }
+                }
+            }
+
+            @Override
+            public void onRequestFail(int requestCode, int errorNo) {
+                if (mLoadingDialog != null) {
+                    mLoadingDialog.dismiss();
+                    mLoadingDialog = null;
+                }
+                if (errorNo == 0) {
+                    ShowToast("与服务器连接失败");
+                } else {
+                    ShowToast("服务器返回错误");
+                }
             }
         };
     }
@@ -87,11 +151,33 @@ public class WareHouseSetUpActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void InquireShards(String warehouse) {
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getApplicationContext()));
+        param.put("env", SessionManager.getEnv(getApplicationContext()));
+        param.put("warehouse", warehouse);
+        NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_SHARD_LIST, getApplicationContext()), param, REQUEST_CODE_QUERY_SHARD_LIST, mRequestTaskListener);
+    }
+
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            Map<String, String> params = (Map<String, String>) bundle.getSerializable("params");
+            switch (msg.what) {
+                case REQUEST_CODE_QUERY_SHARD_LIST:
+                    if (bundle.getInt("code") == 1) {
+                        SessionManager.setWarehouse(params.get("warehouse"), WareHouseSetUpActivity.this);
+                        ArrayList<String> shardList = bundle.getStringArrayList("shardList");
+                        SessionManager.setShard_list(shardList, getApplicationContext());
+                        ShowToast("操作仓库修改为:" + SessionManager.getWarehouse(WareHouseSetUpActivity.this));
+                    } else if(bundle.getInt("code") == 5) {
+                        ShowToast("操作仓库修改失败:仓库不存在");
+                    } else {
+                        ShowToast("操作仓库修改失败");
+                    }
+                    break;
+            }
         }
     }
-
 }

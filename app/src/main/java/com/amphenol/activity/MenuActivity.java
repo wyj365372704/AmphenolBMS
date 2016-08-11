@@ -39,13 +39,13 @@ public class MenuActivity extends BaseActivity {
     private static final int REQUEST_CODE_QUERY_WAREHOUSE = 0X11;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private MyHandler myHandler = new MyHandler();
-    private Toolbar mToolbar;
     private long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InquireMenu();
+        InquireWareHouse();
     }
 
     @Override
@@ -83,6 +83,9 @@ public class MenuActivity extends BaseActivity {
                         break;
                     case MenuItem.MENU_CODE_HAIR_MATER:
                         componentName = new ComponentName(MenuActivity.this, HairMaterActivity.class);
+                        break;
+                    case MenuItem.MENU_CODE_STOR_MATER:
+                        componentName = new ComponentName(MenuActivity.this, ProductionStorageActivity.class);
                         break;
                 }
                 if (componentName != null) {
@@ -138,8 +141,8 @@ public class MenuActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_menu_rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new MenuItemDecoration(this, MenuItemDecoration.VERTICAL_LIST));
-        mToolbar = (Toolbar) findViewById(R.id.activity_menu_tb);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_menu_tb);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
@@ -166,12 +169,6 @@ public class MenuActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    /**
-     * 根据
-     *
-     * @param i
-     * @return
-     */
     private int getMenuDrawID(int i) {
         switch (i) {
             case MenuItem.MENU_CODE_PURCHASE_RECEIPT:
@@ -191,6 +188,8 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.menu_icon_warehouse;
             case MenuItem.MENU_CODE_HAIR_MATER:
                 return R.mipmap.menu_icon_hair_mater;
+            case MenuItem.MENU_CODE_STOR_MATER:
+                return R.mipmap.men_icon_product_stor;
         }
         return R.mipmap.ic_launcher;
     }
@@ -246,7 +245,7 @@ public class MenuActivity extends BaseActivity {
                             setUpMenu.add(new MenuItem("仓库设置", MenuItem.MENU_CODE_SET_UP_WAREHOUSE, getMenuDrawID(MenuItem.MENU_CODE_SET_UP_WAREHOUSE)));
                             menuDrawer.add(setUpMenu);
                         }
-                        InquireWareHouse();
+                        menuAdapter.notifyDataSetChanged();
                     } else {
                         ShowToast("获取功能菜单失败");
                     }
@@ -256,12 +255,10 @@ public class MenuActivity extends BaseActivity {
                         String defaultWarehouse = bundle.getString("warehouse");
                         String localWarehouse = SessionManager.getWarehouse(getApplicationContext());
                         List<String> warehouseStringlist = bundle.getStringArrayList("warehouse_list");
-                        if (!TextUtils.isEmpty(localWarehouse) && warehouseStringlist.contains(localWarehouse)) {//本地存储的warehouse不为空,且包含在服务器warehouse列表中 ,维持原样不变
+                        if (!TextUtils.isEmpty(localWarehouse) && warehouseStringlist != null && warehouseStringlist.contains(localWarehouse)) {//本地存储的warehouse不为空,且包含在服务器warehouse列表中 ,维持原样不变
 
-                        } else if (warehouseStringlist.size() > 0) {
-                            SessionManager.setWarehouse(defaultWarehouse, getApplicationContext());
                         } else {
-                            SessionManager.setWarehouse("", getApplicationContext());
+                            SessionManager.setWarehouse(defaultWarehouse, getApplicationContext());
                         }
                         SessionManager.setWarehouse_list(warehouseStringlist, getApplicationContext());
                         InquireShards();
@@ -273,7 +270,6 @@ public class MenuActivity extends BaseActivity {
                     if (bundle.getInt("code") == 1) {
                         ArrayList<String> shardList = bundle.getStringArrayList("shardList");
                         SessionManager.setShard_list(shardList, getApplicationContext());
-                        menuAdapter.notifyDataSetChanged();
                     } else {
                         ShowToast("获取子库列表失败");
                     }

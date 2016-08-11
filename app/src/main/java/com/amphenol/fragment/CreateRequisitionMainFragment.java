@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -144,6 +145,7 @@ public class CreateRequisitionMainFragment extends Fragment {
 
             @Override
             public void OnItemCheckedChanged(int position, boolean isChecked) {
+                Log.d("wyj","OnItemCheckedChanged "+position+"   "+isChecked);
                 if (isChecked)
                     currentCheckedItemCount++;
                 else

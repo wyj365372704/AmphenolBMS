@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +54,9 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
         holder.quantityEditText.setText(date.get(position).getQuantity() + "");
         holder.checkBox.setChecked(date.get(position).isChecked());
         if (position % 2 == 0)
-            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_o));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_o));
         else
-            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_e));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_e));
     }
 
     @Override
@@ -80,9 +81,13 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
         CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (onItemClickListener != null) {
+                if (date.get(position).isChecked() == isChecked)
+                    return;
+                else {
                     date.get(position).setChecked(isChecked);
-                    onItemClickListener.OnItemCheckedChanged(position, isChecked);
+                    if (onItemClickListener != null) {
+                        onItemClickListener.OnItemCheckedChanged(position, isChecked);
+                    }
                 }
             }
         };
@@ -123,6 +128,7 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
             checkBox = (CheckBox) itemView.findViewById(R.id.create_requisition_main_item_body_cb);
             checkBox.setOnCheckedChangeListener(mOnCheckedChangeListener);
             itemView.setOnClickListener(mOnClickListener);
+            itemView.setTag(position);
         }
     }
 

@@ -1,8 +1,8 @@
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -37,18 +37,13 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/fragment_create_requisition_create_bt"
-        android:layout_below="@id/toolbar">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin"
+            android:layout_above="@id/fragment_create_requisition_create_bt"
+            android:layout_below="@id/toolbar"
             android:paddingTop="@dimen/activity_vertical_margin">
 
 
@@ -165,7 +160,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
         </LinearLayout>
-    </ScrollView>
-
 
 </RelativeLayout>

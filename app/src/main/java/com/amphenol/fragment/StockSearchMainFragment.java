@@ -172,7 +172,7 @@ public class StockSearchMainFragment extends Fragment {
                     case R.id.toolbar_menu:
                         ActionSheet.createBuilder(getContext(), getFragmentManager())
                                 .setCancelButtonTitle("取消")
-                                .setOtherButtonTitles("扫描物料标签", "扫描库位标签")
+                                .setOtherButtonTitles("扫描库位标签","扫描物料标签")
                                 .setCancelableOnTouchOutside(true)
                                 .setListener(mActionSheetListener).show();
                         break;
@@ -189,10 +189,10 @@ public class StockSearchMainFragment extends Fragment {
             public void onOtherButtonClick(ActionSheet actionSheet, int index) {
                 switch (index) {
                     case 0:
-                        startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN_MATER);
+                        startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN_FROM_LOCATION);
                         break;
                     case 1:
-                        startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN_FROM_LOCATION);
+                        startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN_MATER);
                         break;
                 }
             }

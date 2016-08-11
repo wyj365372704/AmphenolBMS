@@ -12,10 +12,10 @@ import java.util.List;
  * 采购单实体
  */
 public class Purchase implements Parcelable {
-    public static final int STATUS_NO_RECEIPT = 10, STATUS_PART_RECEIPT = 40, STATUS_FIINISHED = 50;//采购单状态    10：未收货    40：部分收货    50：收货完成
+    public static final int STATUS_NO_RECEIPT = 10, STATUS_PART_RECEIPT = 40, STATUS_FINISHED = 50,STATUS_NULL=  99;//采购单状态    10：未收货    40：部分收货    50：收货完成   99:置空
     private String number = "";//送货单号码
     private String firm = "";//厂商
-    private int status = 10;//采购单状态 默认为未收货
+    private int status = STATUS_NULL;//采购单状态
     private List<PurchaseItem> purchaseItems = new ArrayList<>();
 
     public Purchase() {

@@ -318,7 +318,8 @@ public class DecodeManager {
             data.putParcelableArrayList("requisitionItems", requisitionItems);
         }
         msg.setData(data);
-        handler.sendMessage(msg);
+//        handler.sendMessage(msg);
+        handler.sendMessageAtFrontOfQueue(msg);
     }
 
     public static void decodeStockSearchGetMaterList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {

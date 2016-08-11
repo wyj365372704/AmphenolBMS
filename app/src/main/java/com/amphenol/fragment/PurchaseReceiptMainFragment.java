@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -33,7 +32,6 @@ import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.PurchaseAdapter;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Mater;
 import com.amphenol.entity.Purchase;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -302,7 +300,7 @@ public class PurchaseReceiptMainFragment extends Fragment {
         //开始更新界面
         mFirmTextView.setText(receipt.getFirm().trim());
         mPurchaseNumberTextView.setText(receipt.getNumber().trim());
-        mStatusTextView.setText(receipt.getStatus() == Purchase.STATUS_FIINISHED ? "收货完成" : receipt.getStatus() == Purchase.STATUS_NO_RECEIPT ? "未收货" : receipt.getStatus() == Purchase.STATUS_PART_RECEIPT ? "部分收货" : "");
+        mStatusTextView.setText(receipt.getStatus() == Purchase.STATUS_FINISHED ? "收货完成" : receipt.getStatus() == Purchase.STATUS_NO_RECEIPT ? "未收货" : receipt.getStatus() == Purchase.STATUS_PART_RECEIPT ? "部分收货" : "");
         mCodeEditText.requestFocus();
         mFirstReceiptAdapter.setDate(receipt.getPurchaseItems());
         mFirstReceiptAdapter.notifyDataSetChanged();
