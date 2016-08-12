@@ -19,7 +19,6 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.amphenol.QRCode.camera.CameraManager;
 import com.amphenol.QRCode.decode.CaptureHandler;

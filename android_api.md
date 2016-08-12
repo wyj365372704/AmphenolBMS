@@ -433,6 +433,8 @@
 	请求方式：get
 	参数：
 		warehouse	仓库
+		pick_number 领料单单号
+		pick_line 领料单行号
 		mater 物料编号
 		shard	子库,允许为空
 		location	库位，允许为空
@@ -446,13 +448,14 @@
 	shard_list:List<Map<String,Object>> 仓库下属的子库集合
 		Map<String,Object> 子库
 			shard:String 子库名
-	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。
+	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。此外，mater_list需要按照fifo_date的升序规则进行排列。
 		Map<String,Object>
 			branch:批次号
 			shard:String 当前子库
 			location:String 当前库位
 			quantity： Double 库存数量
 			unit： String 库存单位
+			fifo_date : Long 先进先出日期 FIFO Date
 	code 
 		5 没有结果集
 
@@ -461,13 +464,16 @@
 	参数:
 		warehouse	仓库	
 		department	生产部门
-		work_order	工号
+		work_order	工单号
 		sequence	系统顺序号
+		pick_number 领料单单号
+		pick_line 领料单行号
 		mater_list 发料物料批次集合的json字符串，服务器进行json解析，说明如下
 			mater_list：List<Map<String,Object>> 发料物料批次集合，按此生成json字符串
 				Map<String,Object>:物料
 					mater:String	物料编码
 					branch:String	批次,如果为空或者不存在,表示该物料不受批次管控
+					shard : String 发料子库
 					location:String	发料库位
 					quantity:double	发料数量
 	action=hair_mater_submit
@@ -481,8 +487,10 @@
 	参数:
 		warehouse	仓库	
 		department	生产部门
-		work_order	工号
+		work_order	工单号
 		sequence	系统顺序号
+		pick_number 领料单单号
+		pick_line 领料单行号
 	action=hair_mater_cancel
 
 返回

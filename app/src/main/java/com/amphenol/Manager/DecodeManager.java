@@ -596,10 +596,10 @@ public class DecodeManager {
             String date = jsonObject.optString("date");
             int type = jsonObject.optInt("type", Pick.TYPE_NORMAL);
             int state = jsonObject.optInt("state", Pick.STATE_FINISHED);
-            pick.setWorkOrder(work_order);
-            pick.setFounder(founder);
-            pick.setDepartment(department);
-            pick.setDate(date);
+            pick.setWorkOrder(work_order.trim());
+            pick.setFounder(founder.trim());
+            pick.setDepartment(department.trim());
+            pick.setDate(date.trim());
             pick.setType(type);
             pick.setState(state);
             JSONArray pickItemJsonArray = jsonObject.optJSONArray("picking_list");
@@ -621,17 +621,17 @@ public class DecodeManager {
                     String location = pickItemJsonObject.optString("location");
                     int itemState = pickItemJsonObject.optInt("state", Pick.PickItem.STATE_CLOSED);
                     int branched = pickItemJsonObject.optInt("branched", Pick.PickItem.BRANCHED_NO);
-                    pickItem.setPickLine(pick_line);
-                    pickItem.setSequence(sequence);
+                    pickItem.setPickLine(pick_line.trim());
+                    pickItem.setSequence(sequence.trim());
                     pickItem.setQuantity(quantity);
                     pickItem.setState(itemState);
                     pickItem.setBranched(branched);
                     pickItem.setBranch(branch);
-                    mater.setNumber(materNumber);
-                    mater.setUnit(unit);
-                    mater.setWarehouse(warehouse);
-                    mater.setShard(defaultShard);
-                    mater.setLocation(location);
+                    mater.setNumber(materNumber.trim());
+                    mater.setUnit(unit.trim());
+                    mater.setWarehouse(warehouse.trim());
+                    mater.setShard(defaultShard.trim());
+                    mater.setLocation(location.trim());
                     pickItems.add(pickItem);
                 }
                 pick.setPickItems(pickItems);
@@ -687,28 +687,34 @@ public class DecodeManager {
         String shard = params.get("shard");
         String location = params.get("location");
         String branchPo = params.get("branch");
-        branch.setPo(branchPo);
-        mater.setShard(shard);
-        mater.setLocation(location);
-        mater.setWarehouse(warehouse);
-        mater.setNumber(mateNumber);
+        String pick_number = params.get("pick_number");
+        String pick_line = params.get("pick_line");
+        String unit = params.get("unit");
+        branch.setPo(branchPo.trim());
+        mater.setShard(shard.trim());
+        mater.setLocation(location.trim());
+        mater.setWarehouse(warehouse.trim());
+        mater.setNumber(mateNumber.trim());
+        mater.setUnit(unit.trim());
         pickItem.setBranch(branch);
-        pickItem.setSequence(sequence);
+        pickItem.setSequence(sequence.trim());
         pickItem.setQuantity(plantQuantity);
+        pickItem.setPickLine(pick_line.trim());
         pick.setDepartment(department);
         pick.setWorkOrder(workOrder);
+        pick.setNumber(pick_number);
         if (isRequestOK(jsonObject)) {
             String mater_desc = jsonObject.optString("mater_desc");
             String mater_format = jsonObject.optString("mater_format");
-            mater.setDesc(mater_desc);
-            mater.setFormat(mater_format);
+            mater.setDesc(mater_desc.trim());
+            mater.setFormat(mater_format.trim());
 
             JSONArray shardJsonArray = jsonObject.optJSONArray("shard_list");
             if(shardJsonArray!=null && shardJsonArray.length()>0){
                 for(int position = 0 ;position<shardJsonArray.length();position++){
                     JSONObject shardObject = shardJsonArray.getJSONObject(position);
                     String shardName = shardObject.optString("shard");
-                    shards.add(shardName);
+                    shards.add(shardName.trim());
                 }
             }
 
@@ -724,13 +730,13 @@ public class DecodeManager {
                     String shardSecond = branchObject.optString("shard");
                     String locationSecond = branchObject.optString("location");
                     double quantity = branchObject.optDouble("quantity");
-                    String unit = branchObject.optString("unit");
-                    materSecond.setNumber(mateNumber);
-                    materSecond.setWarehouse(warehouse);
-                    materSecond.setShard(shardSecond);
-                    materSecond.setLocation(locationSecond);
-                    materSecond.setUnit(unit);
-                    branchSecond.setPo(branchPoSecond);
+                    String mater_unit = branchObject.optString("unit");
+                    materSecond.setNumber(mateNumber.trim());
+                    materSecond.setWarehouse(warehouse.trim());
+                    materSecond.setShard(shardSecond.trim());
+                    materSecond.setLocation(locationSecond.trim());
+                    materSecond.setUnit(mater_unit.trim());
+                    branchSecond.setPo(branchPoSecond.trim());
                     branchSecond.setQuantity(quantity);
                     branchSecond.setMater(materSecond);
                     pickItemBranchItem.setBranch(branchSecond);

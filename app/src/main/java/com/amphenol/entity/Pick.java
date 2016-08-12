@@ -11,15 +11,15 @@ import java.util.ArrayList;
  * Created by Carl on 2016-08-05 005.
  */
 public class Pick implements Parcelable {
-    public static final int TYPE_NORMAL = 1, TYPE_EXCEED = 2, TYPE_RETURN = 3;
-    public static final int STATE_BUILDING = 5, STATE_BUILDED = 10, STATE_FINISHED = 50;
+    public static final int TYPE_NORMAL = 1, TYPE_EXCEED = 2, TYPE_RETURN = 3 ,TYPE_NULL = 99;
+    public static final int STATE_BUILDING = 5, STATE_BUILDED = 10, STATE_FINISHED = 50 ,STATE_NULL = 99;
     private String number = "";
     private String workOrder = "";
     private String founder = "";
     private String department = "";
     private String date = "";
-    private int type = TYPE_NORMAL;
-    private int state = STATE_FINISHED;
+    private int type = TYPE_NULL;
+    private int state = STATE_NULL;
     private ArrayList<PickItem> pickItems = new ArrayList<>();
 
     public Pick() {

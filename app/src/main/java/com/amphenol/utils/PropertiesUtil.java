@@ -52,7 +52,7 @@ public class PropertiesUtil {
     public static final String ACTION_HAIR_MATER_GET_PICK_LIST = "ACTION_HAIR_MATER_GET_PICK_LIST";//action 后缀,生产发料 领料项查询
     public static final String ACTION_HAIR_MATER_GET_MATER_LIST = "ACTION_HAIR_MATER_GET_MATER_LIST";//action 后缀,生产发料 物料列表查询
     public static final String ACTION_HAIR_MATER_SUBMIT = "ACTION_HAIR_MATER_SUBMIT";//action 后缀,生产发料 发料过账
-
+    public static final String ACTION_HAIR_MATER_CANCEL = "ACTION_HAIR_MATER_CANCEL";//action 后缀,生产发料 终止过账
 
 
 

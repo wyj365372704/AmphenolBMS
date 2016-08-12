@@ -134,7 +134,7 @@ public class HairMaterMainFragment extends Fragment {
         mOnItemClickListener = new HairMaterMainAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getPickItems().get(position).getPick().getDepartment(),pick.getPickItems().get(position).getPick().getWorkOrder(),pick.getPickItems().get(position).getSequence());
+                handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getNumber(),pick.getPickItems().get(position).getPickLine(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getUnit(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getDepartment(),pick.getWorkOrder(),pick.getPickItems().get(position).getSequence());
             }
         };
         mOnClickListener = new View.OnClickListener() {
@@ -227,14 +227,17 @@ public class HairMaterMainFragment extends Fragment {
         };
     }
 
-    private void handleInquireMater(String warehouse,String mate, String shard,String location,String branch,double quantity,String department,String workOrder,String sequence) {
+    private void handleInquireMater(String warehouse,String pickNumber,String pickLine ,String mate,String unit, String shard,String location,String branch,double quantity,String department,String workOrder,String sequence) {
         if (!HairMaterMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("warehouse",warehouse);
+        param.put("pick_number",pickNumber);
+        param.put("pick_line",pickLine);
         param.put("mater", mate);
+        param.put("unit", unit);
         param.put("shard",shard);
         param.put("location",location);
         param.put("branch",branch);
@@ -302,16 +305,16 @@ public class HairMaterMainFragment extends Fragment {
             param.put("pick_number", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_GET_PICK_LIST, getContext()), param, REQUEST_CODE_GET_PICK_LIST, mRequestTaskListener);
         } else {//扫描定位物料项
+            mPickNumberEditText.setText("");
             code = CommonTools.decodeScanString("M", code);
             if (TextUtils.isEmpty(code)) {
                 Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;
             }
-            mPickNumberEditText.setText("");
 
             for (int position = 0; position < pick.getPickItems().size(); position++) {
                 if (TextUtils.equals(pick.getPickItems().get(position).getBranch().getMater().getNumber(), code)) {
-                    handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getPickItems().get(position).getPick().getDepartment(),pick.getPickItems().get(position).getPick().getWorkOrder(),pick.getPickItems().get(position).getSequence());
+                    handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getNumber(),pick.getPickItems().get(position).getPickLine(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getUnit(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getDepartment(),pick.getWorkOrder(),pick.getPickItems().get(position).getSequence());
                     return;
                 }
             }

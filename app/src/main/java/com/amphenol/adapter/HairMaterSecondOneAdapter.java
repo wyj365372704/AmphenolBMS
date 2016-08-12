@@ -92,9 +92,10 @@ public class HairMaterSecondOneAdapter extends RecyclerView.Adapter<HairMaterSec
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                double quantityBefore = date.get(position).getQuantity();
                 date.get(position).setQuantity(quantity);
                 if (onItemClickListener != null)
-                    onItemClickListener.OnRequisitionQuantityChanged(position, quantity);
+                    onItemClickListener.OnRequisitionQuantityChanged(position,quantity,quantityBefore);
             }
 
             @Override
@@ -119,6 +120,6 @@ public class HairMaterSecondOneAdapter extends RecyclerView.Adapter<HairMaterSec
     public interface OnItemClickListener {
         void OnItemCheckedChanged(int position, boolean isChecked);
 
-        void OnRequisitionQuantityChanged(int position, double quantity);
+        void OnRequisitionQuantityChanged(int position, double quantityAfter,double quantityBefore);
     }
 }
