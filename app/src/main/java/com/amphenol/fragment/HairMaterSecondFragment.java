@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -186,6 +187,7 @@ public class HairMaterSecondFragment extends Fragment {
                     pickItemBranchItem.setQuantity(pickItemBranchItem.getBranch().getQuantity());
 //                    mPickItem.setHairQuantity(mPickItem.getHairQuantity()+pickItemBranchItem.getQuantity());
                 }
+                mPickItem.setHairQuantity(mPickItem.getHairQuantity()+pickItemBranchItem.getQuantity());
                 pickItemBranchItem.setChecked(true);
             } else {
                 break;
@@ -231,7 +233,7 @@ public class HairMaterSecondFragment extends Fragment {
                                     for (Pick.PickItem.PickItemBranchItem pickItemBranchItem : mPickItem.getPickItemBranchItems()) {
                                         if (pickItemBranchItem.isChecked()) {
                                             JSONObject jsonObject = new JSONObject();
-                                            jsonObject.put("name", pickItemBranchItem.getBranch().getMater().getNumber());
+                                            jsonObject.put("mater", pickItemBranchItem.getBranch().getMater().getNumber());
                                             jsonObject.put("branch", pickItemBranchItem.getBranch().getPo());
                                             jsonObject.put("location", pickItemBranchItem.getBranch().getMater().getLocation());
                                             jsonObject.put("quantity", pickItemBranchItem.getQuantity());
@@ -287,6 +289,7 @@ public class HairMaterSecondFragment extends Fragment {
             @Override
             public void OnRequisitionQuantityChanged(int position, double quantity, double quantityBefore) {
                 if (quantity > mPickItem.getPickItemBranchItems().get(position).getBranch().getQuantity()) {
+                    Log.d("wyj","quantity "+quantity+" "+mPickItem.getPickItemBranchItems().get(position).getBranch().getQuantity());
                     ((BaseActivity) getActivity()).ShowToast("发料数量不能大于库存数量");
                 }
                 functionCalculateHairQuantity();

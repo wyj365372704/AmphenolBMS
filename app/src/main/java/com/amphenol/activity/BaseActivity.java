@@ -70,6 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 获取InputMethodManager，隐藏软键盘
+     *
      * @param token
      */
     private void hideKeyboard(IBinder token) {
@@ -102,8 +103,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public synchronized void ShowToast(String text) {
         if (!TextUtils.isEmpty(text)) {
             if (mToast == null) {
-                mToast = Toast.makeText(getApplicationContext(), text,
-                        Toast.LENGTH_SHORT);
+                mToast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
             } else {
                 mToast.setText(text);
             }
