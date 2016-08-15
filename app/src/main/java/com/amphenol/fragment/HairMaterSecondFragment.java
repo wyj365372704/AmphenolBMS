@@ -245,7 +245,7 @@ public class HairMaterSecondFragment extends Fragment {
                                 } catch (Throwable e) {
                                     e.printStackTrace();
                                 }
-                                handleSubmit(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getPick().getDepartment(), mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(), mater_list, mPickItem.getPick().getNumber(), mPickItem.getPickLine());
+                                handleSubmit(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getPick().getDepartment(), mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(), mater_list, mPickItem.getPick().getNumber(), mPickItem.getPickLine(),mPickItem.getHairQuantity());
                             }
                         });
                         builder2.create().show();
@@ -385,12 +385,10 @@ public class HairMaterSecondFragment extends Fragment {
         param.put("sequence", sequence);
         param.put("pick_number", pickNumbere);
         param.put("pick_line", pickLine);
-
-
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_CANCEL, getContext()), param, REQUEST_CODE_CANCEL, mRequestTaskListener);
     }
 
-    private void handleSubmit(String warehouse, String department, String workOrder, String sequence, String materList, String pickNumbere, String pickLine) {
+    private void handleSubmit(String warehouse, String department, String workOrder, String sequence, String materList, String pickNumbere, String pickLine,double actualQuantity) {
         if (!HairMaterSecondFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -403,6 +401,7 @@ public class HairMaterSecondFragment extends Fragment {
         param.put("mater_list", materList);
         param.put("pick_number", pickNumbere);
         param.put("pick_line", pickLine);
+        param.put("actual_quantity", actualQuantity+"");
 
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }

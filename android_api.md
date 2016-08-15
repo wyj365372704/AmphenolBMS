@@ -468,6 +468,7 @@
 		sequence	系统顺序号
 		pick_number 领料单单号
 		pick_line 领料单行号
+		actual_quantity 发料总数量
 		mater_list 发料物料批次集合的json字符串，服务器进行json解析，说明如下
 			mater_list：List<Map<String,Object>> 发料物料批次集合，按此生成json字符串
 				Map<String,Object>:物料
