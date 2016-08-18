@@ -690,6 +690,8 @@ public class DecodeManager {
         String pick_number = params.get("pick_number");
         String pick_line = params.get("pick_line");
         String unit = params.get("unit");
+        String type = params.get("type");
+        pick.setType(Integer.valueOf(type));
         branch.setPo(branchPo.trim());
         mater.setShard(shard.trim());
         mater.setLocation(location.trim());

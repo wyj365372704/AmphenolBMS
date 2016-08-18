@@ -8,6 +8,7 @@ import com.amphenol.amphenol.R;
 import com.amphenol.entity.Pick;
 import com.amphenol.fragment.HairMaterMainFragment;
 import com.amphenol.fragment.HairMaterSecondFragment;
+import com.amphenol.fragment.HairMaterSecondReturnFragment;
 
 import java.util.ArrayList;
 
@@ -17,8 +18,10 @@ import java.util.ArrayList;
 public class HairMaterActivity extends BaseActivity {
     private HairMaterMainFragment mHairMaterMainFragment;
     private HairMaterSecondFragment mHairMaterSecondFragment;
+    private HairMaterSecondReturnFragment mHairMaterSecondReturnFragment;
     private HairMaterMainFragment.MainFragmentCallBack mainFragmentCallBack;
     private HairMaterSecondFragment.SecondFragmentCallBack secondFragmentCallBack;
+    private HairMaterSecondReturnFragment.SecondFragmentCallBack secondReturnFragmentCallBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +47,41 @@ public class HairMaterActivity extends BaseActivity {
         mainFragmentCallBack = new HairMaterMainFragment.MainFragmentCallBack() {
             @Override
             public void gotoSecondFragment(Pick.PickItem pickItem, ArrayList<String> shards) {
-                mHairMaterSecondFragment = HairMaterSecondFragment.newInstance(pickItem, shards, secondFragmentCallBack);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_hair_mater_fl, mHairMaterSecondFragment);
-                transaction.addToBackStack(null);
-                transaction.commitAllowingStateLoss();
+                int type = pickItem.getPick().getType();
+
+                if (type == Pick.TYPE_RETURN) {
+                    mHairMaterSecondReturnFragment = HairMaterSecondReturnFragment.newInstance(pickItem, shards, secondReturnFragmentCallBack);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.activity_hair_mater_fl, mHairMaterSecondReturnFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commitAllowingStateLoss();
+                } else {
+                    mHairMaterSecondFragment = HairMaterSecondFragment.newInstance(pickItem, shards, secondFragmentCallBack);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.activity_hair_mater_fl, mHairMaterSecondFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commitAllowingStateLoss();
+                }
             }
         };
         secondFragmentCallBack = new HairMaterSecondFragment.SecondFragmentCallBack() {
+            @Override
+            public void itemBeenClosed(String sequence) {
+                getSupportFragmentManager().popBackStack();//当前fragment退栈
+                if (mHairMaterMainFragment != null) {
+                    mHairMaterMainFragment.refreshShow(sequence);
+                }
+            }
+
+            @Override
+            public void itemBeenSured(String sequence) {
+                getSupportFragmentManager().popBackStack();//当前fragment退栈
+                if (mHairMaterMainFragment != null) {
+                    mHairMaterMainFragment.refreshShow(sequence);
+                }
+            }
+        };
+        secondReturnFragmentCallBack = new HairMaterSecondReturnFragment.SecondFragmentCallBack() {
             @Override
             public void itemBeenClosed(String sequence) {
                 getSupportFragmentManager().popBackStack();//当前fragment退栈

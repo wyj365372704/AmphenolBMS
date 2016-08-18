@@ -71,7 +71,6 @@ public class PurchaseItemAdapter extends RecyclerView.Adapter {
                 builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("wyj", "delete " + position);
                         date.get(position).setActualQuantity(0);
                         notifyItemChanged(position);
                         if (mOnBranchItemActualQuantityChangedListener != null)

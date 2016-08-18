@@ -39,16 +39,14 @@ public class HairMaterSecondTwoAdapter extends RecyclerView.Adapter<HairMaterSec
 
     @Override
     public HairMaterSecondTwoAdapter.ViewHolderBody onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolderBody(LayoutInflater.from(mContext).inflate(R.layout.hair_mater_mater_list_second_body, parent, false));
+        return new ViewHolderBody(LayoutInflater.from(mContext).inflate(R.layout.hair_mater_mater_list_second_return_body, parent, false));
     }
 
     @Override
     public void onBindViewHolder(HairMaterSecondTwoAdapter.ViewHolderBody holder, final int position) {
         holder.position = position;
-        holder.shardTextView.setText(date.get(position).getBranch().getMater().getShard());
-        holder.locationTextView.setText(date.get(position).getBranch().getMater().getLocation());
         holder.branchTextView.setText(date.get(position).getBranch().getPo());
-        holder.quantityEditText.setText(date.get(position).getQuantity() + "");
+        holder.quantityTextView.setText(date.get(position).getQuantity()+"");
         if (position % 2 == 0)
             holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_o));
         else
@@ -62,8 +60,7 @@ public class HairMaterSecondTwoAdapter extends RecyclerView.Adapter<HairMaterSec
 
     class ViewHolderBody extends RecyclerView.ViewHolder {
         int position;
-        TextView shardTextView, locationTextView, branchTextView;
-        EditText quantityEditText;
+        TextView   branchTextView,quantityTextView;
         ImageView mImageView;
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -77,47 +74,17 @@ public class HairMaterSecondTwoAdapter extends RecyclerView.Adapter<HairMaterSec
                 }
             }
         };
-        TextWatcher mTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                double quantity = 0;
-                try {
-                    quantity = Double.parseDouble(s.toString());
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                date.get(position).setQuantity(quantity);
-                if (onItemClickListener != null)
-                    onItemClickListener.OnRequisitionQuantityChanged(position, quantity);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
 
         public ViewHolderBody(View itemView) {
             super(itemView);
-            shardTextView = (TextView) itemView.findViewById(R.id.hair_mater_shard_tv);
-            locationTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_location_tv);
-            branchTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_branch_tv);
-            quantityEditText = (EditText) itemView.findViewById(R.id.create_requisition_main_item_body_quantity_et);
-            quantityEditText.addTextChangedListener(mTextWatcher);
+            branchTextView = (TextView) itemView.findViewById(R.id.fragment_hair_mater_second_return_body_branch_tv);
+            quantityTextView = (TextView) itemView.findViewById(R.id.fragment_hair_mater_second_return_body_quantity_tv);
             mImageView = (ImageView) itemView.findViewById(R.id.purchase_receipt_second_item_close_iv);
             mImageView.setOnClickListener(onClickListener);
         }
     }
 
     public interface OnItemClickListener {
-        void OnItemClosed(int positio);
-
-        void OnRequisitionQuantityChanged(int position, double quantity);
+        void OnItemClosed(int position);
     }
 }

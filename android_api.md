@@ -482,8 +482,29 @@
 返回
 
 	default
+
+##生产发料 - 退料过账
+	请求方式:get
+	参数:
+		warehouse	仓库	
+		department	生产部门
+		work_order	工单号
+		sequence	系统顺序号
+		pick_number 领料单单号
+		pick_line 领料单行号
+		actual_quantity 退料总数量
+		mater:String	物料编码
+		branch:String	批次,如果为空或者不存在,表示该物料不受批次管控
+		shard : String  退料子库
+		location:String	退料库位
+	action=hair_mater_return_submit
+
+返回
+
+	default
+
 	
-##生产发料 - 终止发料
+##生产发料 - 终止过账
 	请求方式:get
 	参数:
 		warehouse	仓库	
