@@ -7,7 +7,6 @@ import com.amphenol.amphenol.R;
 import com.amphenol.entity.Requisition;
 import com.amphenol.fragment.CreateRequisitionMainFragment;
 import com.amphenol.fragment.CreateRequisitionSecondFragment;
-import com.amphenol.fragment.PurchaseReceiptSecondFragment;
 
 /**
  * 创建调拨单

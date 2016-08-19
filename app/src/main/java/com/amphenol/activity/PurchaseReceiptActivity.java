@@ -4,17 +4,21 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.amphenol.amphenol.R;
+import com.amphenol.entity.Mater;
 import com.amphenol.entity.Purchase;
 import com.amphenol.fragment.PurchaseReceiptMainFragment;
-import com.amphenol.fragment.PurchaseReceiptSecondFragment;
+import com.amphenol.fragment.PurchaseReceiptSecondBranchedFragment;
+import com.amphenol.fragment.PurchaseReceiptSecondNoBranchedFragment;
 
 /**
  * 采购收货
  */
 public class PurchaseReceiptActivity extends BaseActivity {
     private PurchaseReceiptMainFragment mPurchaseReceiptMainFragment;
-    private PurchaseReceiptSecondFragment mPurchaseReceiptSecondFragment;
-    private PurchaseReceiptSecondFragment.SecondFragmentCallBack secondFragmentCallBack;
+    private PurchaseReceiptSecondBranchedFragment mPurchaseReceiptSecondBranchedFragment;
+    private PurchaseReceiptSecondBranchedFragment.SecondFragmentCallBack mSecondBranchedFragmentCallBack;
+    private PurchaseReceiptSecondNoBranchedFragment mPurchaseReceiptSecondNoBranchedFragment;
+    private PurchaseReceiptSecondNoBranchedFragment.SecondFragmentCallBack mSecondNoBranchedFragmentCallBack;
     private PurchaseReceiptMainFragment.MainFragmentCallBack mainFragmentCallBack;
 
     @Override
@@ -32,14 +36,23 @@ public class PurchaseReceiptActivity extends BaseActivity {
         mainFragmentCallBack = new PurchaseReceiptMainFragment.MainFragmentCallBack() {
             @Override
             public void gotoSecondFragment(Purchase.PurchaseItem purchaseItem) {
-                mPurchaseReceiptSecondFragment = PurchaseReceiptSecondFragment.newInstance(secondFragmentCallBack, purchaseItem);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReceiptSecondFragment);
-                transaction.addToBackStack(null);
-                transaction.commitAllowingStateLoss();
+
+                if(purchaseItem.getMater().getBranchControl() == Mater.BRANCH_CONTROL){
+                    mPurchaseReceiptSecondBranchedFragment = PurchaseReceiptSecondBranchedFragment.newInstance(mSecondBranchedFragmentCallBack, purchaseItem);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReceiptSecondBranchedFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commitAllowingStateLoss();
+                }else{
+                    mPurchaseReceiptSecondNoBranchedFragment = PurchaseReceiptSecondNoBranchedFragment.newInstance(mSecondNoBranchedFragmentCallBack, purchaseItem);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReceiptSecondNoBranchedFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commitAllowingStateLoss();
+                }
             }
         };
-        secondFragmentCallBack = new PurchaseReceiptSecondFragment.SecondFragmentCallBack() {
+        mSecondBranchedFragmentCallBack = new PurchaseReceiptSecondBranchedFragment.SecondFragmentCallBack() {
             @Override
             public void itemBeenClosed(String shdhh) {
                 getSupportFragmentManager().popBackStack();//当前fragment退栈
