@@ -134,7 +134,12 @@ public class HairMaterMainFragment extends Fragment {
         mOnItemClickListener = new HairMaterMainAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getNumber(),pick.getPickItems().get(position).getPickLine(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getUnit(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getDepartment(),pick.getWorkOrder(),pick.getPickItems().get(position).getSequence(),String.valueOf(pick.getType()));
+                handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getNumber(),
+                        pick.getPickItems().get(position).getPickLine(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),
+                        pick.getPickItems().get(position).getBranch().getMater().getUnit(),pick.getPickItems().get(position).getBranch().getMater().getShard(),
+                        pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),
+                        pick.getPickItems().get(position).getQuantity(),pick.getDepartment(),pick.getWorkOrder(),pick.getPickItems().get(position).getSequence(),
+                        String.valueOf(pick.getType()),pick.getPickItems().get(position).getBranched()+"");
             }
         };
         mOnClickListener = new View.OnClickListener() {
@@ -227,7 +232,7 @@ public class HairMaterMainFragment extends Fragment {
         };
     }
 
-    private void handleInquireMater(String warehouse,String pickNumber,String pickLine ,String mate,String unit, String shard,String location,String branch,double quantity,String department,String workOrder,String sequence,String type) {
+    private void handleInquireMater(String warehouse,String pickNumber,String pickLine ,String mate,String unit, String shard,String location,String branch,double quantity,String department,String workOrder,String sequence,String type,String branched) {
         if (!HairMaterMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -242,7 +247,7 @@ public class HairMaterMainFragment extends Fragment {
         param.put("location",location);
         param.put("branch",branch);
         param.put("type",type);
-
+        param.put("branched",branched);
         param.put("quantity",quantity+"");//计划数量
         param.put("department",department);
         param.put("workOrder",workOrder);
@@ -315,7 +320,7 @@ public class HairMaterMainFragment extends Fragment {
 
             for (int position = 0; position < pick.getPickItems().size(); position++) {
                 if (TextUtils.equals(pick.getPickItems().get(position).getBranch().getMater().getNumber(), code)) {
-                    handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getNumber(),pick.getPickItems().get(position).getPickLine(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getUnit(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getDepartment(),pick.getWorkOrder(),pick.getPickItems().get(position).getSequence(),String.valueOf(pick.getType()));
+                    handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getNumber(),pick.getPickItems().get(position).getPickLine(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getUnit(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getDepartment(),pick.getWorkOrder(),pick.getPickItems().get(position).getSequence(),String.valueOf(pick.getType()),pick.getPickItems().get(position).getBranched()+"");
                     return;
                 }
             }

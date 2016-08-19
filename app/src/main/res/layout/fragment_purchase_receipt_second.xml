@@ -28,7 +28,7 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="center|right"
             android:padding="16dp"
-            android:src="@mipmap/icon_action_bar_menu" />
+            android:src="@drawable/icon_menu" />
 
     </android.support.v7.widget.Toolbar>
 

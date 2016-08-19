@@ -11,8 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,7 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,19 +30,15 @@ import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
-import com.amphenol.adapter.HairMaterSecondOneAdapter;
-import com.amphenol.adapter.HairMaterSecondTwoAdapter;
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.Pick;
-import com.amphenol.entity.Purchase;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
 import com.baoyz.actionsheet.ActionSheet;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -54,24 +48,20 @@ import java.util.Map;
 
 /**
  */
-public class HairMaterSecondReturnFragment extends Fragment {
+public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
     private static final int REQUEST_CODE_SUBMIT = 0X11;
     private static final int REQUEST_CODE_CANCEL = 0x12;
-    private static final int REQUEST_CODE_FOR_SCAN_BRANCH = 0X13;
     private static final int REQUEST_CODE_FOR_SCAN_LOCATION = 0X14;
     private View rootView;
-    private TextView materNumberTextView, materDescTextView, mReturnQuantityTextView, mUnitTextView, mActualQuantityTextView, mWarehouseTextView;
+    private TextView materNumberTextView, materDescTextView, mReturnQuantityTextView, mUnitTextView, mActualQuantityTextView, mBranchedTextView, mWarehouseTextView;
     private Spinner mSpinner;
-    private EditText mLocationEditText, mBranchEditText;
+    private EditText mLocationEditText;
     private Button mAddButton, mCancelButton;
-    private ImageButton mImageButton;
+    private ImageView mImageView;
     private View.OnClickListener mOnClickListener;
     private ArrayAdapter<String> mStringArrayAdapter;
     private ArrayList<String> mShardStrings = new ArrayList<>();
     private Pick.PickItem mPickItem = new Pick.PickItem();
-    private HairMaterSecondTwoAdapter hairMaterSecondTwoAdapter;
-    private HairMaterSecondTwoAdapter.OnItemClickListener mOnItemClickListener;
-    private RecyclerView mRecyclerView;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
     private SecondFragmentCallBack mSecondFragmentCallBack;
@@ -79,12 +69,12 @@ public class HairMaterSecondReturnFragment extends Fragment {
     private ActionSheet.ActionSheetListener mActionSheetListener;
 
 
-    public static HairMaterSecondReturnFragment newInstance(Pick.PickItem pickItem, ArrayList<String> shards, SecondFragmentCallBack mSecondFragmentCallBack) {
+    public static HairMaterSecondReturnNoBranchedFragment newInstance(Pick.PickItem pickItem, ArrayList<String> shards, SecondFragmentCallBack mSecondFragmentCallBack) {
 
         Bundle args = new Bundle();
         args.putParcelable("pickItem", pickItem);
         args.putStringArrayList("shards", shards);
-        HairMaterSecondReturnFragment fragment = new HairMaterSecondReturnFragment();
+        HairMaterSecondReturnNoBranchedFragment fragment = new HairMaterSecondReturnNoBranchedFragment();
         fragment.mSecondFragmentCallBack = mSecondFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
@@ -106,7 +96,7 @@ public class HairMaterSecondReturnFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (rootView != null)
             return rootView;
-        rootView = inflater.inflate(R.layout.fragment_hair_mater_second_return, container, false);
+        rootView = inflater.inflate(R.layout.fragment_hair_mater_second_return_no_branched, container, false);
         initListeners();
         initData();
         initViews();
@@ -123,12 +113,12 @@ public class HairMaterSecondReturnFragment extends Fragment {
         mStringArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, mShardStrings);
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        hairMaterSecondTwoAdapter = new HairMaterSecondTwoAdapter(getContext(), mPickItem.getPickItemBranchItems(), mOnItemClickListener);
     }
 
     private void initViews() {
-        mImageButton = (ImageButton) rootView.findViewById(R.id.toolbar_menu);
-        mImageButton.setOnClickListener(mOnClickListener);
+        mBranchedTextView = (TextView) rootView.findViewById(R.id.fragment_fast_requisition_main_branched_in_tv);
+        mImageView = (ImageView) rootView.findViewById(R.id.toolbar_menu);
+        mImageView.setOnClickListener(mOnClickListener);
         materNumberTextView = (TextView) rootView.findViewById(R.id.fragment_hair_mater_second_one_mater_in_tv);
         materDescTextView = (TextView) rootView.findViewById(R.id.fragment_hair_mater_second_one_desc_in_tv);
         mReturnQuantityTextView = (TextView) rootView.findViewById(R.id.fragment_hair_mater_second_one_plain_quantity_in_tv);
@@ -137,14 +127,10 @@ public class HairMaterSecondReturnFragment extends Fragment {
         mSpinner = (Spinner) rootView.findViewById(R.id.fragment_fast_requisition_main_mater_in_et);
         mActualQuantityTextView = (TextView) rootView.findViewById(R.id.fragment_hair_mater_second_return_acqual_quantity_et);
         mLocationEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_from_location_et);
-        mBranchEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_branch_et);
         mAddButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_submit_bt);
         mAddButton.setOnClickListener(mOnClickListener);
         mCancelButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_cancel_bt);
         mCancelButton.setOnClickListener(mOnClickListener);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_purchase_receipt_content_rl);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(hairMaterSecondTwoAdapter);
         mSpinner.setAdapter(mStringArrayAdapter);
     }
 
@@ -156,32 +142,17 @@ public class HairMaterSecondReturnFragment extends Fragment {
         mWarehouseTextView.setText(mPickItem.getBranch().getMater().getWarehouse());
         mActualQuantityTextView.setText(mPickItem.getHairQuantity() + "");
         mLocationEditText.setText(mPickItem.getBranch().getMater().getLocation());
-        mBranchEditText.setText(mPickItem.getBranch().getPo());
+        mBranchedTextView.setText(mPickItem.getBranched() == Pick.PickItem.BRANCHED_YES ? "是" : "否");
 
+        try {
+            int position = mStringArrayAdapter.getPosition(mPickItem.getBranch().getMater().getShard());
+            mSpinner.setSelection(position);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     private void initListeners() {
-        mOnItemClickListener = new HairMaterSecondTwoAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClosed(final int position) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("删除批次").setMessage("将要删除该添加的批次?");
-                builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            mPickItem.getPickItemBranchItems().remove(position);
-                            hairMaterSecondTwoAdapter.notifyDataSetChanged();
-                            UpdateActualQuantity();
-                        } catch (Throwable e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-                builder.create().show();
-            }
-        };
 
         mOnClickListener = new View.OnClickListener() {
             @Override
@@ -196,31 +167,33 @@ public class HairMaterSecondReturnFragment extends Fragment {
                             ((BaseActivity) getActivity()).ShowToast("实收数量不能大于退料数量");
                             return;
                         }
-
+                        String shard = "";
+                        try{
+                            shard = mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition());
+                        }catch (Throwable e){
+                            e.printStackTrace();
+                        }finally {
+                            if(TextUtils.isEmpty(shard)){
+                                ((BaseActivity)getActivity()).ShowToast("子库不能为空");
+                                return ;
+                            }
+                        }
+                        final String location =  mLocationEditText.getText().toString().trim();
+                        if(TextUtils.isEmpty(location)){
+                            ((BaseActivity)getActivity()).ShowToast("库位不能为空");
+                            return ;
+                        }
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
                         builder2.setTitle("发料过账").setMessage("将要进行发料过账?");
+                        final String finalShard = shard;
                         builder2.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String mater_list = "";
-                                try {
-                                    JSONArray jsonArray = new JSONArray();
-                                    for (Pick.PickItem.PickItemBranchItem pickItemBranchItem : mPickItem.getPickItemBranchItems()) {
-                                        if (pickItemBranchItem.isChecked()) {
-                                            JSONObject jsonObject = new JSONObject();
-                                            jsonObject.put("mater", pickItemBranchItem.getBranch().getMater().getNumber());
-                                            jsonObject.put("branch", pickItemBranchItem.getBranch().getPo());
-                                            jsonObject.put("location", pickItemBranchItem.getBranch().getMater().getLocation());
-                                            jsonObject.put("quantity", pickItemBranchItem.getQuantity());
-                                            jsonObject.put("shard", pickItemBranchItem.getBranch().getMater().getShard());
-                                            jsonArray.put(jsonObject);
-                                        }
-                                    }
-                                    mater_list = new JSONObject().put("mater_list", jsonArray).toString();
-                                } catch (Throwable e) {
-                                    e.printStackTrace();
-                                }
-                                handleSubmit(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getPick().getDepartment(), mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(), mater_list, mPickItem.getPick().getNumber(), mPickItem.getPickLine(), mPickItem.getHairQuantity());
+                                handleSubmit(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getPick().getDepartment(),
+                                        mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(),
+                                        mPickItem.getPick().getNumber(), mPickItem.getPickLine(), mPickItem.getHairQuantity(),
+                                        mPickItem.getBranch().getMater().getNumber(), finalShard,
+                                        location);
                             }
                         });
                         builder2.create().show();
@@ -240,7 +213,7 @@ public class HairMaterSecondReturnFragment extends Fragment {
                     case R.id.toolbar_menu:
                         ActionSheet.createBuilder(getContext(), getFragmentManager())
                                 .setCancelButtonTitle("取消")
-                                .setOtherButtonTitles("扫描库位标签", "扫描批次标签", "新增批次")
+                                .setOtherButtonTitles("扫描库位标签")
                                 .setCancelableOnTouchOutside(true)
                                 .setListener(mActionSheetListener).show();
                         break;
@@ -296,7 +269,6 @@ public class HairMaterSecondReturnFragment extends Fragment {
                 if (errorNo == 0) {
                     ((BaseActivity) getActivity()).ShowToast("与服务器连接失败");
                 } else {
-
                     ((BaseActivity) getActivity()).ShowToast("服务器返回错误");
                 }
             }
@@ -313,35 +285,13 @@ public class HairMaterSecondReturnFragment extends Fragment {
                     case 0:
                         startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN_LOCATION);
                         break;
-                    case 1:
-                        startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN_BRANCH);
-                        break;
-                    case 2:
-                        AlertDialog.Builder builder3 = new AlertDialog.Builder(getContext());
-                        final View view = LayoutInflater.from(getContext()).inflate(R.layout.purchase_receipt_add_branch_layout, null);
-                        builder3.setTitle("新增批次").setView(view);
-                        builder3.setNegativeButton("取消", null);
-                        builder3.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (mSecondFragmentCallBack != null) {
-                                    EditText ssslEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_sssl_et);
-                                    EditText pchEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_pch_et);
-                                    addBranch(pchEditText.getText().toString(), ssslEditText.getText().toString());
-                                    hairMaterSecondTwoAdapter.notifyDataSetChanged();
-                                    UpdateActualQuantity();
-                                }
-                            }
-                        });
-                        builder3.create().show();
-                        break;
                 }
             }
         };
     }
 
     private void handlerCancel(String warehouse, String department, String workOrder, String sequence, String pickNumbere, String pickLine) {
-        if (!HairMaterSecondReturnFragment.this.isVisible())
+        if (!HairMaterSecondReturnNoBranchedFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
@@ -355,8 +305,8 @@ public class HairMaterSecondReturnFragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_CANCEL, getContext()), param, REQUEST_CODE_CANCEL, mRequestTaskListener);
     }
 
-    private void handleSubmit(String warehouse, String department, String workOrder, String sequence, String materList, String pickNumbere, String pickLine, double actualQuantity) {
-        if (!HairMaterSecondReturnFragment.this.isVisible())
+    private void handleSubmit(String warehouse, String department, String workOrder, String sequence, String pickNumbere, String pickLine, double actualQuantity, String mater, String shard, String location) {
+        if (!HairMaterSecondReturnNoBranchedFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
@@ -365,12 +315,13 @@ public class HairMaterSecondReturnFragment extends Fragment {
         param.put("department", department);
         param.put("work_order", workOrder);
         param.put("sequence", sequence);
-        param.put("mater_list", materList);
         param.put("pick_number", pickNumbere);
         param.put("pick_line", pickLine);
         param.put("actual_quantity", actualQuantity + "");
-
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
+        param.put("mater", mater);
+        param.put("shard", shard);
+        param.put("location", location);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_RETURN_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }
 
 
@@ -387,25 +338,12 @@ public class HairMaterSecondReturnFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_FOR_SCAN_BRANCH && resultCode == Activity.RESULT_OK) {
-            String code = data.getStringExtra("data").trim();
-            handleScanBranch(mBranchEditText, code);
-        }
         if (requestCode == REQUEST_CODE_FOR_SCAN_LOCATION && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
             handleScanLocation(mLocationEditText, code);
         }
     }
 
-    private void handleScanBranch(EditText v, String code) {
-        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
-            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-        }
-        code = CommonTools.decodeScanString("B", code);
-        v.setText(code);
-        v.requestFocus();
-    }
 
     private void handleScanLocation(EditText v, String code) {
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -414,7 +352,6 @@ public class HairMaterSecondReturnFragment extends Fragment {
         }
         code = CommonTools.decodeScanString("L", code);
         v.setText(code);
-        mBranchEditText.requestFocus();
     }
 
     /**
@@ -443,17 +380,6 @@ public class HairMaterSecondReturnFragment extends Fragment {
         Toast.makeText(getContext(), "增加成功", Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * 实收总数随着更改
-     */
-    private void UpdateActualQuantity() {
-        double count = 0;
-        for (Pick.PickItem.PickItemBranchItem pickItemBranchItem : mPickItem.getPickItemBranchItems()) {
-            count += pickItemBranchItem.getQuantity();
-        }
-        mPickItem.setHairQuantity(count);
-        mActualQuantityTextView.setText(mPickItem.getHairQuantity() + "");
-    }
 
     public interface SecondFragmentCallBack extends Serializable {
         /**

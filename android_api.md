@@ -413,7 +413,7 @@
 			pick_line:String 领料单行号
 			sequence:String 系统序列号
 			mater:String 物料
-			quantity:double 计划数量
+			quantity:double 计划数量/退料数量
 			unit:String 材料单位 
 			warehouse:String 仓库
 			shard:String 默认子库
@@ -437,7 +437,7 @@
 		pick_line 领料单行号
 		mater 物料编号
 		shard	子库,允许为空
-		location	库位，允许为空
+		位location	库，允许为空
 		branch	批号,允许为空
 	action=hair_mater_get_mater_list
 
@@ -492,11 +492,15 @@
 		sequence	系统顺序号
 		pick_number 领料单单号
 		pick_line 领料单行号
-		actual_quantity 退料总数量
+		actual_quantity 退料实收总数量
 		mater:String	物料编码
-		branch:String	批次,如果为空或者不存在,表示该物料不受批次管控
 		shard : String  退料子库
 		location:String	退料库位
+		branch_list	批次信息集合的json字符串，如不受批次控制不附带，服务器端进行json解析。说明如下
+			branch_list:List<Map<String,Object>> 按此生成json字符串
+				Map<String,Object>
+					branch_number:String 生产批次号
+					branch_quantity:double 实收数量
 	action=hair_mater_return_submit
 
 返回
@@ -519,3 +523,7 @@
 	
 	default
 		
+
+##生产入库
+	请求方式:get
+	

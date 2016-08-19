@@ -691,6 +691,7 @@ public class DecodeManager {
         String pick_line = params.get("pick_line");
         String unit = params.get("unit");
         String type = params.get("type");
+        String branched = params.get("branched");
         pick.setType(Integer.valueOf(type));
         branch.setPo(branchPo.trim());
         mater.setShard(shard.trim());
@@ -698,6 +699,7 @@ public class DecodeManager {
         mater.setWarehouse(warehouse.trim());
         mater.setNumber(mateNumber.trim());
         mater.setUnit(unit.trim());
+        pickItem.setBranched(Integer.valueOf(branched));
         pickItem.setBranch(branch);
         pickItem.setSequence(sequence.trim());
         pickItem.setQuantity(plantQuantity);

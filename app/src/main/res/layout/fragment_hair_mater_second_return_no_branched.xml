@@ -23,13 +23,14 @@
             android:textColor="@android:color/white"
             android:textSize="18sp"/>
 
-        <ImageButton
+        <ImageView
             android:id="@+id/toolbar_menu"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/icon_camera"/>
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center|right"
+            android:padding="16dp"
+            android:src="@drawable/icon_camera"/>
+
 
     </android.support.v7.widget.Toolbar>
 
@@ -224,14 +225,15 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/normal_font_size"/>
 
-                <TextView
+                <EditText
                     android:id="@+id/fragment_hair_mater_second_return_acqual_quantity_et"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:imeOptions="actionDone"
-                    android:text="--"
+                    android:background="@drawable/spinner_back"
+                    android:hint="输入退料实收数量"
                     android:singleLine="true"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/normal_font_size"/>
@@ -246,11 +248,38 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fragment_fast_requisition_main_branched_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="批次控制:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+                <TextView
+                    android:id="@+id/fragment_fast_requisition_main_branched_in_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:text="--"
+                    android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -270,16 +299,28 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
+                    android:text="--"
                     android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
                     android:singleLine="true"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/normal_font_size"/>
             </LinearLayout>
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginRight="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -303,22 +344,10 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/normal_font_size"/>
             </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
+
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -346,57 +375,7 @@
                     android:textSize="@dimen/normal_font_size"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/fragment_fast_requisition_main_target_shard_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="批号:"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size"/>
-
-                <EditText
-                    android:id="@+id/fragment_fast_requisition_main_branch_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@id/fragment_fast_requisition_main_from_shard_tv"
-                    android:background="@drawable/spinner_back"
-                    android:hint="输入发料批号"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size"/>
-            </LinearLayout>
-
         </LinearLayout>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorDevideLine"/>
-
-        <include
-            layout="@layout/hair_mater_mater_list_second_return_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fragment_purchase_receipt_content_rl"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 
