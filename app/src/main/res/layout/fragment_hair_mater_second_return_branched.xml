@@ -349,10 +349,7 @@
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size"/>
+                    style="@style/NormalTheme.EditText"/>
             </LinearLayout>
 
             <LinearLayout
@@ -378,12 +375,9 @@
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
-                    android:background="@drawable/spinner_back"
+                    style="@style/NormalTheme.EditText"
                     android:hint="输入发料库位编号"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size"/>
+                    android:imeOptions="actionDone"/>
             </LinearLayout>
 
         </LinearLayout>

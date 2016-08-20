@@ -20,4 +20,16 @@
         <item name="windowActionBar">false</item>
     </style>
 
+
+
+    <style name="NormalTheme"></style>
+    <style name="NormalTheme.EditText">
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:background">@drawable/spinner_back</item>
+        <item name="android:textSize">@dimen/normal_font_size</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
 </resources>

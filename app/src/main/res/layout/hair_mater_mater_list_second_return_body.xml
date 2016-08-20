@@ -40,9 +40,9 @@
 
         <ImageView
             android:id="@+id/purchase_receipt_second_item_close_iv"
-            android:padding="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
             android:src="@mipmap/icon_delet" />
     </LinearLayout>
 </LinearLayout>

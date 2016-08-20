@@ -31,7 +31,6 @@ import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Mater;
 import com.amphenol.entity.Pick;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -324,7 +323,6 @@ public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_RETURN_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -353,33 +351,6 @@ public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
         code = CommonTools.decodeScanString("L", code);
         v.setText(code);
     }
-
-    /**
-     * 增加批次， 在本地的item集合中追加branch ，不进行联网操作，确认收货时完成提交新增的branch
-     *
-     * @param branchPO       批次号
-     * @param actualQuantity 实收数量
-     */
-    private void addBranch(String branchPO, String actualQuantity) {
-        double num = 0;
-        if (TextUtils.isEmpty(branchPO)) {
-            Toast.makeText(getContext(), "批次增加失败:批次号不能为空", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            try {
-                num = Double.parseDouble(actualQuantity);
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "批次增加失败:实收数量输入非法", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-        Pick.PickItem.PickItemBranchItem pickItemBranchItem = new Pick.PickItem.PickItemBranchItem();
-        pickItemBranchItem.setQuantity(num);
-        pickItemBranchItem.setBranch(new Mater.Branch("", branchPO, 0));
-        mPickItem.getPickItemBranchItems().add(pickItemBranchItem);
-        Toast.makeText(getContext(), "增加成功", Toast.LENGTH_SHORT).show();
-    }
-
 
     public interface SecondFragmentCallBack extends Serializable {
         /**

@@ -218,7 +218,7 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
                             return ;
                         }
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
-                        builder2.setTitle("发料过账").setMessage("将要进行发料过账?");
+                        builder2.setTitle("发料过账").setMessage("将要进行退料过账?");
                         final String finalShard = shard;
                         builder2.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override

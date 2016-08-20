@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -345,9 +346,9 @@ public class PurchaseReceiptSecondBranchedFragment extends Fragment {
 
         if (mPurchaseItem.getUnit() != null) {
             if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "GM") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "gm")) {
-                mTotalWeightTextView.setText(single * total / 1000 + "");
+                mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).divide(new BigDecimal(Double.toString(1000d))).toString());
             } else if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "KG") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "kg")) {
-                mTotalWeightTextView.setText(single * total + "");
+                mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).toString());
             }
         }
     }

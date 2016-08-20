@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amphenol.Manager.DecodeManager;
@@ -61,7 +62,7 @@ public class FastRequisitionMainFragment extends Fragment {
     private Button mInquireButton, mSubmitButton;
     private RecyclerView mRecyclerView;
     private View.OnClickListener mOnClickListener;
-    private ImageButton mImageButton;
+    private ImageView mImageButton;
     private Requisition requisition = new Requisition();
     private FirstRequisitionForMaterListAdapter firstRequisitionForMaterListAdapter;
     private List<Requisition.RequisitionItem> mRequisitionItems = new ArrayList<>();
@@ -114,7 +115,7 @@ public class FastRequisitionMainFragment extends Fragment {
     }
 
     private void initViews() {
-        mImageButton = (ImageButton) rootView.findViewById(R.id.toolbar_menu);
+        mImageButton = (ImageView) rootView.findViewById(R.id.toolbar_menu);
         mImageButton.setOnClickListener(mOnClickListener);
         wareHouseTextView = (TextView) rootView.findViewById(R.id.fragment_fast_requisition_main_warehouse_in_tv);
         wareHouseTextView.setText(SessionManager.getWarehouse(getContext()));

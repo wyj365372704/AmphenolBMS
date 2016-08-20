@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -19,15 +19,15 @@
             android:singleLine="true"
             android:text="快速调拨"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
-        <ImageButton
+        <ImageView
             android:id="@+id/toolbar_menu"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/icon_camera"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="right"
-            android:layout_marginRight="16dp" />
+            android:padding="16dp"
+            android:src="@drawable/icon_camera"/>
 
     </android.support.v7.widget.Toolbar>
 
@@ -44,207 +44,197 @@
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fragment_create_requisition_create_bt"
+        android:layout_below="@id/toolbar"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:layout_above="@id/fragment_create_requisition_create_bt"
-            android:layout_below="@id/toolbar"
-            android:paddingTop="@dimen/activity_vertical_margin">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/fragment_fast_requisition_main_warehouse_tv"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="仓库:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
 
-                    <TextView
-                        android:id="@+id/fragment_fast_requisition_main_warehouse_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:gravity="right"
-                        android:text="仓库:"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-
-                    <TextView
-                        android:id="@+id/fragment_fast_requisition_main_warehouse_in_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="4dp"
-                        android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
-                        android:singleLine="true"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/fragment_fast_requisition_main_warehouse_in_tv"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/fragment_fast_requisition_main_mater_tv"
-                        android:layout_width="52dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:gravity="right"
-                        android:text="物料:"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-
-                    <EditText
-                        android:id="@+id/fragment_fast_requisition_main_mater_in_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="4dp"
-                        android:hint="输入物料编号"
-                        android:imeOptions="actionDone"
-                        android:background="@drawable/spinner_back"
-                        android:singleLine="true"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-                </LinearLayout>
-
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_toRightOf="@id/fragment_create_requisition_main_warehouse_tv"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/fragment_fast_requisition_main_mater_tv"
+                    android:layout_width="52dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="物料:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
 
-                    <TextView
-                        android:id="@+id/fragment_fast_requisition_main_from_shard_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:gravity="right"
-                        android:text="从库位:"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-
-                    <EditText
-                        android:id="@+id/fragment_fast_requisition_main_from_shard_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="4dp"
-                        android:imeOptions="actionDone"
-                        android:background="@drawable/spinner_back"
-                        android:singleLine="true"
-                        android:hint="输入从库位编号"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/fragment_fast_requisition_main_target_shard_tv"
-                        android:layout_width="52dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:gravity="right"
-                        android:text="到库位:"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-
-                    <EditText
-                        android:id="@+id/fragment_fast_requisition_main_target_shard_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="4dp"
-                        android:imeOptions="actionDone"
-                        android:layout_toRightOf="@id/fragment_fast_requisition_main_from_shard_tv"
-                        android:background="@drawable/spinner_back"
-                        android:singleLine="true"
-                        android:hint="输入到库位编号"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/normal_font_size" />
-                </LinearLayout>
-
+                <EditText
+                    android:id="@+id/fragment_fast_requisition_main_mater_in_et"
+                    style="@style/NormalTheme.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:hint="输入物料编号"
+                    android:imeOptions="actionDone"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin">
-
-                <Button
-                    android:id="@+id/fragment_fast_requisition_main_inquire_bt"
-                    android:layout_width="0dp"
-                    android:layout_height="38dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/positive_button_background"
-                    android:text="查询"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/fragment_fast_requisition_main_submit_bt"
-                    android:layout_width="0dp"
-                    android:layout_height="38dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/negative_button_background"
-                    android:text="立即调拨"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@color/colorDevideLine" />
-
-            <include
-                layout="@layout/create_requisition_main_item_head"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/fragment_purchase_receipt_content_rl"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fragment_fast_requisition_main_from_shard_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="从库位:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+                <EditText
+                    android:id="@+id/fragment_fast_requisition_main_from_shard_et"
+                    style="@style/NormalTheme.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:hint="输入从库位编号"
+                    android:imeOptions="actionDone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/fragment_fast_requisition_main_target_shard_tv"
+                    android:layout_width="52dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="到库位:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+                <EditText
+                    android:id="@+id/fragment_fast_requisition_main_target_shard_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_toRightOf="@id/fragment_fast_requisition_main_from_shard_tv"
+                  style="@style/NormalTheme.EditText"
+                    android:hint="输入到库位编号"
+                    android:imeOptions="actionDone"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <Button
+                android:id="@+id/fragment_fast_requisition_main_inquire_bt"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_marginRight="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/positive_button_background"
+                android:text="查询"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/fragment_fast_requisition_main_submit_bt"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/negative_button_background"
+                android:text="立即调拨"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/colorDevideLine"/>
+
+        <include
+            layout="@layout/create_requisition_main_item_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_purchase_receipt_content_rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
 </RelativeLayout>

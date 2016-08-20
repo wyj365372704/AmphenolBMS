@@ -239,17 +239,12 @@
                 <EditText
                     android:id="@+id/fragment_purchase_receipt_second_shkw_et"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:layout_toRightOf="@id/fragment_purchase_receipt_second_shkw_tv"
-                    android:background="@drawable/spinner_back"
-                    android:ellipsize="end"
-                    android:gravity="left"
-                    android:padding="4dp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size"/>
+               style="@style/NormalTheme.EditText"
+                    android:gravity="left"/>
 
 
             </RelativeLayout>
@@ -271,18 +266,13 @@
                 <EditText
                     android:id="@+id/fragment_purchase_receipt_second_sjdz_in_et"
                     android:layout_width="56dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:layout_toRightOf="@id/fragment_purchase_receipt_second_sjdz_tv"
-                    android:background="@drawable/spinner_back"
-                    android:ellipsize="end"
+                 style="@style/NormalTheme.EditText"
                     android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:padding="4dp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size"/>
+                    android:inputType="numberDecimal"/>
 
                 <TextView
                     android:id="@+id/fragment_purchase_receipt_second_sjdzdw_tv"
@@ -308,18 +298,13 @@
                 <EditText
                     android:id="@+id/fragment_purchase_receipt_second_sszs_in_et"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:layout_toRightOf="@id/fragment_purchase_receipt_second_sszs_tv"
-                    android:background="@drawable/spinner_back"
-                    android:ellipsize="end"
+                   style="@style/NormalTheme.EditText"
                     android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:padding="4dp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size"/>
+                    android:inputType="numberDecimal"/>
             </RelativeLayout>
 
             <RelativeLayout

@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -64,7 +65,7 @@ public class StockSearchMainFragment extends Fragment {
     private Button mInquireButton;
     private RecyclerView mRecyclerView;
     private View.OnClickListener mOnClickListener;
-    private ImageButton mImageButton;
+    private ImageView mImageButton;
     private ArrayAdapter<String> mStringArrayAdapter;
     private ArrayList<Mater.Branch> branches = new ArrayList<>();
     private StockSearchAdapter mStockSearchAdapter;
@@ -118,7 +119,7 @@ public class StockSearchMainFragment extends Fragment {
     }
 
     private void initViews() {
-        mImageButton = (ImageButton) rootView.findViewById(R.id.toolbar_menu);
+        mImageButton = (ImageView) rootView.findViewById(R.id.toolbar_menu);
         mImageButton.setOnClickListener(mOnClickListener);
         wareHouseTextView = (TextView) rootView.findViewById(R.id.fragment_fast_requisition_main_warehouse_in_tv);
         wareHouseTextView.setText(SessionManager.getWarehouse(getContext()));

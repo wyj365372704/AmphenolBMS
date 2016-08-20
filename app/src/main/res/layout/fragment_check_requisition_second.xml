@@ -201,10 +201,8 @@
                     android:layout_width="80dp"
                     android:layout_height="32dp"
                     android:inputType="numberDecimal"
-                    android:background="@drawable/spinner_back"
-                    android:text="0"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    style="@style/NormalTheme.EditText"
+                    android:text="0"/>
 
             </LinearLayout>
 
@@ -290,9 +288,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="32dp"
                     android:layout_marginRight="16dp"
-                    android:background="@drawable/spinner_back"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    style="@style/NormalTheme.EditText"/>
 
             </LinearLayout>
 
@@ -314,10 +310,8 @@
                     android:id="@+id/fragment_create_requisition_second_target_location_et"
                     android:layout_width="80dp"
                     android:layout_height="32dp"
-                    android:background="@drawable/spinner_back"
-                    android:text="--"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    style="@style/NormalTheme.EditText"
+                    android:text="--" />
 
             </LinearLayout>
 

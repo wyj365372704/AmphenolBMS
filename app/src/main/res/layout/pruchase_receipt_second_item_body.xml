@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="46dp"
-    android:gravity="center"
-    android:orientation="horizontal">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:minHeight="46dp"
+              android:orientation="horizontal">
 
     <TextView
         android:id="@+id/purchase_receipt_second_item_scpc_tv"
@@ -16,7 +16,7 @@
         android:paddingRight="4dp"
         android:text="--"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/normal_font_size" />
+        android:textSize="@dimen/normal_font_size"/>
 
     <TextView
         android:id="@+id/purchase_receipt_second_item_jhsl_tv"
@@ -24,11 +24,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center"
-        android:text="0"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
+        android:text="0"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/normal_font_size" />
+        android:textSize="@dimen/normal_font_size"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -38,20 +38,16 @@
 
         <EditText
             android:id="@+id/purchase_receipt_second_item_sssl_et"
+            style="@style/NormalTheme.EditText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="28dp"
             android:layout_marginBottom="4dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/spinner_back"
-            android:ellipsize="end"
             android:gravity="center"
-            android:text="0"
             android:inputType="numberDecimal"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/normal_font_size" />
+            android:text="0"/>
     </LinearLayout>
 
     <LinearLayout
@@ -62,9 +58,9 @@
 
         <ImageView
             android:id="@+id/purchase_receipt_second_item_close_iv"
-            android:padding="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_delet" />
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:padding="16dp"
+            android:src="@mipmap/icon_delet"/>
     </LinearLayout>
 </LinearLayout>

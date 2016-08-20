@@ -69,6 +69,23 @@ public class PurchaseReceiptActivity extends BaseActivity {
                 }
             }
         };
+        mSecondNoBranchedFragmentCallBack = new PurchaseReceiptSecondNoBranchedFragment.SecondFragmentCallBack() {
+            @Override
+            public void itemBeenClosed(String shdhh) {
+                getSupportFragmentManager().popBackStack();//当前fragment退栈
+                if(mPurchaseReceiptMainFragment!=null){
+                    mPurchaseReceiptMainFragment.refreshShow(shdhh);
+                }
+            }
+
+            @Override
+            public void itemBeenSured(String shdhh) {
+                getSupportFragmentManager().popBackStack();//当前fragment退栈
+                if(mPurchaseReceiptMainFragment!=null){
+                    mPurchaseReceiptMainFragment.refreshShow(shdhh);
+                }
+            }
+        };
     }
 
     @Override

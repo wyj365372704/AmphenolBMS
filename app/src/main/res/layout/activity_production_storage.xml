@@ -44,16 +44,11 @@
             android:id="@+id/purchase_receipt_main_code_et"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:layout_centerVertical="true"
+            style="@style/NormalTheme.EditText"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:background="@drawable/spinner_back"
-            android:ellipsize="end"
             android:hint="输入工单号"
-            android:imeOptions="actionDone"
-            android:padding="2dp"
-            android:singleLine="true"
-            android:textSize="@dimen/normal_font_size" />
+            android:imeOptions="actionDone"/>
     </LinearLayout>
 
     <LinearLayout
@@ -194,14 +189,10 @@
                     android:id="@+id/fragment_fast_requisition_main_from_branch_et"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:imeOptions="actionDone"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:hint="输入批号"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    style="@style/NormalTheme.EditText"
+                    android:hint="输入批号"/>
 
             </LinearLayout>
 
@@ -305,15 +296,11 @@
                     android:id="@+id/fragment_fast_requisition_main_from_meixiangshuliang_et"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
+                    style="@style/NormalTheme.EditText"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:hint="输入每箱数量"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    android:hint="输入每箱数量"/>
 
             </LinearLayout>
 
@@ -342,15 +329,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginRight="24dp"
-                    android:layout_centerVertical="true"
+                    style="@style/NormalTheme.EditText"
                     android:layout_marginLeft="4dp"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:hint="输入箱数"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    android:hint="输入箱数"/>
 
             </LinearLayout>
 
@@ -371,15 +354,11 @@
                     android:id="@+id/fragment_fast_requisition_main_from_weishu_et"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_centerVertical="true"
+                    style="@style/NormalTheme.EditText"
                     android:layout_marginLeft="4dp"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:hint="输入尾数"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    android:hint="输入尾数" />
 
             </LinearLayout>
 
@@ -459,14 +438,10 @@
                     android:id="@+id/fragment_fast_requisition_main_shard_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_centerVertical="true"
+                    style="@style/NormalTheme.EditText"
                     android:layout_marginLeft="4dp"
                     android:imeOptions="actionDone"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:layout_marginRight="24dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    android:layout_marginRight="24dp"/>
 
             </LinearLayout>
 
@@ -488,14 +463,10 @@
                     android:id="@+id/fragment_fast_requisition_main_from_shard_et"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_centerVertical="true"
+                    style="@style/NormalTheme.EditText"
                     android:layout_marginLeft="4dp"
                     android:imeOptions="actionDone"
-                    android:background="@drawable/spinner_back"
-                    android:singleLine="true"
-                    android:hint="输入库位编号"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_font_size" />
+                    android:hint="输入库位编号" />
 
             </LinearLayout>
 
