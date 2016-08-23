@@ -10,6 +10,7 @@ public class MenuItem{
     public static final int MENU_CODE_PURCHASE_RETURN = 12;//采购退货
     public static final int MENU_CODE_HAIR_MATER = 23;//生产发料
     public static final int MENU_CODE_STOR_MATER = 24;//生产入库
+    public static final int MENU_CODE_PRODUCT_INQUIRE = 21;//生产订单查询
     public static final int MENU_CODE_CREATE_REQUISITION = 31;//创建调拨单
     public static final int MENU_CODE_CHECK_REQUISITION = 32;//审核调拨单
     public static final int MENU_CODE_FAST_REQUISITION = 33;//快速调拨

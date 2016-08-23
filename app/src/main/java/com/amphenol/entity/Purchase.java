@@ -208,18 +208,20 @@ public class Purchase implements Parcelable {
          * 采购订单项下面的批次信息项实体
          */
         public static class PurchaseItemBranchItem implements Parcelable{
-            public PurchaseItemBranchItem(Mater.Branch branch, double actualQuantity) {
-                this.branch = branch;
-                this.actualQuantity = actualQuantity;
-            }
 
             private Mater.Branch branch;
-            private double actualQuantity = 0;
+            private double actualQuantity = 0;//实收数量
 
             protected PurchaseItemBranchItem(Parcel in) {
                 branch = in.readParcelable(Mater.Branch.class.getClassLoader());
                 actualQuantity = in.readDouble();
             }
+
+            public PurchaseItemBranchItem(Mater.Branch branch, double actualQuantity) {
+                this.branch = branch;
+                this.actualQuantity = actualQuantity;
+            }
+
 
             public static final Creator<PurchaseItemBranchItem> CREATOR = new Creator<PurchaseItemBranchItem>() {
                 @Override

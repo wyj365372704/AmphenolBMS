@@ -46,6 +46,10 @@ public class MenuActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         InquireMenu();
         InquireWareHouse();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_menu_tb);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
@@ -86,6 +90,9 @@ public class MenuActivity extends BaseActivity {
                         break;
                     case MenuItem.MENU_CODE_STOR_MATER:
                         componentName = new ComponentName(MenuActivity.this, ProductionStorageActivity.class);
+                        break;
+                    case MenuItem.MENU_CODE_PRODUCT_INQUIRE:
+                        componentName = new ComponentName(MenuActivity.this, ProductionInquireActivity.class);
                         break;
                 }
                 if (componentName != null) {
@@ -141,16 +148,13 @@ public class MenuActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_menu_rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new MenuItemDecoration(this, MenuItemDecoration.VERTICAL_LIST));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_menu_tb);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mRecyclerView.setAdapter(menuAdapter);
     }
 
 
     @Override
     public void initData() {
         menuAdapter = new MenuAdapter(this, menuDrawer, onMenuItemClickListener);
-        mRecyclerView.setAdapter(menuAdapter);
     }
 
 
@@ -190,6 +194,8 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.menu_icon_hair_mater;
             case MenuItem.MENU_CODE_STOR_MATER:
                 return R.mipmap.men_icon_product_stor;
+            case MenuItem.MENU_CODE_PRODUCT_INQUIRE:
+                return R.mipmap.menu_icon_product_inquir;
         }
         return R.mipmap.ic_launcher;
     }

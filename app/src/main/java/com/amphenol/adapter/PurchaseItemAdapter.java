@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +27,12 @@ import java.util.List;
 public class PurchaseItemAdapter extends RecyclerView.Adapter {
     private List<Purchase.PurchaseItem.PurchaseItemBranchItem> date;
     private Context mContext;
-    private OnBranchItemActualQuantityChangedListener mOnBranchItemActualQuantityChangedListener;
+    private onItemEventCallBack mOnItemEventCallBack;
 
-    public PurchaseItemAdapter(Context mContext, List<Purchase.PurchaseItem.PurchaseItemBranchItem> branches, OnBranchItemActualQuantityChangedListener onBranchItemActualQuantityChangedListener) {
+    public PurchaseItemAdapter(Context mContext, List<Purchase.PurchaseItem.PurchaseItemBranchItem> branches, onItemEventCallBack onItemEventCallBack) {
         this.date = branches;
         this.mContext = mContext;
-        mOnBranchItemActualQuantityChangedListener = onBranchItemActualQuantityChangedListener;
+        mOnItemEventCallBack = onItemEventCallBack;
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,63 +58,29 @@ public class PurchaseItemAdapter extends RecyclerView.Adapter {
 
     class ViewHolderBody extends RecyclerView.ViewHolder {
         int position ;
-        TextView scpcTextView, jhslTextView;
-        EditText ssslEditText;
+        TextView scpcTextView, jhslTextView , ssslEditText;
         ImageView closeImageView;
 
         View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("删除批次").setMessage("将对该批次物料实收数量置为0，确认收货后以删除该批次信息？");
-                builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        date.get(position).setActualQuantity(0);
-                        notifyItemChanged(position);
-                        if (mOnBranchItemActualQuantityChangedListener != null)
-                            mOnBranchItemActualQuantityChangedListener.onBranchActualQuantityChanged();
-                    }
-                });
-                builder.create().show();
+                if(mOnItemEventCallBack!=null)
+                    mOnItemEventCallBack.onItemClosed(position);
             }
         };
 
-        TextWatcher mTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("wyj","onTextChanged  the position is "+position +" , the s is "+s);
-                double quantity = 0;
-                try {
-                    quantity = Double.parseDouble(s.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                date.get(position).setActualQuantity(quantity);
-                if (mOnBranchItemActualQuantityChangedListener != null)
-                    mOnBranchItemActualQuantityChangedListener.onBranchActualQuantityChanged();
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
         public ViewHolderBody(View itemView) {
             super(itemView);
             scpcTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_second_item_scpc_tv);
             jhslTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_second_item_jhsl_tv);
-            ssslEditText = (EditText) itemView.findViewById(R.id.purchase_receipt_second_item_sssl_et);
+            ssslEditText = (TextView) itemView.findViewById(R.id.purchase_receipt_second_item_sssl_et);
             closeImageView = (ImageView) itemView.findViewById(R.id.purchase_receipt_second_item_close_iv);
             closeImageView.setOnClickListener(mOnClickListener);
-            ssslEditText.addTextChangedListener(mTextWatcher);
         }
     }
 
-    public interface OnBranchItemActualQuantityChangedListener {
-        void onBranchActualQuantityChanged();
+    public interface onItemEventCallBack {
+        void onItemClosed(int position);
     }
 
 }

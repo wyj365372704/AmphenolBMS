@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -58,12 +57,11 @@ public class PurchaseReceiptSecondBranchedFragment extends Fragment {
     private PurchaseItemAdapter mSecondReceiptAdapter;
     private SecondFragmentCallBack mSecondFragmentCallBack;
     private View.OnClickListener mOnClickListener;
-    private PurchaseItemAdapter.OnBranchItemActualQuantityChangedListener mOnBranchItemActualQuantityChangedListener;
+    private PurchaseItemAdapter.onItemEventCallBack mOnItemEventCallBack;
     private ActionSheet.ActionSheetListener mActionSheetListener;
-    private Button mCloseReceiptButton, mSureReceiptButton, mAddBranchButton;
     private TextView mMaterNumberTextView, mIsBranchTextView, mStatusTextView,
             mMaterDescTextView, mPurchaseUnitTextView, mShardTextView,
-            mPlainQuantityTextView, mActualSingleUnitTextView, mActualquantityTextView,mTotalWeightTextView;
+            mPlainQuantityTextView, mActualSingleUnitTextView, mActualquantityTextView, mTotalWeightTextView;
     private EditText mLocationEditText, mActualSingleEditText;
     private View dialogView;//弹窗dialog视图
     private Purchase.PurchaseItem mPurchaseItem;
@@ -202,12 +200,15 @@ public class PurchaseReceiptSecondBranchedFragment extends Fragment {
                         }
                         try {
                             actualQuantity = Double.parseDouble(mActualquantityTextView.getText().toString().trim());
+                            if(actualQuantity == 0){
+                                Toast.makeText(getContext(), "未勾选任何批次,请新增并勾选需要收货的批次", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(getContext(), "实收总数无效", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "实收总数无效,请新增批次", Toast.LENGTH_SHORT).show();
                             return;
                         }
-
 
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
                         builder2.setTitle("确认收货").setMessage("将要对此物料进行确认收货?");
@@ -287,11 +288,21 @@ public class PurchaseReceiptSecondBranchedFragment extends Fragment {
             }
         };
 
-        mOnBranchItemActualQuantityChangedListener = new PurchaseItemAdapter.OnBranchItemActualQuantityChangedListener() {
+        mOnItemEventCallBack = new PurchaseItemAdapter.onItemEventCallBack() {
             @Override
-            public void onBranchActualQuantityChanged() {
-                UpdateActualQuantity();
-                updateReceiptTotalWeight();
+            public void onItemClosed(final int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("删除批次").setMessage("将要删除该批次记录？");
+                builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPurchaseItem.getPurchaseItemBranchItems().remove(position);
+                        mSecondReceiptAdapter.notifyDataSetChanged();
+                        UpdateActualQuantity();
+                        updateReceiptTotalWeight();
+                    }
+                });
+                builder.create().show();
             }
         };
         mSingleTextWatcher = new TextWatcher() {
@@ -372,7 +383,7 @@ public class PurchaseReceiptSecondBranchedFragment extends Fragment {
     }
 
     private void initData() {
-        mSecondReceiptAdapter = new PurchaseItemAdapter(getContext(), mPurchaseItem.getPurchaseItemBranchItems(), mOnBranchItemActualQuantityChangedListener);
+        mSecondReceiptAdapter = new PurchaseItemAdapter(getContext(), mPurchaseItem.getPurchaseItemBranchItems(), mOnItemEventCallBack);
         mRecyclerView.setAdapter(mSecondReceiptAdapter);
         mMaterNumberTextView.setText(mPurchaseItem.getMater().getNumber().trim());
         mMaterDescTextView.setText(mPurchaseItem.getMater().getDesc().trim());

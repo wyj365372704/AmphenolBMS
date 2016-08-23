@@ -137,6 +137,7 @@ public class StockSearchMainFragment extends Fragment {
     }
 
     private void initListeners() {
+
         mOnEditorActionListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

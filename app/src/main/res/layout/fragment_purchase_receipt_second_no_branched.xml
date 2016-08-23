@@ -23,6 +23,7 @@
             android:textSize="18sp"/>
 
     </android.support.v7.widget.Toolbar>
+
     <LinearLayout
         android:id="@+id/fragment_purchas_receipt_second_ll_bt"
         android:layout_width="match_parent"
@@ -69,10 +70,11 @@
             android:textStyle="bold"/>
 
     </LinearLayout>
+
     <LinearLayout
-        android:layout_above="@id/fragment_purchas_receipt_second_ll_bt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/fragment_purchas_receipt_second_ll_bt"
         android:layout_below="@id/toolbar"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
@@ -238,15 +240,13 @@
 
                 <EditText
                     android:id="@+id/fragment_purchase_receipt_second_shkw_et"
+                    style="@style/NormalTheme.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:layout_toRightOf="@id/fragment_purchase_receipt_second_shkw_tv"
-               style="@style/NormalTheme.EditText"
-                    android:gravity="left"/>
-
-
+                    android:hint="输入收货库位"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -265,12 +265,12 @@
 
                 <EditText
                     android:id="@+id/fragment_purchase_receipt_second_sjdz_in_et"
+                    style="@style/NormalTheme.EditText"
                     android:layout_width="56dp"
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:layout_toRightOf="@id/fragment_purchase_receipt_second_sjdz_tv"
-                 style="@style/NormalTheme.EditText"
                     android:gravity="center"
                     android:inputType="numberDecimal"/>
 
@@ -297,14 +297,15 @@
 
                 <EditText
                     android:id="@+id/fragment_purchase_receipt_second_sszs_in_et"
+                    style="@style/NormalTheme.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:layout_toRightOf="@id/fragment_purchase_receipt_second_sszs_tv"
-                   style="@style/NormalTheme.EditText"
                     android:gravity="center"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="numberDecimal"
+                    android:padding="0dp"/>
             </RelativeLayout>
 
             <RelativeLayout

@@ -79,7 +79,7 @@ public class FastRequisitionMainFragment extends Fragment {
 
         Bundle args = new Bundle();
         FastRequisitionMainFragment fragment = new FastRequisitionMainFragment();
-        fragment.mainFragmentCallBack = mainFragmentCallBack ;
+        fragment.mainFragmentCallBack = mainFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
     }
@@ -196,6 +196,10 @@ public class FastRequisitionMainFragment extends Fragment {
                                     ((BaseActivity) getActivity()).ShowToast("存在调拨数量大于库存数量的调拨项,请检查后重试!");
                                     return;
                                 }
+                                if (quantity <= 0) {
+                                    ((BaseActivity) getActivity()).ShowToast("存在调拨数量小于0的调拨项,请检查后重试!");
+                                    return;
+                                }
                                 String from_warehouse = requisitionItem.getBranch().getMater().getWarehouse();
                                 String from_shard = requisitionItem.getBranch().getMater().getShard();
                                 String from_location = requisitionItem.getBranch().getMater().getLocation();
@@ -276,7 +280,9 @@ public class FastRequisitionMainFragment extends Fragment {
                 if (quantity > requisition.getRequisitionItems().get(position).getBranch().getQuantity()) {
                     ((BaseActivity) getActivity()).ShowToast("调拨数量不能大于库存数量" + requisition.getRequisitionItems().get(position).getBranch().getQuantity());
                 }
-
+                if (quantity <= 0) {
+                    ((BaseActivity) getActivity()).ShowToast("调拨数量必须大于0");
+                }
             }
         };
 
@@ -367,7 +373,7 @@ public class FastRequisitionMainFragment extends Fragment {
         String branch = CommonTools.decodeScanString("B", code);
         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
         if (state) {//当前按钮状态为“清除” ,扫码选中物料
-            int count  = 0;
+            int count = 0;
             for (Requisition.RequisitionItem requisitionItem : requisition.getRequisitionItems()) {
                 if (TextUtils.equals(requisitionItem.getBranch().getPo(), branch) && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)) {
                     requisitionItem.setChecked(true);
@@ -376,9 +382,9 @@ public class FastRequisitionMainFragment extends Fragment {
             }
             if (count == 0) {
                 ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
-            }else{
+            } else {
                 firstRequisitionForMaterListAdapter.notifyDataSetChanged();
-                ((BaseActivity)getActivity()).ShowToast("扫描选中了"+count+"个物料");
+                ((BaseActivity) getActivity()).ShowToast("扫描选中了" + count + "个物料");
             }
             materEditText.getText().clear();
         } else {
@@ -498,7 +504,7 @@ public class FastRequisitionMainFragment extends Fragment {
                         ((BaseActivity) getActivity()).ShowToast("调拨成功");
                         requisition = new Requisition();
                         refreshShow();
-                    } else if (bundle.getInt("code") == 6) {
+                    } else if (bundle.getInt("code") == 5) {
                         ((BaseActivity) getActivity()).ShowToast("调拨失败:到库位不存在");
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("调拨失败");

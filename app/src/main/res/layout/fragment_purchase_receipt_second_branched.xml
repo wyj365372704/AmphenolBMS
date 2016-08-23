@@ -207,10 +207,10 @@
                         style="@style/NormalTheme.EditText"
                         android:layout_width="match_parent"
                         android:layout_height="28dp"
-                        android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
+                        android:hint="输入收货库位"
                         android:layout_toRightOf="@id/fragment_purchase_receipt_second_shkw_tv"
-                        android:gravity="left"/>
+                        />
 
 
                 </RelativeLayout>
@@ -262,16 +262,16 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/normal_font_size"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/fragment_purchase_receipt_second_sszs_in_et"
-                        style="@style/NormalTheme.EditText"
                         android:layout_width="match_parent"
-                        android:layout_height="28dp"
+                        android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
                         android:layout_toRightOf="@id/fragment_purchase_receipt_second_sszs_tv"
-                        android:gravity="center"
-                        android:inputType="numberDecimal"/>
+                        android:inputType="numberDecimal"
+                        android:textColor="@android:color/black"
+                        android:text="--"/>
                 </RelativeLayout>
 
                 <RelativeLayout

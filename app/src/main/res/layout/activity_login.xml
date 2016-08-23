@@ -77,7 +77,7 @@
             style="@style/NormalTheme.EditText"
             android:gravity="center_vertical"
             android:inputType="textPassword"
-            android:text="123456"></EditText>
+            android:text="123456" />
     </LinearLayout>
 
     <Button

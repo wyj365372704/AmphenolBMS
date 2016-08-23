@@ -119,6 +119,8 @@ public class LoginActivity extends BaseActivity {
         mButton = (Button) findViewById(R.id.activity_login_bt);
         mButton.setOnClickListener(mOnClickListener);
         mEnvSpinner = (Spinner) findViewById(R.id.activity_login_env_sp);
+        //第四步：将适配器添加到下拉列表上
+        mEnvSpinner.setAdapter(mStringArrayAdapter);
         mUserNameEditText = (EditText) findViewById(R.id.activity_login_username_et);
         mPasswordEditText = (EditText) findViewById(R.id.activity_login_password_et);
     }
@@ -149,8 +151,6 @@ public class LoginActivity extends BaseActivity {
         mStringArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, envList);
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //第四步：将适配器添加到下拉列表上
-        mEnvSpinner.setAdapter(mStringArrayAdapter);
     }
 
 

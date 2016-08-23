@@ -524,6 +524,82 @@
 	default
 		
 
-##生产入库
+##生产入库 - 工单查询
 	请求方式:get
+	参数:
+		warehouse	仓库	
+		work_order	工单号
+	action=production_storage_inquire
+
+返回
+
+	order_state : int 订单状态
+		10 = 已下达; 40 = 已开始生产
+		45 = 物料完成; 50 = 工序完成
+		55 = 物料/工序完成; 99 = 订单取消
+	product_desc : String 产品描述
+	product : String 产品
+	branched:int 是否需要批次控制
+		0 不需要
+		1 需要
+	quantity_order : double 订单数量
+	quantity_storaged : double 已入库数量	
+	unit : String 单位
+	shard : String 默认子库
+	location : String 默认库位
 	
+##生产入库 - 确认入库
+	请求方式:get
+	参数:
+		work_order	工单号
+		branch 批次号 ,如果受批次控制测附带,否则为空
+		quantity_each_box 每箱数量
+		quantity_box 箱数
+		quantity_mantissa 尾数
+		shard 子库
+		location 库位
+	action=production_storage_submit
+
+返回
+
+	default
+
+
+##生产订单查询
+	请求方式:get
+	参数:
+		warehouse	仓库	
+		work_order	工单号
+	action=production_order_inquire
+
+返回
+
+	product : String 产品
+	department : String 部门
+	order_state : int 订单状态
+		10 = 已下达; 40 = 已开始生产
+		45 = 物料完成; 50 = 工序完成
+		55 = 物料/工序完成; 99 = 订单取消
+	plain_start_date : String 计划开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	plain_finish_date : String 计划完成日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	actual_start_date : String 实际开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	quantity_order : double 订单数量
+	quantity_finished : double 完工数量
+	quantity_remain : double 剩余未交货数量
+	customer : String 客户
+	customer_name : String 客户名称
+	customer_purchase_order_number : String 客户采购订单号
+	mater_number : String 材料编号
+	mater_name : String 材料名称
+	plan_usage_amount : double 计划用量
+	actual_usage_amount : double 实际用量
+	last_hair_mater_date : String 最后一次发料时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	step_number : String 工序编号
+	step_name : String 工序名称
+	standar_working_hours : double 标准工时
+	actual_working_hours : double 实际工时
+	outcourcing_costs : double 外协成本
+	outcourcing_supplier : String 外协供应商
+	outcourcing_purchase_order_number : String 外协采购订单号
+
+

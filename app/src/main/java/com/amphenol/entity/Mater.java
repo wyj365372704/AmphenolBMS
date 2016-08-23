@@ -12,13 +12,13 @@ import java.util.List;
  * Created by Carl on 2016/7/12/012.
  */
 public class Mater implements Parcelable {
-    public static final int BRANCH_CONTROL = 1, BRANCH_NO_CONTROL = 0;//批次控制 1：控制    0：不控制
+    public static final int BRANCH_CONTROL = 1, BRANCH_NO_CONTROL = 0,BRANCH_NORMAL = 9;//批次控制 1：控制    0：不控制
     private String number = "";//物料编号
     private String desc = "";//物料描述
     private String format = "";//物料规格
     private String unit = "";//单位
     private double quantity = 0;//数量
-    private int branchControl = 0;//批次管控
+    private int branchControl = BRANCH_NORMAL;//批次管控
     private double single = 0;//单重
     private String warehouse = "";//仓库
     private String shard = "";//收货子库

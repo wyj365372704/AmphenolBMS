@@ -6,10 +6,12 @@ import android.os.Handler;
 import android.os.Message;
 
 
+import com.alibaba.fastjson.JSONPObject;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.Pick;
 import com.amphenol.entity.Purchase;
 import com.amphenol.entity.Requisition;
+import com.amphenol.entity.WorkOrder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -673,10 +675,10 @@ public class DecodeManager {
         Mater mater = new Mater();
         branch.setMater(mater);
         HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
-        double plantQuantity = 0 ;
-        try{
+        double plantQuantity = 0;
+        try {
             plantQuantity = Double.parseDouble(params.get("quantity"));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         String department = params.get("department");
@@ -714,8 +716,8 @@ public class DecodeManager {
             mater.setFormat(mater_format.trim());
 
             JSONArray shardJsonArray = jsonObject.optJSONArray("shard_list");
-            if(shardJsonArray!=null && shardJsonArray.length()>0){
-                for(int position = 0 ;position<shardJsonArray.length();position++){
+            if (shardJsonArray != null && shardJsonArray.length() > 0) {
+                for (int position = 0; position < shardJsonArray.length(); position++) {
                     JSONObject shardObject = shardJsonArray.getJSONObject(position);
                     String shardName = shardObject.optString("shard");
                     shards.add(shardName.trim());
@@ -750,10 +752,49 @@ public class DecodeManager {
             }
         }
         data.putParcelable("pickItem", pickItem);
-        data.putStringArrayList("shards",shards);
+        data.putStringArrayList("shards", shards);
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
+    public static void decodeProductionStorageInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            int state = jsonObject.optInt("order_state");
+            String product_desc = jsonObject.optString("product_desc").trim();
+            String product = jsonObject.optString("product").trim();
+            int branched = jsonObject.optInt("branched");
+            double quantity_order = jsonObject.optDouble("quantity_order");
+            double quantity_storaged = jsonObject.optDouble("quantity_storaged");
+            String unit = jsonObject.optString("unit").trim();
+            String shard = jsonObject.optString("shard").trim();
+            String location = jsonObject.optString("location").trim();
+
+            Map<String, String> params = (Map<String, String>) jsonObject.opt("params");
+            String work_order = params.get("work_order");
+            WorkOrder workOrder = new WorkOrder();
+            workOrder.setNumber(work_order);
+            workOrder.setState(state);
+            workOrder.setQuantityOrder(quantity_order);
+            workOrder.setQuantityStoraged(quantity_storaged);
+            Mater mater = new Mater();
+            mater.setNumber(product);
+            mater.setDesc(product_desc);
+            mater.setBranchControl(branched);
+            mater.setUnit(unit);
+            mater.setShard(shard);
+            mater.setLocation(location);
+            workOrder.setMater(mater);
+
+            data.putParcelable("workOrder",workOrder);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();

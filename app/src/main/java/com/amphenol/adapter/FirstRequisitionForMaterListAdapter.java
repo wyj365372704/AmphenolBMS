@@ -102,7 +102,6 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
                 double quantity = 0;
                 try {
                     quantity = Double.parseDouble(s.toString());
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

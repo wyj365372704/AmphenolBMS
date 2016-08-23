@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -18,10 +17,7 @@ public class PropertiesUtil {
     public static final String NETWORK_TIMEOUT_MS = "NETWORK_TIMEOUT_MS";//网络访问超时时间
     public static final String EXIST_TIME_INTERVAL_MILL = "EXIST_TIME_INTERVAL_MILL";//menuActivity 退出时间间隔
 
-
     public static final String NETWORK_RETRY_COUNT = "NETWORK_RETRY_COUNT";//网络访问超时时间
-
-
 
     public static final String INQUIRE_URL_PREFIX = "INQUIRE_URL_PREFIX";//网络访问url前缀
     public static final String ACTION_GET_ENV = "ACTION_GET_ENV";//action 后缀，获取登录环境map集
@@ -30,8 +26,6 @@ public class PropertiesUtil {
 
     public static final String ACTION_QUERY_WAREHOUSE = "ACTION_QUERY_WAREHOUSE";//action 后缀，获取仓库及仓库列表
     public static final String ACTION_QUERY_SHARD_LIST = "ACTION_QUERY_SHARD_LIST";//action 后缀，获取子库列表
-
-
 
     public static final String ACTION_QUERY_RECEIPT = "ACTION_QUERY_RECEIPT";//action 后缀，查询收货单
     public static final String ACTION_QUERY_RECEIPT_ITEM = "ACTION_QUERY_RECEIPT_ITEM";//action 后缀，查询收货单物料明细
@@ -54,6 +48,8 @@ public class PropertiesUtil {
     public static final String ACTION_HAIR_MATER_SUBMIT = "ACTION_HAIR_MATER_SUBMIT";//action 后缀,生产发料 发料过账
     public static final String ACTION_HAIR_MATER_RETURN_SUBMIT = "ACTION_HAIR_MATER_RETURN_SUBMIT";//action 后缀,生产发料 退料过账
     public static final String ACTION_HAIR_MATER_CANCEL = "ACTION_HAIR_MATER_CANCEL";//action 后缀,生产发料 终止过账
+
+    public static final String ACTION_PRODUCTION_STORAGE_INQUIRE = "ACTION_PRODUCTION_STORAGE_INQUIRE";//action 后缀,生产入库 - 工单查询
 
 
 

@@ -56,6 +56,9 @@ public class WareHouseSetUpActivity extends BaseActivity {
     public void initViews() {
         mWareHouseSpinner = (Spinner) findViewById(R.id.activity_set_up_warehouse_spinner);
         mWareHouseSpinner.setOnItemSelectedListener(mOnItemSelectedListener);
+        //第四步：将适配器添加到下拉列表上
+        mWareHouseSpinner.setAdapter(mWareHouseStringArrayAdapter);
+        mWareHouseSpinner.setSelection(mWareHouseStringArrayAdapter.getPosition(SessionManager.getWarehouse(getApplicationContext())));
     }
 
     @Override
@@ -136,9 +139,6 @@ public class WareHouseSetUpActivity extends BaseActivity {
         mWareHouseStringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, warehouseList);
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mWareHouseStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //第四步：将适配器添加到下拉列表上
-        mWareHouseSpinner.setAdapter(mWareHouseStringArrayAdapter);
-        mWareHouseSpinner.setSelection(mWareHouseStringArrayAdapter.getPosition(SessionManager.getWarehouse(getApplicationContext())));
     }
 
     @Override
