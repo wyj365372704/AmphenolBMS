@@ -78,7 +78,6 @@ public class StockSearchMainFragment extends Fragment {
     private ActionSheet.ActionSheetListener mActionSheetListener;
 
     public static StockSearchMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
-
         Bundle args = new Bundle();
         StockSearchMainFragment fragment = new StockSearchMainFragment();
         fragment.mainFragmentCallBack = mainFragmentCallBack;
@@ -92,7 +91,6 @@ public class StockSearchMainFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
         }
-
     }
 
     @Override
@@ -109,6 +107,12 @@ public class StockSearchMainFragment extends Fragment {
         initData();
         initViews();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        materEditText.requestFocus();
     }
 
     private void initData() {
@@ -174,7 +178,7 @@ public class StockSearchMainFragment extends Fragment {
                     case R.id.toolbar_menu:
                         ActionSheet.createBuilder(getContext(), getFragmentManager())
                                 .setCancelButtonTitle("取消")
-                                .setOtherButtonTitles("扫描库位标签","扫描物料标签")
+                                .setOtherButtonTitles("扫描库位标签", "扫描物料标签")
                                 .setCancelableOnTouchOutside(true)
                                 .setListener(mActionSheetListener).show();
                         break;
@@ -340,7 +344,7 @@ public class StockSearchMainFragment extends Fragment {
         param.put("warehouse", SessionManager.getWarehouse(getContext()));
         param.put("location", location);
         param.put("mate", mater);
-        param.put("shard",mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition()));
+        param.put("shard", mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition()));
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
     }
 

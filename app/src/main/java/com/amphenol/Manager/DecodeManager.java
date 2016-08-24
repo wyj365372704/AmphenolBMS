@@ -780,7 +780,7 @@ public class DecodeManager {
             workOrder.setState(state);
             workOrder.setQuantityOrder(quantity_order);
             workOrder.setQuantityStoraged(quantity_storaged);
-            Mater mater = new Mater();
+            WorkOrder.Mater mater = new WorkOrder.Mater();
             mater.setNumber(product);
             mater.setDesc(product_desc);
             mater.setBranchControl(branched);
@@ -789,7 +789,7 @@ public class DecodeManager {
             mater.setLocation(location);
             workOrder.setMater(mater);
 
-            data.putParcelable("workOrder",workOrder);
+//            data.putParcelable("workOrder",workOrder);
         }
         msg.setData(data);
         handler.sendMessage(msg);

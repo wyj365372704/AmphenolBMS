@@ -553,9 +553,7 @@
 	参数:
 		work_order	工单号
 		branch 批次号 ,如果受批次控制测附带,否则为空
-		quantity_each_box 每箱数量
-		quantity_box 箱数
-		quantity_mantissa 尾数
+		quantity 入库总数
 		shard 子库
 		location 库位
 	action=production_storage_submit
@@ -589,17 +587,23 @@
 	customer : String 客户
 	customer_name : String 客户名称
 	customer_purchase_order_number : String 客户采购订单号
-	mater_number : String 材料编号
-	mater_name : String 材料名称
-	plan_usage_amount : double 计划用量
-	actual_usage_amount : double 实际用量
-	last_hair_mater_date : String 最后一次发料时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-	step_number : String 工序编号
-	step_name : String 工序名称
-	standar_working_hours : double 标准工时
-	actual_working_hours : double 实际工时
-	outcourcing_costs : double 外协成本
-	outcourcing_supplier : String 外协供应商
-	outcourcing_purchase_order_number : String 外协采购订单号
+	mater_list : String 订单材料明细信息集合json字符串
+		mater_list : List<Map<String,Object>> 按此生成json字符串
+			Map<String,Object> 材料明细单位
+				mater_number : String 材料编号
+				mater_name : String 材料名称
+				plan_usage_amount : double 计划用量
+				actual_usage_amount : double 实际用量
+				last_hair_mater_date : String 最后一次发料时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	step_list : String 订单工序明细信息集合json字符串
+		step_list : List<Map<String,Object>> 按此生成json字符串
+			Map<String,Object> 工序明细单位
+				step_number : String 工序编号
+				step_name : String 工序名称
+				standard_working_hours : double 标准工时
+				actual_working_hours : double 实际工时
+				outsourcing_costs : double 外协成本
+				outsourcing_supplier : String 外协供应商
+				outsourcing_purchase_order_number : String 外协采购订单号
 
 

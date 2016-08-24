@@ -70,6 +70,7 @@
         android:background="@color/colorDevideLine"/>
 
     <android.support.v4.view.ViewPager
+        android:layout_marginTop="8dp"
         android:id="@+id/activity_production_inquire_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

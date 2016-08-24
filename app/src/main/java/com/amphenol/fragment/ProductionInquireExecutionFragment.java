@@ -45,4 +45,5 @@ public class ProductionInquireExecutionFragment extends Fragment {
     private void initViews() {
 
     }
+
 }
