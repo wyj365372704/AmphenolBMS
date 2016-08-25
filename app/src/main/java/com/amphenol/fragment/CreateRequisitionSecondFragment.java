@@ -1,48 +1,18 @@
 package com.amphenol.fragment;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.amphenol.Manager.DecodeManager;
-import com.amphenol.Manager.SessionManager;
-import com.amphenol.activity.BaseActivity;
-import com.amphenol.adapter.PurchaseItemAdapter;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Mater;
-import com.amphenol.entity.Purchase;
 import com.amphenol.entity.Requisition;
-import com.amphenol.ui.LoadingDialog;
-import com.amphenol.utils.CommonTools;
-import com.amphenol.utils.NetWorkAccessTools;
-import com.amphenol.utils.PropertiesUtil;
-import com.baoyz.actionsheet.ActionSheet;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.amphenol.amphenol.R.id.fragment_purchase_receipt_second_sjdz_in_et;
 
 /**
  * 采购收货_物料明细

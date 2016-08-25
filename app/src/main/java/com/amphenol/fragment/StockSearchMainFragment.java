@@ -23,7 +23,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,19 +31,15 @@ import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
-import com.amphenol.adapter.FirstRequisitionForMaterListAdapter;
 import com.amphenol.adapter.StockSearchAdapter;
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
-import com.amphenol.entity.Requisition;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
 import com.baoyz.actionsheet.ActionSheet;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -116,7 +111,10 @@ public class StockSearchMainFragment extends Fragment {
     }
 
     private void initData() {
-        mStringArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, SessionManager.getShard_list(getContext()));
+        List<String> shardList = new ArrayList<>(SessionManager.getShard_list(getContext()));
+        if (shardList.size() > 0)
+            shardList.add(0, "ALL");
+        mStringArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, shardList);
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mStockSearchAdapter = new StockSearchAdapter(getContext(), branches, mOnItemClickListener);
@@ -344,7 +342,10 @@ public class StockSearchMainFragment extends Fragment {
         param.put("warehouse", SessionManager.getWarehouse(getContext()));
         param.put("location", location);
         param.put("mate", mater);
-        param.put("shard", mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition()));
+        String shard = "";
+        if (shardSpinner.getSelectedItemPosition() != 0)
+            shard = mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition());
+        param.put("shard", shard);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
     }
 

@@ -56,7 +56,7 @@ public class ProductionStorageActivity extends BaseActivity {
     private View.OnClickListener mOnClickListener;
     private ArrayAdapter<String> mStringArrayAdapter;
     private TextView.OnEditorActionListener mOnEditorActionListener;
-    private TextWatcher mBranchTextWatcher, mEachBoxQuantityTextWatcher, mBoxQuantityTextWatcher, mMantissaTextWatcher, mLocationTextWatcher;
+    private TextWatcher mEachBoxQuantityTextWatcher, mBoxQuantityTextWatcher, mMantissaTextWatcher;
     private MyHandler myHandler = new MyHandler();
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
@@ -92,8 +92,8 @@ public class ProductionStorageActivity extends BaseActivity {
         mBranchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
         mBranchEditText.setOnEditorActionListener(mOnEditorActionListener);
         mEachBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_meixiangshuliang_et);
+//        mEachBoxQuantityEditText.setOnEditorActionListener(mOnEditorActionListener);
         mBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_xiangshu_et);
-        mBoxQuantityEditText.setOnEditorActionListener(mOnEditorActionListener);
         mantissaEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_weishu_et);
         mLocationEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_shard_et);
         mProductOrderNumberTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_mater_number_tv);
@@ -104,16 +104,16 @@ public class ProductionStorageActivity extends BaseActivity {
         mUnitTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_current_shard_tv);
         mTotalQuantityTextView = (TextView) findViewById(R.id.activity_production_storage_total);
         mWarehouseTextView = (TextView) findViewById(R.id.activity_production_storage_warehouse);
-        mInquireButton = (Button) findViewById(R.id.fragment_fast_requisition_main_inquire_bt);
+        mInquireButton = (Button) findViewById(R.id.fragment_purchase_receipt_inquire_bt);
+        mInquireButton.setOnClickListener(mOnClickListener);
         mStorButton = (Button) findViewById(R.id.fragment_fast_requisition_main_submit_bt);
+        mStorButton.setOnClickListener(mOnClickListener);
         mBranchedTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_branched_tv);
         shardSpinner = (Spinner) findViewById(R.id.fragment_fast_requisition_main_shard_spinner);
         shardSpinner.setAdapter(mStringArrayAdapter);
-        mBranchEditText.addTextChangedListener(mBranchTextWatcher);
         mEachBoxQuantityEditText.addTextChangedListener(mEachBoxQuantityTextWatcher);
         mBoxQuantityEditText.addTextChangedListener(mBoxQuantityTextWatcher);
         mantissaEditText.addTextChangedListener(mMantissaTextWatcher);
-        mLocationEditText.addTextChangedListener(mLocationTextWatcher);
     }
 
     @Override
@@ -135,22 +135,6 @@ public class ProductionStorageActivity extends BaseActivity {
                         startActivityForResult(new Intent(ProductionStorageActivity.this, ScanActivity.class), REQUEST_CODE_FOR_SCAN_WORK_ORDER);
                         break;
                 }
-            }
-        };
-        mBranchTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         };
         mEachBoxQuantityTextWatcher = new TextWatcher() {
@@ -201,22 +185,6 @@ public class ProductionStorageActivity extends BaseActivity {
 
             }
         };
-        mLocationTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
         mOnEditorActionListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -232,10 +200,25 @@ public class ProductionStorageActivity extends BaseActivity {
                         }
                         break;
                     case R.id.fragment_fast_requisition_main_from_branch_et:
-                    case R.id.fragment_fast_requisition_main_from_xiangshu_et:
-
-
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm.isActive()) {
+                                imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+                            }
+                            handleScanBranchOrEachBoxQuantity(mBranchEditText.getText().toString().trim());
+                            return true;
+                        }
                         break;
+          /*          case R.id.fragment_fast_requisition_main_from_meixiangshuliang_et:
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm.isActive()) {
+                                imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+                            }
+                            handleScanBranchOrEachBoxQuantity(mEachBoxQuantityEditText.getText().toString().trim());
+                            return true;
+                        }
+                        break;*/
                 }
 
                 return false;
@@ -338,6 +321,26 @@ public class ProductionStorageActivity extends BaseActivity {
         NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_STORAGE_INQUIRE, getApplicationContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
 
+    private void handleScanBranchOrEachBoxQuantity(String code) {
+        if (TextUtils.isEmpty(code))
+            return;
+        String branch = "";
+        branch = CommonTools.decodeScanString("B", code);
+        mBranchEditText.setText(branch);
+
+        String eachBoxQuantity = "";
+        eachBoxQuantity = CommonTools.decodeScanString("Q", code);
+        try {
+            if (!TextUtils.isEmpty(eachBoxQuantity)) {
+                double temp = Double.parseDouble(eachBoxQuantity);
+                mEachBoxQuantityEditText.setText(Double.toString(temp));
+            }
+        } catch (Throwable e) {
+
+        }
+
+    }
+
     @Override
     public void initData() {
         mWorkOrder = new WorkOrder();
@@ -363,17 +366,14 @@ public class ProductionStorageActivity extends BaseActivity {
         try {
             eachBoxQuantity = Double.parseDouble(mEachBoxQuantityEditText.getText().toString());
         } catch (Throwable e) {
-            e.printStackTrace();
         }
         try {
             boxQuantity = Double.parseDouble(mBoxQuantityEditText.getText().toString());
         } catch (Throwable e) {
-            e.printStackTrace();
         }
         try {
             mantissa = Double.parseDouble(mantissaEditText.getText().toString());
         } catch (Throwable e) {
-            e.printStackTrace();
         }
         BigDecimal eachBoxQuantityBigDecimal = new BigDecimal(Double.toString(eachBoxQuantity));
         BigDecimal boxQuantityBigDecimal = new BigDecimal(Double.toString(boxQuantity));

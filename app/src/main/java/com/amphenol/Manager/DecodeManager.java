@@ -820,7 +820,7 @@ public class DecodeManager {
         String desc = jsonObject.optString("desc");
         bundle.putInt("code", code);
         bundle.putString("desc", desc.trim());
-        bundle.putSerializable("params", (HashMap<String, String>) (jsonObject.get("params")));
+        bundle.putSerializable("params", (HashMap<String, String>) (jsonObject.opt("params")));
     }
 
     /**

@@ -8,8 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -27,7 +25,6 @@ import android.widget.Toast;
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
-import com.amphenol.adapter.PurchaseItemAdapter;
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.Purchase;
@@ -35,9 +32,6 @@ import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
-import com.baoyz.actionsheet.ActionSheet;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;

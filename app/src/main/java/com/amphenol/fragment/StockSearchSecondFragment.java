@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
-import com.amphenol.entity.Requisition;
 
 /**
  * 采购收货_物料明细
