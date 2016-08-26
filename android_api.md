@@ -554,8 +554,12 @@
 		work_order	工单号
 		branch 批次号 ,如果受批次控制测附带,否则为空
 		quantity 入库总数
-		shard 子库
-		location 库位
+		warehouse 目标仓库
+		shard 目标子库
+		location 目标库位
+		update 是否更新目标子库或库位
+			0 不更新
+			1 更新
 	action=production_storage_submit
 
 返回
@@ -572,21 +576,28 @@
 
 返回
 
-	product : String 产品
+	product_name : String 产品名称
+	product_desc : String 产品描述
+	product_form : String 产品规格
 	department : String 部门
 	order_state : int 订单状态
 		10 = 已下达; 40 = 已开始生产
 		45 = 物料完成; 50 = 工序完成
 		55 = 物料/工序完成; 99 = 订单取消
-	plain_start_date : String 计划开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-	plain_finish_date : String 计划完成日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-	actual_start_date : String 实际开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-	quantity_order : double 订单数量
-	quantity_finished : double 完工数量
-	quantity_remain : double 剩余未交货数量
 	customer : String 客户
 	customer_name : String 客户名称
 	customer_purchase_order_number : String 客户采购订单号
+
+	product_branch_list : String 生产批次明细信息集合json字符串
+		product_branch_list : List<Map<String,Object>> 按此生成json字符串
+			Map<String,Object> 生产批次明细单位
+				product_branch : String 生产批次号
+				quantity_order : double 订单数量
+				quantity_finished : double 完工数量
+				quantity_remain : double 剩余未交货数量	
+				plain_start_date : String 计划开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+				plain_finish_date : String 计划完成日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+				actual_start_date : String 实际开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 	mater_list : String 订单材料明细信息集合json字符串
 		mater_list : List<Map<String,Object>> 按此生成json字符串
 			Map<String,Object> 材料明细单位

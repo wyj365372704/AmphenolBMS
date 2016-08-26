@@ -2,15 +2,18 @@ package com.amphenol.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,6 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -47,6 +51,7 @@ public class ProductionStorageActivity extends BaseActivity {
 
     private static final int REQUEST_CODE_INQUIRE = 0X10;
     private static final int REQUEST_CODE_FOR_SCAN_WORK_ORDER = 0X11;
+    private static final int REQUEST_CODE_SUBMIT = 0x12;
     private ImageView mScanImageView;
     private EditText mWorkOrderEditText, mBranchEditText, mEachBoxQuantityEditText, mBoxQuantityEditText, mantissaEditText, mLocationEditText;
     private TextView mOrderStateTextView, mProductOrderNumberTextView, mProductDescTextView, mProductTextView, mOrderQuantityTextView,
@@ -62,6 +67,7 @@ public class ProductionStorageActivity extends BaseActivity {
     private LoadingDialog mLoadingDialog;
 
     private WorkOrder mWorkOrder;
+    private View dialogView;//弹窗dialog视图
 
 
     @Override
@@ -86,7 +92,8 @@ public class ProductionStorageActivity extends BaseActivity {
     @Override
     public void initViews() {
         mOrderStateTextView = (TextView) findViewById(R.id.activity_production_order_state);
-        mScanImageView = (ImageView) findViewById(R.id.fragment_scan_iv);
+        mScanImageView = (ImageView) findViewById(R.id.fragment_purchase_receipt_scan_iv);
+        mScanImageView.setOnClickListener(mOnClickListener);
         mWorkOrderEditText = (EditText) findViewById(R.id.purchase_receipt_main_code_et);
         mWorkOrderEditText.setOnEditorActionListener(mOnEditorActionListener);
         mBranchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
@@ -122,7 +129,7 @@ public class ProductionStorageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.fragment_fast_requisition_main_inquire_bt:
+                    case R.id.fragment_purchase_receipt_inquire_bt:
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
                         if (state) {//当前按钮状态为“清除”
                             mWorkOrder = new WorkOrder();
@@ -131,8 +138,79 @@ public class ProductionStorageActivity extends BaseActivity {
                             handleScanWorkOrder(mWorkOrderEditText.getText().toString());
                         }
                         break;
-                    case R.id.fragment_scan_iv:
+                    case R.id.fragment_purchase_receipt_scan_iv:
                         startActivityForResult(new Intent(ProductionStorageActivity.this, ScanActivity.class), REQUEST_CODE_FOR_SCAN_WORK_ORDER);
+                        break;
+                    case R.id.fragment_fast_requisition_main_submit_bt:
+                        if (TextUtils.isEmpty(mWorkOrder.getNumber())) {
+                            ShowToast("未查询到工单详细");
+                            break;
+                        }
+                        if (mWorkOrder.getState() != WorkOrder.ORDER_STATE_ISSUED && mWorkOrder.getState() != WorkOrder.ORDER_STATE_BEGINNNG && mWorkOrder.getState() != WorkOrder.ORDER_STATE_PROCESS_FINISHED) {
+                            ShowToast("该生产订单状态不允许入库");
+                            break;
+                        }
+                        if (mWorkOrder.getMater().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString().trim())) {
+                            ShowToast("该产品为受批次控制,请输入批号");
+                            mBranchEditText.requestFocus();
+                            break;
+                        }
+                        String branch = "";
+                        if (mWorkOrder.getMater().getBranchControl() == Mater.BRANCH_CONTROL)
+                            branch = mBranchEditText.getText().toString().trim();
+                        double quantity = 0;
+                        try {
+                            quantity = Double.parseDouble(mTotalQuantityTextView.getText().toString());
+                        } catch (Throwable e) {
+                        }
+                        if (quantity == 0) {
+                            ShowToast("入库数量不能为0");
+                            break;
+                        }
+                        if (mStringArrayAdapter.getCount() == 0) {
+                            ShowToast("子库列表为空,请退出后重试");
+                            break;
+                        }
+                        final String beforeShard = mWorkOrder.getMater().getShard();
+                        final String afterShard = mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition());
+
+                        if (TextUtils.isEmpty(afterShard)) {
+                            ShowToast("入库子库为空,不允许入库");
+                            break;
+                        }
+                        final String beforeLocation = mWorkOrder.getMater().getLocation();
+                        final String afterLocation = mLocationEditText.getText().toString();
+                        if (TextUtils.isEmpty(afterLocation)) {
+                            ShowToast("入库库位为空,不允许入库");
+                            break;
+                        }
+                        final String finalBranch = branch;
+                        final double finalQuantity = quantity;
+
+                        AlertDialog.Builder builder2 = new AlertDialog.Builder(ProductionStorageActivity.this);
+                        builder2.setTitle("确认入库").setMessage("将要进行入库操作?");
+                        if (!TextUtils.equals(beforeShard, afterShard) || !TextUtils.equals(beforeLocation, afterLocation)) {
+                            dialogView = LayoutInflater.from(ProductionStorageActivity.this).inflate(R.layout.check_requisition_sure_with_shard_or_location_changed_dialog, null, false);
+                            builder2.setView(dialogView);
+                        }
+                        builder2.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                boolean update = false;
+                                if (!TextUtils.equals(beforeShard, afterShard) || !TextUtils.equals(beforeLocation, afterLocation) && dialogView != null) {
+                                    CheckBox checkBox = (CheckBox) dialogView.findViewById(R.id.checkbox);
+                                    if (checkBox.getVisibility() == View.VISIBLE) {
+                                        if (checkBox.isChecked())
+                                            update = true;
+                                    }
+                                }
+                                handleStorage(mWorkOrder.getNumber(), finalBranch,
+                                        finalQuantity, SessionManager.getWarehouse(getApplicationContext()),
+                                        afterShard, afterLocation, update);
+                            }
+                        });
+                        builder2.create().show();
                         break;
                 }
             }
@@ -209,16 +287,6 @@ public class ProductionStorageActivity extends BaseActivity {
                             return true;
                         }
                         break;
-          /*          case R.id.fragment_fast_requisition_main_from_meixiangshuliang_et:
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if (imm.isActive()) {
-                                imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                            }
-                            handleScanBranchOrEachBoxQuantity(mEachBoxQuantityEditText.getText().toString().trim());
-                            return true;
-                        }
-                        break;*/
                 }
 
                 return false;
@@ -266,14 +334,27 @@ public class ProductionStorageActivity extends BaseActivity {
                     mLoadingDialog.dismiss();
                     mLoadingDialog = null;
                 }
-                if (errorNo == 0) {
+                if (errorNo == NetWorkAccessTools.ERROR_CODE_ACCESS_FAILED) {
                     ProductionStorageActivity.this.ShowToast("与服务器连接失败");
                 } else {
-
                     ProductionStorageActivity.this.ShowToast("服务器返回错误");
                 }
             }
         };
+    }
+
+    private void handleStorage(String workOrder, String branch, double quantity, String warehouse, String shard, String location, boolean update) {
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getApplicationContext()));
+        param.put("env", SessionManager.getEnv(getApplicationContext()));
+        param.put("work_order",workOrder);
+        param.put("branch",branch);
+        param.put("quantity",quantity+"");
+        param.put("warehouse",warehouse);
+        param.put("shard",shard);
+        param.put("location",location);
+        param.put("update", update ? "1" : "0");
+        NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_STORAGE_SUBMIT, getApplicationContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }
 
     private void refreshShow() {
@@ -306,6 +387,16 @@ public class ProductionStorageActivity extends BaseActivity {
         }
 
         mLocationEditText.clearComposingText();
+
+        if (TextUtils.isEmpty(mWorkOrder.getNumber())) {
+            mInquireButton.setTag(false);
+            mInquireButton.setText("查询");
+            mLocationEditText.getText().clear();
+            mBranchEditText.getText().clear();
+        } else {
+            mInquireButton.setText("清除");
+            mInquireButton.setTag(true);
+        }
     }
 
     private void handleScanWorkOrder(String code) {
@@ -427,7 +518,17 @@ public class ProductionStorageActivity extends BaseActivity {
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            switch (msg.what) {
+                case REQUEST_CODE_INQUIRE:
+                    if (bundle.getInt("code") == 1) {
+                        mWorkOrder = bundle.getParcelable("workOrder");
+                        refreshShow();
+                    } else {
+                        ShowToast("获取工单信息失败");
+                    }
+                    break;
+            }
         }
     }
 }

@@ -25,8 +25,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class NetWorkAccessTools {
-    private static final int BITMAP_MAX_SIZE = 60;
+    public static final int ERROR_CODE_ACCESS_FAILED = 0,ERROR_CODE_RETURN_ERROR = 1 ;
 
+    private static final int BITMAP_MAX_SIZE = 60;
     private static NetWorkAccessTools netWorkAccessTools;
     private RequestQueue requestQueue;
     private LruCache<String, Bitmap> lruCache;
@@ -101,7 +102,7 @@ public class NetWorkAccessTools {
                     jsonObject.put("params", finalParams);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    onFailure(e, 0, e.getMessage());
+                    onFailure(e, ERROR_CODE_RETURN_ERROR, e.getMessage());
                     return;
                 }
                 if (listener != null)
@@ -159,7 +160,7 @@ public class NetWorkAccessTools {
                     jsonObject.put("params", finalParams);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    onFailure(e, 0, e.getMessage());
+                    onFailure(e, ERROR_CODE_RETURN_ERROR, e.getMessage());
                     return;
                 }
                 if (listener != null)

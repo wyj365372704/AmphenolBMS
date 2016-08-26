@@ -50,6 +50,7 @@ public class PropertiesUtil {
     public static final String ACTION_HAIR_MATER_CANCEL = "ACTION_HAIR_MATER_CANCEL";//action 后缀,生产发料 终止过账
 
     public static final String ACTION_PRODUCTION_STORAGE_INQUIRE = "ACTION_PRODUCTION_STORAGE_INQUIRE";//action 后缀,生产入库 - 工单查询
+    public static final String ACTION_PRODUCTION_STORAGE_SUBMIT = "ACTION_PRODUCTION_STORAGE_SUBMIT";//action 后缀,生产入库 - 确认提交
 
 
 
