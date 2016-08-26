@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.MenuItem;
-import com.amphenol.ui.MenuImageView;
-
-import java.security.spec.PSSParameterSpec;
 import java.util.List;
 
 /**

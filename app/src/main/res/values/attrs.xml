@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="radius" format="dimension" />
-      <attr name="src" format="reference"></attr>
-
-    <declare-styleable name="MenuImageView">
-        <attr name="radius" />
-        <attr name="src" />
-    </declare-styleable>
-
 </resources>
