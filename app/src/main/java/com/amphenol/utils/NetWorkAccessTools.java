@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class NetWorkAccessTools {
-    public static final int ERROR_CODE_ACCESS_FAILED = 0,ERROR_CODE_RETURN_ERROR = 1 ;
+    public static final int ERROR_CODE_ACCESS_FAILED = 0, ERROR_CODE_RETURN_ERROR = 1;
 
     private static final int BITMAP_MAX_SIZE = 60;
     private static NetWorkAccessTools netWorkAccessTools;
@@ -76,14 +76,15 @@ public class NetWorkAccessTools {
         if (params == null) {
             params = new HashMap<>();
         }
-        AjaxParams ajaxParams = new AjaxParams(params);
+        final AjaxParams ajaxParams = new AjaxParams(params);
         final Map<String, String> finalParams = params;
         finalHttp.get(url, ajaxParams, new AjaxCallBack<String>() {
             @Override
             public void onStart() {
-                Log.d("NetWorkAccessTools-->", "onStart :" + url + " , params is " + finalParams.toString());
+                Log.d("NetWorkAccessTools-->", "onStart :" + FinalHttp.getUrlWithQueryString(url, ajaxParams) + "params is "+finalParams.toString());
                 if (listener != null)
                     listener.onRequestStart(requestCode);
+
             }
 
             @Override
@@ -226,6 +227,7 @@ public class NetWorkAccessTools {
 
     /**
      * 加载图片的工具方法
+     *
      * @param imageURL
      * @param imageContainer
      * @param defaultImageResId

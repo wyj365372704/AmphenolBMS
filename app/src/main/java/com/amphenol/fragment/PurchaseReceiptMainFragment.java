@@ -246,11 +246,11 @@ public class PurchaseReceiptMainFragment extends Fragment {
             return;
         if (TextUtils.isEmpty(purchase.getNumber())) {//当前收货单为空，扫码查询收货单
             code = CommonTools.decodeScanString("S", code);
+            mCodeEditText.setText(code);
             if (TextUtils.isEmpty(code)) {
                 Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
                 return;
             }
-            mCodeEditText.setText(code);
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
             param.put("env", SessionManager.getEnv(getContext()));

@@ -1,12 +1,10 @@
 package com.amphenol.Manager;
 
-import android.graphics.Shader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 
-import com.alibaba.fastjson.JSONPObject;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.Pick;
 import com.amphenol.entity.Purchase;
@@ -16,11 +14,9 @@ import com.amphenol.entity.WorkOrder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 
@@ -775,26 +771,42 @@ public class DecodeManager {
 
             Map<String, String> params = (Map<String, String>) jsonObject.opt("params");
             String work_order = params.get("work_order");
+            String warehouse = params.get("warehouse");
+
+            WorkOrder.ProductionBranch productionBranch = new WorkOrder.ProductionBranch();
+            productionBranch.setQuantityOrder(quantity_order);
+            productionBranch.setQuantityStoraged(quantity_storaged);
+
             WorkOrder workOrder = new WorkOrder();
             workOrder.setNumber(work_order);
             workOrder.setState(state);
-            workOrder.setQuantityOrder(quantity_order);
-            workOrder.setQuantityStoraged(quantity_storaged);
-            WorkOrder.Mater mater = new WorkOrder.Mater();
-            mater.setNumber(product);
-            mater.setDesc(product_desc);
-            mater.setBranchControl(branched);
-            mater.setUnit(unit);
-            mater.setShard(shard);
-            mater.setLocation(location);
-            workOrder.setMater(mater);
 
-//            data.putParcelable("workOrder",workOrder);
+            Mater production = new Mater();
+            production.setWarehouse(warehouse);
+            production.setNumber(product);
+            production.setDesc(product_desc);
+            production.setBranchControl(branched);
+            production.setUnit(unit);
+            production.setShard(shard);
+            production.setLocation(location);
+
+            workOrder.setProduction(production);
+
+            productionBranch.setWorkOrder(workOrder);
+
+            data.putParcelable("productionBranch",productionBranch);
         }
         msg.setData(data);
         handler.sendMessage(msg);
     }
-
+    public static void decodeProductionStorageSubmit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();

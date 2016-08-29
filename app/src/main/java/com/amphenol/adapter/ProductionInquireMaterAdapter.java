@@ -18,17 +18,17 @@ import java.util.List;
  * 生产订单查询-材料，列表适配器
  */
 public class ProductionInquireMaterAdapter extends RecyclerView.Adapter<ProductionInquireMaterAdapter.ViewHolderBody> {
-    private List<WorkOrder.Mater> date;
+    private List<WorkOrder.ProductionBranch> date;
     private OnItemClickListener onItemClickListener;
     private Context mContext;
 
-    public ProductionInquireMaterAdapter(Context mContext, List<WorkOrder.Mater> maters, OnItemClickListener onItemClickListener) {
-        this.date = maters;
+    public ProductionInquireMaterAdapter(Context mContext, List<WorkOrder.ProductionBranch> productionBranches, OnItemClickListener onItemClickListener) {
+        this.date = productionBranches;
         this.mContext = mContext;
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setDate(List<WorkOrder.Mater> date) {
+    public void setDate(List<WorkOrder.ProductionBranch> date) {
         this.date = date;
     }
 
@@ -41,7 +41,7 @@ public class ProductionInquireMaterAdapter extends RecyclerView.Adapter<Producti
     public void onBindViewHolder(ProductionInquireMaterAdapter.ViewHolderBody holder, final int position) {
         holder.position = position;
         holder.numberTextView.setText(date.get(position).getNumber());
-        holder.descTextView.setText(date.get(position).getDesc());
+        holder.descTextView.setText(date.get(position).getWorkOrder().getProduction().getDesc());
         if (position % 2 == 0)
             holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_o));
         else

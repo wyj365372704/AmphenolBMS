@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -66,7 +67,7 @@ public class ProductionStorageActivity extends BaseActivity {
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
 
-    private WorkOrder mWorkOrder;
+    private WorkOrder.ProductionBranch mProductionBranch;
     private View dialogView;//弹窗dialog视图
 
 
@@ -99,7 +100,7 @@ public class ProductionStorageActivity extends BaseActivity {
         mBranchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
         mBranchEditText.setOnEditorActionListener(mOnEditorActionListener);
         mEachBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_meixiangshuliang_et);
-//        mEachBoxQuantityEditText.setOnEditorActionListener(mOnEditorActionListener);
+        mEachBoxQuantityEditText.setOnEditorActionListener(mOnEditorActionListener);
         mBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_xiangshu_et);
         mantissaEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_weishu_et);
         mLocationEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_shard_et);
@@ -132,7 +133,7 @@ public class ProductionStorageActivity extends BaseActivity {
                     case R.id.fragment_purchase_receipt_inquire_bt:
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
                         if (state) {//当前按钮状态为“清除”
-                            mWorkOrder = new WorkOrder();
+                            mProductionBranch = new WorkOrder.ProductionBranch();
                             refreshShow();
                         } else {
                             handleScanWorkOrder(mWorkOrderEditText.getText().toString());
@@ -142,21 +143,21 @@ public class ProductionStorageActivity extends BaseActivity {
                         startActivityForResult(new Intent(ProductionStorageActivity.this, ScanActivity.class), REQUEST_CODE_FOR_SCAN_WORK_ORDER);
                         break;
                     case R.id.fragment_fast_requisition_main_submit_bt:
-                        if (TextUtils.isEmpty(mWorkOrder.getNumber())) {
+                        if (TextUtils.isEmpty(mProductionBranch.getWorkOrder().getNumber())) {
                             ShowToast("未查询到工单详细");
                             break;
                         }
-                        if (mWorkOrder.getState() != WorkOrder.ORDER_STATE_ISSUED && mWorkOrder.getState() != WorkOrder.ORDER_STATE_BEGINNNG && mWorkOrder.getState() != WorkOrder.ORDER_STATE_PROCESS_FINISHED) {
+                        if (mProductionBranch.getWorkOrder().getState() != WorkOrder.ORDER_STATE_ISSUED && mProductionBranch.getWorkOrder().getState() != WorkOrder.ORDER_STATE_BEGINNNG && mProductionBranch.getWorkOrder().getState() != WorkOrder.ORDER_STATE_PROCESS_FINISHED) {
                             ShowToast("该生产订单状态不允许入库");
                             break;
                         }
-                        if (mWorkOrder.getMater().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString().trim())) {
+                        if (mProductionBranch.getWorkOrder().getProduction().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString().trim())) {
                             ShowToast("该产品为受批次控制,请输入批号");
                             mBranchEditText.requestFocus();
                             break;
                         }
                         String branch = "";
-                        if (mWorkOrder.getMater().getBranchControl() == Mater.BRANCH_CONTROL)
+                        if (mProductionBranch.getWorkOrder().getProduction().getBranchControl() == Mater.BRANCH_CONTROL)
                             branch = mBranchEditText.getText().toString().trim();
                         double quantity = 0;
                         try {
@@ -171,14 +172,14 @@ public class ProductionStorageActivity extends BaseActivity {
                             ShowToast("子库列表为空,请退出后重试");
                             break;
                         }
-                        final String beforeShard = mWorkOrder.getMater().getShard();
+                        final String beforeShard = mProductionBranch.getWorkOrder().getProduction().getShard();
                         final String afterShard = mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition());
 
                         if (TextUtils.isEmpty(afterShard)) {
                             ShowToast("入库子库为空,不允许入库");
                             break;
                         }
-                        final String beforeLocation = mWorkOrder.getMater().getLocation();
+                        final String beforeLocation = mProductionBranch.getWorkOrder().getProduction().getLocation();
                         final String afterLocation = mLocationEditText.getText().toString();
                         if (TextUtils.isEmpty(afterLocation)) {
                             ShowToast("入库库位为空,不允许入库");
@@ -205,7 +206,7 @@ public class ProductionStorageActivity extends BaseActivity {
                                             update = true;
                                     }
                                 }
-                                handleStorage(mWorkOrder.getNumber(), finalBranch,
+                                handleStorage(mProductionBranch.getWorkOrder().getNumber(), finalBranch,
                                         finalQuantity, SessionManager.getWarehouse(getApplicationContext()),
                                         afterShard, afterLocation, update);
                             }
@@ -287,6 +288,16 @@ public class ProductionStorageActivity extends BaseActivity {
                             return true;
                         }
                         break;
+                    case R.id.fragment_fast_requisition_main_from_meixiangshuliang_et:
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm.isActive()) {
+                                imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+                            }
+                            handleScanEachBoxQuantity(mEachBoxQuantityEditText.getText().toString().trim());
+                            return true;
+                        }
+                        break;
                 }
 
                 return false;
@@ -314,6 +325,9 @@ public class ProductionStorageActivity extends BaseActivity {
                     switch (requestCode) {
                         case REQUEST_CODE_INQUIRE:
                             DecodeManager.decodeProductionStorageInquire(jsonObject, requestCode, myHandler);
+                            break;
+                        case REQUEST_CODE_SUBMIT:
+                            DecodeManager.decodeProductionStorageSubmit(jsonObject, requestCode, myHandler);
                             break;
                     }
 
@@ -347,55 +361,67 @@ public class ProductionStorageActivity extends BaseActivity {
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getApplicationContext()));
         param.put("env", SessionManager.getEnv(getApplicationContext()));
-        param.put("work_order",workOrder);
-        param.put("branch",branch);
-        param.put("quantity",quantity+"");
-        param.put("warehouse",warehouse);
-        param.put("shard",shard);
-        param.put("location",location);
+        param.put("work_order", workOrder);
+        param.put("branch", branch);
+        param.put("quantity", quantity + "");
+        param.put("warehouse", warehouse);
+        param.put("shard", shard);
+        param.put("location", location);
         param.put("update", update ? "1" : "0");
         NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_STORAGE_SUBMIT, getApplicationContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }
 
     private void refreshShow() {
-        mWorkOrderEditText.setText(mWorkOrder.getNumber());
-        mWarehouseTextView.setText(mWorkOrder.getMater().getWarehouse());
-        mOrderStateTextView.setText(mWorkOrder.getState() == WorkOrder.ORDER_STATE_BEGINNNG ? "开始生产" :
-                mWorkOrder.getState() == WorkOrder.ORDER_STATE_CANCELED ? "取消" :
-                        mWorkOrder.getState() == WorkOrder.ORDER_STATE_FINISHED ? "完成" :
-                                mWorkOrder.getState() == WorkOrder.ORDER_STATE_ISSUED ? "已下达" :
-                                        mWorkOrder.getState() == WorkOrder.ORDER_STATE_MATER_FINISHED ? "物料完成" :
-                                                mWorkOrder.getState() == WorkOrder.ORDER_STATE_PROCESS_FINISHED ? "工序完成" : "");
-        mProductOrderNumberTextView.setText(mWorkOrder.getNumber());
-        mProductDescTextView.setText(mWorkOrder.getMater().getDesc());
-        mProductTextView.setText(mWorkOrder.getMater().getNumber());
+        mWorkOrderEditText.setText(mProductionBranch.getWorkOrder().getNumber());
+        mWarehouseTextView.setText(mProductionBranch.getWorkOrder().getProduction().getWarehouse());
+        mOrderStateTextView.setText(mProductionBranch.getWorkOrder().getState() == WorkOrder.ORDER_STATE_BEGINNNG ? "开始生产" :
+                mProductionBranch.getWorkOrder().getState() == WorkOrder.ORDER_STATE_CANCELED ? "取消" :
+                        mProductionBranch.getWorkOrder().getState() == WorkOrder.ORDER_STATE_FINISHED ? "完成" :
+                                mProductionBranch.getWorkOrder().getState() == WorkOrder.ORDER_STATE_ISSUED ? "已下达" :
+                                        mProductionBranch.getWorkOrder().getState() == WorkOrder.ORDER_STATE_MATER_FINISHED ? "物料完成" :
+                                                mProductionBranch.getWorkOrder().getState() == WorkOrder.ORDER_STATE_PROCESS_FINISHED ? "工序完成" : "");
+        mProductOrderNumberTextView.setText(mProductionBranch.getWorkOrder().getNumber());
+        mProductDescTextView.setText(mProductionBranch.getWorkOrder().getProduction().getDesc());
+        mProductTextView.setText(mProductionBranch.getWorkOrder().getProduction().getNumber());
         updateTotalQuantity();
-        mBranchedTextView.setText(mWorkOrder.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? "是" : mWorkOrder.getMater().getBranchControl() == Mater.BRANCH_NO_CONTROL ? "否" : "");
-        mBranchEditText.clearComposingText();
-        mOrderQuantityTextView.setText(Double.toString(mWorkOrder.getQuantityOrder()));
-        mStorageQuantityTextView.setText(Double.toString(mWorkOrder.getQuantityStoraged()));
-        mUnitTextView.setText(mWorkOrder.getMater().getUnit());
-        mEachBoxQuantityEditText.clearComposingText();
-        mBoxQuantityEditText.clearComposingText();
-        mantissaEditText.clearComposingText();
+        mBranchedTextView.setText(mProductionBranch.getWorkOrder().getProduction().getBranchControl() == Mater.BRANCH_CONTROL ? "是" : mProductionBranch.getWorkOrder().getProduction().getBranchControl() == Mater.BRANCH_NO_CONTROL ? "否" : "");
+        mBranchEditText.getText().clear();
+        mOrderQuantityTextView.setText(Double.toString(mProductionBranch.getQuantityOrder()));
+        mStorageQuantityTextView.setText(Double.toString(mProductionBranch.getQuantityStoraged()));
+        mUnitTextView.setText(mProductionBranch.getWorkOrder().getProduction().getUnit());
+        mEachBoxQuantityEditText.getText().clear();
+        mBoxQuantityEditText.getText().clear();
+        mantissaEditText.getText().clear();
         shardSpinner.setSelection(0);
         try {
-            int position = mStringArrayAdapter.getPosition(mWorkOrder.getMater().getShard());
-            shardSpinner.setSelection(mStringArrayAdapter.getItemViewType(position));
+            int position = mStringArrayAdapter.getPosition(mProductionBranch.getWorkOrder().getProduction().getShard());
+            shardSpinner.setSelection(position);
         } catch (Throwable e) {
             e.printStackTrace();
         }
 
-        mLocationEditText.clearComposingText();
+        mLocationEditText.setText(mProductionBranch.getWorkOrder().getProduction().getLocation());
 
-        if (TextUtils.isEmpty(mWorkOrder.getNumber())) {
+        if (mProductionBranch.getWorkOrder().getProduction().getBranchControl() == Mater.BRANCH_CONTROL || mProductionBranch.getWorkOrder().getProduction().getBranchControl() == Mater.BRANCH_NORMAL) {
+            mBranchEditText.setEnabled(true);
+            mBranchEditText.setHint("输入批号");
+
+        } else {
+            mBranchEditText.setEnabled(false);
+            mBranchEditText.setHint("批号不可用");
+        }
+
+        if (TextUtils.isEmpty(mProductionBranch.getWorkOrder().getNumber())) {
             mInquireButton.setTag(false);
             mInquireButton.setText("查询");
             mLocationEditText.getText().clear();
             mBranchEditText.getText().clear();
+            collapseButton();
+            mWorkOrderEditText.requestFocus();
         } else {
             mInquireButton.setText("清除");
             mInquireButton.setTag(true);
+            popUpButton();
         }
     }
 
@@ -404,6 +430,10 @@ public class ProductionStorageActivity extends BaseActivity {
             return;
         code = CommonTools.decodeScanString("W", code);
         mWorkOrderEditText.setText(code);
+        if (TextUtils.isEmpty(code)) {
+            Toast.makeText(getApplicationContext(), "无效查询", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getApplicationContext()));
         param.put("env", SessionManager.getEnv(getApplicationContext()));
@@ -419,22 +449,27 @@ public class ProductionStorageActivity extends BaseActivity {
         branch = CommonTools.decodeScanString("B", code);
         mBranchEditText.setText(branch);
 
-        String eachBoxQuantity = "";
-        eachBoxQuantity = CommonTools.decodeScanString("Q", code);
+        handleScanEachBoxQuantity(code);
+    }
+
+    private void handleScanEachBoxQuantity(String code) {
+        if (TextUtils.isEmpty(code))
+            return;
+        String eachBoxQuantity = CommonTools.decodeScanString("Q", code);
         try {
-            if (!TextUtils.isEmpty(eachBoxQuantity)) {
+            if (TextUtils.isEmpty(eachBoxQuantity)) {
+                mEachBoxQuantityEditText.getText().clear();
+            } else {
                 double temp = Double.parseDouble(eachBoxQuantity);
                 mEachBoxQuantityEditText.setText(Double.toString(temp));
             }
         } catch (Throwable e) {
-
         }
-
     }
 
     @Override
     public void initData() {
-        mWorkOrder = new WorkOrder();
+        mProductionBranch = new WorkOrder.ProductionBranch();
         mStringArrayAdapter = new ArrayAdapter<>(ProductionStorageActivity.this, android.R.layout.simple_spinner_item, SessionManager.getShard_list(ProductionStorageActivity.this));
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         mStringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -522,10 +557,23 @@ public class ProductionStorageActivity extends BaseActivity {
             switch (msg.what) {
                 case REQUEST_CODE_INQUIRE:
                     if (bundle.getInt("code") == 1) {
-                        mWorkOrder = bundle.getParcelable("workOrder");
+                        mProductionBranch = bundle.getParcelable("productionBranch");
                         refreshShow();
+                    } else if (bundle.getInt("code") == 5) {
+                        ShowToast("该生产工单不存在");
                     } else {
                         ShowToast("获取工单信息失败");
+                    }
+                    break;
+                case REQUEST_CODE_SUBMIT:
+                    if (bundle.getInt("code") == 1) {
+                        ShowToast("入库成功");
+                        mProductionBranch = new WorkOrder.ProductionBranch();
+                        refreshShow();
+                    } else if (bundle.getInt("code") == 5) {
+                        ShowToast("目标子库和库位不匹配");
+                    } else {
+                        ShowToast("入库失败");
                     }
                     break;
             }
