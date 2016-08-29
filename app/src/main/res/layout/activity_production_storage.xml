@@ -243,12 +243,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="总数:"
+                        android:text="订单数量:"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/normal_font_size"/>
 
                     <TextView
-                        android:id="@+id/activity_production_storage_total"
+                        android:id="@+id/fragment_create_requisition_second_quantity_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
@@ -328,12 +328,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="订单数量:"
+                        android:text="已入库数量:"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/normal_font_size"/>
 
                     <TextView
-                        android:id="@+id/fragment_create_requisition_second_quantity_tv"
+                        android:id="@+id/fragment_create_requisition_second_unity_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
@@ -350,12 +350,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="已入库数量:"
+                        android:text="本次入库数量:"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/normal_font_size"/>
 
                     <TextView
-                        android:id="@+id/fragment_create_requisition_second_unity_tv"
+                        android:id="@+id/activity_production_storage_total"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
