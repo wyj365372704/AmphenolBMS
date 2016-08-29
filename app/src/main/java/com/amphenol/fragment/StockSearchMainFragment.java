@@ -336,15 +336,20 @@ public class StockSearchMainFragment extends Fragment {
             ((BaseActivity) getActivity()).ShowToast("子库列表为空,不可查询");
             return;
         }
+        String shard = "";
+        if (shardSpinner.getSelectedItemPosition() != 0)
+            shard = mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition());
+        if (TextUtils.isEmpty(mater) && TextUtils.isEmpty(location) && TextUtils.isEmpty(shard)) {
+            ((BaseActivity) getActivity()).ShowToast("至少输入一个查询条件");
+            return;
+        }
+
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("warehouse", SessionManager.getWarehouse(getContext()));
         param.put("location", location);
         param.put("mate", mater);
-        String shard = "";
-        if (shardSpinner.getSelectedItemPosition() != 0)
-            shard = mStringArrayAdapter.getItem(shardSpinner.getSelectedItemPosition());
         param.put("shard", shard);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
     }

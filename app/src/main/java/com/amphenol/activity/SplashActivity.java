@@ -1,9 +1,12 @@
 package com.amphenol.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.TextView;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.amphenol.R;
@@ -28,6 +31,8 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     public void initViews() {
+        TextView versionTextView = (TextView) findViewById(R.id.version_tv);
+        versionTextView.setText(getVersion());
     }
 
     @Override
@@ -75,8 +80,8 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         NetWorkAccessTools netWorkAccessTools = NetWorkAccessTools.getInstance(getApplicationContext());
         netWorkAccessTools.getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_GET_ENV, getApplicationContext()), null, REQUEST_CODE_GET_ENV, mRequestTaskListener);
     }
@@ -99,6 +104,22 @@ public class SplashActivity extends BaseActivity {
             intent.putStringArrayListExtra("env_list", envList);
             startActivity(intent);
             finish();
+        }
+    }
+
+    /**
+     * 获取版本号
+     * @return 当前应用的版本号
+     */
+    public String getVersion() {
+        try {
+            PackageManager manager = this.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+            String version = info.versionName;
+            return this.getString(R.string.version_name) + version;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 
