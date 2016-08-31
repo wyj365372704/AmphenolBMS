@@ -153,10 +153,9 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
         mReturnQuantityTextView.setText(mPickItem.getQuantity() + "");
         mUnitTextView.setText(mPickItem.getBranch().getMater().getUnit());
         mWarehouseTextView.setText(mPickItem.getBranch().getMater().getWarehouse());
-        mActualQuantityTextView.setText(mPickItem.getHairQuantity() + "");
         mLocationEditText.setText(mPickItem.getBranch().getMater().getLocation());
         mBranchedTextView.setText(mPickItem.getBranched() == Pick.PickItem.BRANCHED_YES ? "是" : "否");
-
+        mActualQuantityTextView.setText(mPickItem.getHairQuantity() + "");
         try {
             int position = mStringArrayAdapter.getPosition(mPickItem.getBranch().getMater().getShard());
             mSpinner.setSelection(position);
@@ -197,25 +196,20 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
                             ((BaseActivity) getActivity()).ShowToast("实收数量非法,请先添加批次");
                             return;
                         }
-                        if (mPickItem.getHairQuantity() > mPickItem.getQuantity()) {
-                            ((BaseActivity) getActivity()).ShowToast("实收数量不能大于退料数量");
-                            return;
-                        }
                         String shard = "";
-                        try{
+                        try {
                             shard = mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition());
-                        }catch (Throwable e){
-                            e.printStackTrace();
-                        }finally {
-                            if(TextUtils.isEmpty(shard)){
-                                ((BaseActivity)getActivity()).ShowToast("子库不能为空");
-                                return ;
+                        } catch (Throwable e) {
+                        } finally {
+                            if (TextUtils.isEmpty(shard)) {
+                                ((BaseActivity) getActivity()).ShowToast("子库不能为空");
+                                return;
                             }
                         }
-                        final String location =  mLocationEditText.getText().toString().trim();
-                        if(TextUtils.isEmpty(location)){
-                            ((BaseActivity)getActivity()).ShowToast("库位不能为空");
-                            return ;
+                        final String location = mLocationEditText.getText().toString().trim();
+                        if (TextUtils.isEmpty(location)) {
+                            ((BaseActivity) getActivity()).ShowToast("库位不能为空");
+                            return;
                         }
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
                         builder2.setTitle("发料过账").setMessage("将要进行退料过账?");
@@ -229,7 +223,7 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
                                     for (Pick.PickItem.PickItemBranchItem pickItemBranchItem : mPickItem.getPickItemBranchItems()) {
                                         JSONObject jsonObject = new JSONObject();
                                         jsonObject.put("branch_number", pickItemBranchItem.getBranch().getPo());
-                                        jsonObject.put("branch_quantity", pickItemBranchItem.getQuantity());
+                                        jsonObject.put("branch_quantity", Math.abs(pickItemBranchItem.getQuantity()) * -1);
                                         jsonArray.put(jsonObject);
                                     }
                                     branch_list = new JSONObject().put("branch_list", jsonArray).toString();
@@ -239,7 +233,7 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
 
                                 handleSubmit(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getPick().getDepartment(),
                                         mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(),
-                                        mPickItem.getPick().getNumber(), mPickItem.getPickLine(), mPickItem.getHairQuantity(),
+                                        mPickItem.getPick().getNumber(), mPickItem.getPickLine(), mPickItem.getHairQuantity() * -1,
                                         mPickItem.getBranch().getMater().getNumber(), finalShard,
                                         location, branch_list);
                             }
@@ -276,9 +270,10 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
                                 if (mSecondFragmentCallBack != null) {
                                     EditText ssslEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_sssl_et);
                                     EditText pchEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_pch_et);
-                                    addBranch(pchEditText.getText().toString(), ssslEditText.getText().toString());
-                                    hairMaterSecondTwoAdapter.notifyDataSetChanged();
-                                    UpdateActualQuantity();
+                                    if (addBranch(pchEditText.getText().toString(), ssslEditText.getText().toString())) {
+                                        hairMaterSecondTwoAdapter.notifyDataSetChanged();
+                                        UpdateActualQuantity();
+                                    }
                                 }
                             }
                         });
@@ -424,21 +419,20 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
 
     /**
      * 增加批次， 在本地的item集合中追加branch ，不进行联网操作，确认收货时完成提交新增的branch
-     *
-     * @param branchPO       批次号
-     * @param actualQuantity 实收数量
      */
-    private void addBranch(String branchPO, String actualQuantity) {
+    private boolean addBranch(String branchPO, String actualQuantity) {
         double num = 0;
         if (TextUtils.isEmpty(branchPO)) {
             Toast.makeText(getContext(), "批次增加失败:批次号不能为空", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         } else {
             try {
                 num = Double.parseDouble(actualQuantity);
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "批次增加失败:实收数量输入非法", Toast.LENGTH_SHORT).show();
-                return;
+            } finally {
+                if (num == 0) {
+                    Toast.makeText(getContext(), "批次增加失败:实收数量输入非法", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
             }
         }
         Pick.PickItem.PickItemBranchItem pickItemBranchItem = new Pick.PickItem.PickItemBranchItem();
@@ -446,6 +440,7 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
         pickItemBranchItem.setBranch(new Mater.Branch("", branchPO, 0));
         mPickItem.getPickItemBranchItems().add(pickItemBranchItem);
         Toast.makeText(getContext(), "增加成功", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     /**

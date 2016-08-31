@@ -81,7 +81,7 @@ public class NetWorkAccessTools {
         finalHttp.get(url, ajaxParams, new AjaxCallBack<String>() {
             @Override
             public void onStart() {
-                Log.d("NetWorkAccessTools-->", "onStart :" + FinalHttp.getUrlWithQueryString(url, ajaxParams) + "params is "+finalParams.toString());
+                Log.d("NetWorkAccessTools-->", "onStart :" + FinalHttp.getUrlWithQueryString(url, ajaxParams) + " params is "+finalParams.toString());
                 if (listener != null)
                     listener.onRequestStart(requestCode);
 

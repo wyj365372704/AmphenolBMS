@@ -1,4 +1,4 @@
-#Amphenol_android开发接口文档 version 1.0
+#Amphenol_android开发接口文档 version 1.1
 
 ##书写说明
 - api采用json数据格式返回
@@ -576,33 +576,35 @@
 
 返回
 
-	product_name : String 产品名称
-	product_desc : String 产品描述
-	product_form : String 产品规格
 	department : String 部门
 	order_state : int 订单状态
 		10 = 已下达; 40 = 已开始生产
 		45 = 物料完成; 50 = 工序完成
 		55 = 物料/工序完成; 99 = 订单取消
-	customer : String 客户
+	product_name : String 产品名称
+	product_desc : String 产品描述
+	product_form : String 产品规格
+	quantity_order_product : double 生产订单数量
+	quantity_finished_product : double 生产完工数量
+	quantity_remain_product : double 生产剩余数量
+	plain_start_date : String 计划开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	plain_finish_date : String 计划完成日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	actual_start_date : String 实际开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 	customer_name : String 客户名称
+	customer_code : String 客户代码
 	customer_purchase_order_number : String 客户采购订单号
-
-	product_branch_list : String 生产批次明细信息集合json字符串
-		product_branch_list : List<Map<String,Object>> 按此生成json字符串
-			Map<String,Object> 生产批次明细单位
-				product_branch : String 生产批次号
-				quantity_order : double 订单数量
-				quantity_finished : double 完工数量
-				quantity_remain : double 剩余未交货数量	
-				plain_start_date : String 计划开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-				plain_finish_date : String 计划完成日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-				actual_start_date : String 实际开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	quantity_order_sale : double 销售订单数量
+	quantity_finished_sale : double 销售完工数量
+	quantity_shipmented_sale : double 出货数量
+	quantity_remain_sale : double 销售剩余数量
+	compliance_date : String 承诺日期
 	mater_list : String 订单材料明细信息集合json字符串
 		mater_list : List<Map<String,Object>> 按此生成json字符串
 			Map<String,Object> 材料明细单位
-				mater_number : String 材料编号
-				mater_name : String 材料名称
+				mater_number : String 材料序号
+				mater_name : String 材料编码
+				mater_desc : String 材料描述
+				mater_form : String 材料规格
 				plan_usage_amount : double 计划用量
 				actual_usage_amount : double 实际用量
 				last_hair_mater_date : String 最后一次发料时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)

@@ -139,10 +139,9 @@ public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
         mReturnQuantityTextView.setText(mPickItem.getQuantity() + "");
         mUnitTextView.setText(mPickItem.getBranch().getMater().getUnit());
         mWarehouseTextView.setText(mPickItem.getBranch().getMater().getWarehouse());
-        mActualQuantityTextView.setText(mPickItem.getHairQuantity() + "");
         mLocationEditText.setText(mPickItem.getBranch().getMater().getLocation());
         mBranchedTextView.setText(mPickItem.getBranched() == Pick.PickItem.BRANCHED_YES ? "是" : "否");
-
+        mActualQuantityTextView.setText(mPickItem.getHairQuantity() + "");
         try {
             int position = mStringArrayAdapter.getPosition(mPickItem.getBranch().getMater().getShard());
             mSpinner.setSelection(position);
@@ -158,29 +157,27 @@ public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.fragment_fast_requisition_main_submit_bt:
-                        if (mPickItem.getHairQuantity() <= 0) {
-                            ((BaseActivity) getActivity()).ShowToast("实收数量非法");
-                            return;
-                        }
-                        if (mPickItem.getHairQuantity() > mPickItem.getQuantity()) {
-                            ((BaseActivity) getActivity()).ShowToast("实收数量不能大于退料数量");
-                            return;
-                        }
-                        String shard = "";
-                        try{
-                            shard = mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition());
-                        }catch (Throwable e){
-                            e.printStackTrace();
-                        }finally {
-                            if(TextUtils.isEmpty(shard)){
-                                ((BaseActivity)getActivity()).ShowToast("子库不能为空");
-                                return ;
+                        try {
+                            mPickItem.setHairQuantity(Double.parseDouble(mActualQuantityTextView.getText().toString().trim()));
+                        } finally {
+                            if (mPickItem.getHairQuantity() <= 0) {
+                                ((BaseActivity) getActivity()).ShowToast("实收数量非法");
+                                return;
                             }
                         }
-                        final String location =  mLocationEditText.getText().toString().trim();
-                        if(TextUtils.isEmpty(location)){
-                            ((BaseActivity)getActivity()).ShowToast("库位不能为空");
-                            return ;
+                        String shard = "";
+                        try {
+                            shard = mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition());
+                        } finally {
+                            if (TextUtils.isEmpty(shard)) {
+                                ((BaseActivity) getActivity()).ShowToast("子库不能为空");
+                                return;
+                            }
+                        }
+                        final String location = mLocationEditText.getText().toString().trim();
+                        if (TextUtils.isEmpty(location)) {
+                            ((BaseActivity) getActivity()).ShowToast("库位不能为空");
+                            return;
                         }
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
                         builder2.setTitle("发料过账").setMessage("将要进行发料过账?");
@@ -190,7 +187,7 @@ public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 handleSubmit(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getPick().getDepartment(),
                                         mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(),
-                                        mPickItem.getPick().getNumber(), mPickItem.getPickLine(), mPickItem.getHairQuantity(),
+                                        mPickItem.getPick().getNumber(), mPickItem.getPickLine(), mPickItem.getHairQuantity() * -1,
                                         mPickItem.getBranch().getMater().getNumber(), finalShard,
                                         location);
                             }

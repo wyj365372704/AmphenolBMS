@@ -612,7 +612,7 @@ public class DecodeManager {
                     String pick_line = pickItemJsonObject.optString("pick_line");
                     String sequence = pickItemJsonObject.optString("sequence");
                     String materNumber = pickItemJsonObject.optString("mater");
-                    double quantity = pickItemJsonObject.optDouble("quantity", 0);
+                    double quantity = Math.abs(pickItemJsonObject.optDouble("quantity", 0));
                     String unit = pickItemJsonObject.optString("unit");
                     String warehouse = pickItemJsonObject.optString("warehouse");
                     String defaultShard = pickItemJsonObject.optString("shard");
@@ -794,11 +794,12 @@ public class DecodeManager {
 
             productionBranch.setWorkOrder(workOrder);
 
-            data.putParcelable("productionBranch",productionBranch);
+            data.putParcelable("productionBranch", productionBranch);
         }
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeProductionStorageSubmit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();

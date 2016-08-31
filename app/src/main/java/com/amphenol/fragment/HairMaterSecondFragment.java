@@ -156,10 +156,10 @@ public class HairMaterSecondFragment extends Fragment {
         mUnitTextView.setText(mPickItem.getBranch().getMater().getUnit());
         mWarehouseTextView.setText(mPickItem.getBranch().getMater().getWarehouse());
 
-        try{
+        try {
             int position = mStringArrayAdapter.getPosition(mPickItem.getBranch().getMater().getShard());
             mSpinner.setSelection(position);
-        }catch (Throwable e){
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 
@@ -191,12 +191,10 @@ public class HairMaterSecondFragment extends Fragment {
             if (mPickItem.getHairQuantity() < mPickItem.getQuantity()) {//发料数量小于计划数量,
                 if (mPickItem.getHairQuantity() + pickItemBranchItem.getBranch().getQuantity() > mPickItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
                     pickItemBranchItem.setQuantity(mPickItem.getQuantity() - mPickItem.getHairQuantity());
-//                    mPickItem.setHairQuantity(mPickItem.getQuantity());
                 } else {
                     pickItemBranchItem.setQuantity(pickItemBranchItem.getBranch().getQuantity());
-//                    mPickItem.setHairQuantity(mPickItem.getHairQuantity()+pickItemBranchItem.getQuantity());
                 }
-                mPickItem.setHairQuantity(mPickItem.getHairQuantity()+pickItemBranchItem.getQuantity());
+                mPickItem.setHairQuantity(mPickItem.getHairQuantity() + pickItemBranchItem.getQuantity());
                 pickItemBranchItem.setChecked(true);
             } else {
                 break;
@@ -221,7 +219,7 @@ public class HairMaterSecondFragment extends Fragment {
                                     mSpinner.getSelectedItemPosition() == 0 ? "" : mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition()),
                                     mLocationEditText.getText().toString().trim(), mBranchEditText.getText().toString(), mPickItem.getQuantity(),
                                     mPickItem.getPick().getDepartment(), mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(),
-                                    String.valueOf(mPickItem.getPick().getType()),mPickItem.getBranched()+"");
+                                    String.valueOf(mPickItem.getPick().getType()), mPickItem.getBranched() + "");
                         }
                         break;
                     case R.id.fragment_fast_requisition_main_submit_bt:
@@ -229,6 +227,14 @@ public class HairMaterSecondFragment extends Fragment {
                             ((BaseActivity) getActivity()).ShowToast("发料数量非法");
                             return;
                         }
+
+                        for (Pick.PickItem.PickItemBranchItem pickItemBranchItem : mPickItem.getPickItemBranchItems()) {
+                            if (pickItemBranchItem.isChecked() && pickItemBranchItem.getQuantity() > pickItemBranchItem.getBranch().getQuantity()) {
+                                ((BaseActivity) getActivity()).ShowToast("存在发料数量大于库存数量的项目,检查后重试");
+                                return;
+                            }
+                        }
+
                         if (mPickItem.getHairQuantity() > mPickItem.getQuantity()) {
                             ((BaseActivity) getActivity()).ShowToast("发料数量不能大于计划数量");
                             return;
@@ -259,7 +265,7 @@ public class HairMaterSecondFragment extends Fragment {
                                 }
                                 handleSubmit(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getPick().getDepartment(),
                                         mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(), mater_list,
-                                        mPickItem.getPick().getNumber(), mPickItem.getPickLine(),mPickItem.getHairQuantity());
+                                        mPickItem.getPick().getNumber(), mPickItem.getPickLine(), mPickItem.getHairQuantity());
                             }
                         });
                         builder2.create().show();
@@ -303,7 +309,7 @@ public class HairMaterSecondFragment extends Fragment {
             @Override
             public void OnRequisitionQuantityChanged(int position, double quantity, double quantityBefore) {
                 if (quantity > mPickItem.getPickItemBranchItems().get(position).getBranch().getQuantity()) {
-                    Log.d("wyj","quantity "+quantity+" "+mPickItem.getPickItemBranchItems().get(position).getBranch().getQuantity());
+                    Log.d("wyj", "quantity " + quantity + " " + mPickItem.getPickItemBranchItems().get(position).getBranch().getQuantity());
                     ((BaseActivity) getActivity()).ShowToast("发料数量不能大于库存数量");
                 }
                 functionCalculateHairQuantity();
@@ -402,7 +408,7 @@ public class HairMaterSecondFragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_CANCEL, getContext()), param, REQUEST_CODE_CANCEL, mRequestTaskListener);
     }
 
-    private void handleSubmit(String warehouse, String department, String workOrder, String sequence, String materList, String pickNumbere, String pickLine,double actualQuantity) {
+    private void handleSubmit(String warehouse, String department, String workOrder, String sequence, String materList, String pickNumbere, String pickLine, double actualQuantity) {
         if (!HairMaterSecondFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -415,7 +421,7 @@ public class HairMaterSecondFragment extends Fragment {
         param.put("mater_list", materList);
         param.put("pick_number", pickNumbere);
         param.put("pick_line", pickLine);
-        param.put("actual_quantity", actualQuantity+"");
+        param.put("actual_quantity", actualQuantity + "");
 
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }
@@ -429,7 +435,7 @@ public class HairMaterSecondFragment extends Fragment {
         }
     }
 
-    private void handleInquireMater(String warehouse, String unit, String mate, String pickNumber, String pickLine, String shard, String location, String branch, double quantity, String department, String workOrder, String sequence,String type,String branched) {
+    private void handleInquireMater(String warehouse, String unit, String mate, String pickNumber, String pickLine, String shard, String location, String branch, double quantity, String department, String workOrder, String sequence, String type, String branched) {
         if (!HairMaterSecondFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -443,8 +449,8 @@ public class HairMaterSecondFragment extends Fragment {
         param.put("shard", shard);
         param.put("location", location);
         param.put("branch", branch);
-        param.put("type",type);
-        param.put("branched",branched);
+        param.put("type", type);
+        param.put("branched", branched);
         param.put("quantity", quantity + "");//计划数量
         param.put("department", department);
         param.put("workOrder", workOrder);

@@ -232,6 +232,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
                     style="@style/NormalTheme.EditText"
                     android:hint="输入退料实收数量"/>
             </LinearLayout>
