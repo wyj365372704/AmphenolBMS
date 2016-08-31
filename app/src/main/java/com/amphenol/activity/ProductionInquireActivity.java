@@ -19,6 +19,7 @@ import com.amphenol.entity.Requisition;
 import com.amphenol.entity.WorkOrder;
 import com.amphenol.fragment.ProductionInquireExecutionFragment;
 import com.amphenol.fragment.ProductionInquireMaterFragment;
+import com.amphenol.fragment.ProductionInquireSaleFragment;
 import com.amphenol.fragment.ProductionInquireStepFragment;
 
 /**
@@ -27,6 +28,7 @@ import com.amphenol.fragment.ProductionInquireStepFragment;
 public class ProductionInquireActivity extends BaseActivity {
     private static final int REQUEST_CODE_FOR_SCAN = 0x10;
     private ProductionInquireExecutionFragment mProductionInquireExecutionFragment;
+    private ProductionInquireSaleFragment mProductionInquireSaleFragment;
     private ProductionInquireMaterFragment mProductionInquireMaterFragment;
     private ProductionInquireStepFragment mProductionInquireStepFragment;
 
@@ -101,10 +103,11 @@ public class ProductionInquireActivity extends BaseActivity {
     @Override
     public void initData() {
         mProductionInquireExecutionFragment = ProductionInquireExecutionFragment.newInstance("执行");
+        mProductionInquireSaleFragment = ProductionInquireSaleFragment.newInstance("销售");
         mProductionInquireMaterFragment = ProductionInquireMaterFragment.newInstance("材料");
         mProductionInquireStepFragment = ProductionInquireStepFragment.newInstance("工序");
         mProductionInquireViewPagerAdapter = new ProductionInquireViewPagerAdapter(getSupportFragmentManager(),
-                new Fragment[]{mProductionInquireExecutionFragment, mProductionInquireMaterFragment, mProductionInquireStepFragment});
+                new Fragment[]{mProductionInquireExecutionFragment, mProductionInquireSaleFragment, mProductionInquireMaterFragment, mProductionInquireStepFragment});
     }
 
     @Override

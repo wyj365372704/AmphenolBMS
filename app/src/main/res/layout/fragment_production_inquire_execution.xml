@@ -21,53 +21,10 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="生产订单号:"/>
-
-            <TextView
-                android:id="@+id/fragment_production_inquire_execution_product_order_number_tv_in"
-                style="@style/NormalTheme.TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-                style="@style/NormalTheme.TextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="仓库:"/>
 
             <TextView
                 android:id="@+id/fragment_production_inquire_execution_warehouse_tv_in"
-                style="@style/NormalTheme.TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-                style="@style/NormalTheme.TextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="产品:"/>
-
-            <TextView
-                android:id="@+id/fragment_production_inquire_execution_product_name_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -97,6 +54,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/NormalTheme.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订单号:"/>
+
+            <TextView
+                android:id="@+id/fragment_production_inquire_execution_product_order_number_tv_in"
+                style="@style/NormalTheme.TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
 
         <LinearLayout
             android:layout_width="0dp"
@@ -117,7 +107,6 @@
         </LinearLayout>
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -133,28 +122,10 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="客户:"/>
+                android:text="产品名称:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_execution_customer_tv_in"
-                style="@style/NormalTheme.TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-                style="@style/NormalTheme.TextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="客户名称:"/>
-
-            <TextView
-                android:id="@+id/fragment_production_inquire_execution_customer_name_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_product_name_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -176,16 +147,40 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="客户采购订单号:"/>
+                android:text="产品描述:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_execution_customer_purchase_order_number_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_product_desc_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/NormalTheme.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="产品规格:"/>
+
+            <TextView
+                android:id="@+id/fragment_production_inquire_execution_product_form_tv_in"
+                style="@style/NormalTheme.TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -210,6 +205,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
 
         <LinearLayout
             android:layout_width="0dp"
@@ -245,7 +248,7 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="剩余未交货量:"/>
+                android:text="剩余数量:"/>
 
             <TextView
                 android:id="@+id/fragment_production_inquire_execution_remain_quantity_tv_in"
@@ -253,7 +256,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
     </LinearLayout>
 
     <LinearLayout

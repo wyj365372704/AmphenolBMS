@@ -10,7 +10,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -22,10 +21,10 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="材料序号:"/>
+                android:text="客户名称:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_mater_mater_sequence_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_warehouse_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -47,10 +46,10 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="材料编码:"/>
+                android:text="客户代码:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_mater_mater_number_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_department_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -72,10 +71,36 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="材料描述:"/>
+                android:text="客户采购订单号:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_mater_mater_desc_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_product_order_number_tv_in"
+                style="@style/NormalTheme.TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/NormalTheme.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订单数量:"/>
+
+            <TextView
+                android:id="@+id/fragment_production_inquire_execution_order_state_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -97,10 +122,10 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="材料规格:"/>
+                android:text="完工数量:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_mater_mater_form_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_product_name_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -122,10 +147,10 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="计划用量:"/>
+                android:text="出货数量:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_mater_plan_usage_quantity_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_product_desc_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -147,10 +172,10 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="实际用量:"/>
+                android:text="剩余数量:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_mater_actual_usage_quantity_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_product_form_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -172,14 +197,13 @@
                 style="@style/NormalTheme.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="最近发料时间:"/>
+                android:text="承诺日期:"/>
 
             <TextView
-                android:id="@+id/fragment_production_inquire_mater_last_hair_mater_date_tv_in"
+                android:id="@+id/fragment_production_inquire_execution_ordered_quantity_tv_in"
                 style="@style/NormalTheme.TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>

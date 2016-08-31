@@ -773,13 +773,11 @@ public class DecodeManager {
             String work_order = params.get("work_order");
             String warehouse = params.get("warehouse");
 
-            WorkOrder.ProductionBranch productionBranch = new WorkOrder.ProductionBranch();
-            productionBranch.setQuantityOrder(quantity_order);
-            productionBranch.setQuantityStoraged(quantity_storaged);
-
             WorkOrder workOrder = new WorkOrder();
             workOrder.setNumber(work_order);
             workOrder.setState(state);
+            workOrder.setQuantityOrderProduct(quantity_order);
+            workOrder.setQuantityFinishedProduct(quantity_storaged);
 
             Mater production = new Mater();
             production.setWarehouse(warehouse);
@@ -792,9 +790,7 @@ public class DecodeManager {
 
             workOrder.setProduction(production);
 
-            productionBranch.setWorkOrder(workOrder);
-
-            data.putParcelable("productionBranch", productionBranch);
+            data.putParcelable("workOrder", workOrder);
         }
         msg.setData(data);
         handler.sendMessage(msg);

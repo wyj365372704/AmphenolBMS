@@ -10,20 +10,40 @@ import java.util.ArrayList;
  * Created by Carl on 2016-08-11 011.
  */
 public class WorkOrder implements Parcelable{
-    public static final int ORDER_STATE_ISSUED = 10, ORDER_STATE_BEGINNNG = 40, ORDER_STATE_MATER_FINISHED = 45,
+    public static final int ORDER_STATE_ISSUED = 10, ORDER_STATE_BEGIN = 40, ORDER_STATE_MATER_FINISHED = 45,
             ORDER_STATE_PROCESS_FINISHED = 50, ORDER_STATE_FINISHED = 55, ORDER_STATE_CANCELED = 99, ORDER_STATE_NORMAL = 0;
-    private String number = "";//工单号/生产订单号
-    private int state = ORDER_STATE_NORMAL;//工单状态
-    private Mater production = new Mater();//产品 ,包含了仓库,  产品名称,产品描述,产品规格 信息
 
     private String department = "";//部门
-    private String customer = "";//客户
+    private String number = "";//工单号/生产订单号
+    private int state = ORDER_STATE_NORMAL;//工单状态/订单状态
+    private Mater production = new Mater();//产品 ,包含了仓库,  产品名称,产品描述,产品规格
+    private double quantityOrderProduct = 0;//生产订单数量
+    private double quantityFinishedProduct = 0;//生产完工数量/生产已入库数量
+    private double quantityRemainProduct = 0;//生产剩余未交货数量
+
+    private String planStartDate = "";//计划开始日期
+    private String planFinishDate = "";//计划完成日期
+    private String ActualStartDate = "";//实际开始日期
+
+    private String customerCode = "";//客户代码
     private String customerName = "";//客户名称
     private String customerPurchaseOrderNumber = "";//客户采购订单号
+    private double quantityOrderSale = 0 ;//销售订单数量
+    private double quantityFinishedSale = 0 ;//销售完工数量
+    private double quantityShipmentSale = 0;//销售出货数量
+    private double quantityRemainSale = 0;//销售剩余数量
+    private String complianceDate = "";//承诺日期
 
-    private ArrayList<ProductionBranch> productionBranches = new ArrayList<>();//产品批次集合
-    private ArrayList<MaterBranch> materBranches = new ArrayList<>();//材料集合
+    private ArrayList<MaterProduct> materProducts = new ArrayList<>();//材料集合
     private ArrayList<Step> steps = new ArrayList<>();//工序集合
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     public String getNumber() {
         return number;
@@ -49,20 +69,60 @@ public class WorkOrder implements Parcelable{
         this.production = production;
     }
 
-    public String getDepartment() {
-        return department;
+    public double getQuantityOrderProduct() {
+        return quantityOrderProduct;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setQuantityOrderProduct(double quantityOrderProduct) {
+        this.quantityOrderProduct = quantityOrderProduct;
     }
 
-    public String getCustomer() {
-        return customer;
+    public double getQuantityFinishedProduct() {
+        return quantityFinishedProduct;
     }
 
-    public void setCustomer(String customer) {
-        this.customer = customer;
+    public void setQuantityFinishedProduct(double quantityFinishedProduct) {
+        this.quantityFinishedProduct = quantityFinishedProduct;
+    }
+
+    public double getQuantityRemainProduct() {
+        return quantityRemainProduct;
+    }
+
+    public void setQuantityRemainProduct(double quantityRemainProduct) {
+        this.quantityRemainProduct = quantityRemainProduct;
+    }
+
+    public String getPlanStartDate() {
+        return planStartDate;
+    }
+
+    public void setPlanStartDate(String planStartDate) {
+        this.planStartDate = planStartDate;
+    }
+
+    public String getPlanFinishDate() {
+        return planFinishDate;
+    }
+
+    public void setPlanFinishDate(String planFinishDate) {
+        this.planFinishDate = planFinishDate;
+    }
+
+    public String getActualStartDate() {
+        return ActualStartDate;
+    }
+
+    public void setActualStartDate(String actualStartDate) {
+        ActualStartDate = actualStartDate;
+    }
+
+    public String getCustomerCode() {
+        return customerCode;
+    }
+
+    public void setCustomerCode(String customerCode) {
+        this.customerCode = customerCode;
     }
 
     public String getCustomerName() {
@@ -81,20 +141,52 @@ public class WorkOrder implements Parcelable{
         this.customerPurchaseOrderNumber = customerPurchaseOrderNumber;
     }
 
-    public ArrayList<ProductionBranch> getProductionBranches() {
-        return productionBranches;
+    public double getQuantityOrderSale() {
+        return quantityOrderSale;
     }
 
-    public void setProductionBranches(ArrayList<ProductionBranch> productionBranches) {
-        this.productionBranches = productionBranches;
+    public void setQuantityOrderSale(double quantityOrderSale) {
+        this.quantityOrderSale = quantityOrderSale;
     }
 
-    public ArrayList<MaterBranch> getMaterBranches() {
-        return materBranches;
+    public double getQuantityFinishedSale() {
+        return quantityFinishedSale;
     }
 
-    public void setMaterBranches(ArrayList<MaterBranch> materBranches) {
-        this.materBranches = materBranches;
+    public void setQuantityFinishedSale(double quantityFinishedSale) {
+        this.quantityFinishedSale = quantityFinishedSale;
+    }
+
+    public double getQuantityShipmentSale() {
+        return quantityShipmentSale;
+    }
+
+    public void setQuantityShipmentSale(double quantityShipmentSale) {
+        this.quantityShipmentSale = quantityShipmentSale;
+    }
+
+    public double getQuantityRemainSale() {
+        return quantityRemainSale;
+    }
+
+    public void setQuantityRemainSale(double quantityRemainSale) {
+        this.quantityRemainSale = quantityRemainSale;
+    }
+
+    public String getComplianceDate() {
+        return complianceDate;
+    }
+
+    public void setComplianceDate(String complianceDate) {
+        this.complianceDate = complianceDate;
+    }
+
+    public ArrayList<MaterProduct> getMaterProducts() {
+        return materProducts;
+    }
+
+    public void setMaterProducts(ArrayList<MaterProduct> materProducts) {
+        this.materProducts = materProducts;
     }
 
     public ArrayList<Step> getSteps() {
@@ -116,92 +208,21 @@ public class WorkOrder implements Parcelable{
     }
 
     /**
-     * 产品批次单位
-     */
-    public static class ProductionBranch extends Mater.Branch implements Parcelable{
-        private WorkOrder workOrder = new WorkOrder();
-
-        private String branch = "";//生产批次
-        private double quantityOrder = 0;//订单数量
-        private double quantityStoraged = 0;//已入库数量/完工数量
-        private double quantityRemain = 0;//剩余未交货数量
-
-        private String planStartDate = "";//计划开始日期
-        private String planFinishDate = "";//计划完成日期
-        private String ActualStartDate = "";//实际开始日期
-
-        public WorkOrder getWorkOrder() {
-            return workOrder;
-        }
-
-        public void setWorkOrder(WorkOrder workOrder) {
-            this.workOrder = workOrder;
-        }
-
-        public String getBranch() {
-            return branch;
-        }
-
-        public void setBranch(String branch) {
-            this.branch = branch;
-        }
-
-        public double getQuantityOrder() {
-            return quantityOrder;
-        }
-
-        public void setQuantityOrder(double quantityOrder) {
-            this.quantityOrder = quantityOrder;
-        }
-
-        public double getQuantityStoraged() {
-            return quantityStoraged;
-        }
-
-        public void setQuantityStoraged(double quantityStoraged) {
-            this.quantityStoraged = quantityStoraged;
-        }
-
-        public double getQuantityRemain() {
-            return quantityRemain;
-        }
-
-        public void setQuantityRemain(double quantityRemain) {
-            this.quantityRemain = quantityRemain;
-        }
-
-        public String getPlanStartDate() {
-            return planStartDate;
-        }
-
-        public void setPlanStartDate(String planStartDate) {
-            this.planStartDate = planStartDate;
-        }
-
-        public String getPlanFinishDate() {
-            return planFinishDate;
-        }
-
-        public void setPlanFinishDate(String planFinishDate) {
-            this.planFinishDate = planFinishDate;
-        }
-
-        public String getActualStartDate() {
-            return ActualStartDate;
-        }
-
-        public void setActualStartDate(String actualStartDate) {
-            ActualStartDate = actualStartDate;
-        }
-    }
-
-    /**
      * 材料明细单位
      */
-    public static class MaterBranch extends Mater.Branch implements Parcelable{
+    public static class MaterProduct extends Mater{
+        private String sequenceNumber = "" ;//材料序号
         private double planUsageAmount = 0;//计划用量
         private double actualUsageAmount = 0;//实际用量
         private String lastHairMaterDate = "";//最近一次发料时间
+
+        public String getSequenceNumber() {
+            return sequenceNumber;
+        }
+
+        public void setSequenceNumber(String sequenceNumber) {
+            this.sequenceNumber = sequenceNumber;
+        }
 
         public double getPlanUsageAmount() {
             return planUsageAmount;
