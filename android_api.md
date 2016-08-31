@@ -1,4 +1,4 @@
-#Amphenol_android开发接口文档 version 1.1
+#Amphenol_android开发接口文档 version 1.5
 
 ##书写说明
 - api采用json数据格式返回
@@ -590,11 +590,11 @@
 	plain_start_date : String 计划开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 	plain_finish_date : String 计划完成日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 	actual_start_date : String 实际开始日期 ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	sale_order_number : String 销售订单号
 	customer_name : String 客户名称
 	customer_code : String 客户代码
 	customer_purchase_order_number : String 客户采购订单号
 	quantity_order_sale : double 销售订单数量
-	quantity_finished_sale : double 销售完工数量
 	quantity_shipmented_sale : double 出货数量
 	quantity_remain_sale : double 销售剩余数量
 	compliance_date : String 承诺日期
@@ -607,6 +607,7 @@
 				mater_form : String 材料规格
 				plan_usage_amount : double 计划用量
 				actual_usage_amount : double 实际用量
+				mater_unit : String 材料单位
 				last_hair_mater_date : String 最后一次发料时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 	step_list : String 订单工序明细信息集合json字符串
 		step_list : List<Map<String,Object>> 按此生成json字符串
@@ -620,3 +621,21 @@
 				outsourcing_purchase_order_number : String 外协采购订单号
 
 
+##打印物料标签-物料查询
+	请求方式:get
+	参数:
+		mater 物料编号
+	action=print_mater_label_inquire
+
+返回
+
+	mater_format : String 物料规格
+	mater_desc : String 物料描述
+	branched : int 批次控制
+		1 = 控制
+		0 = 不控制
+	storage_unit : String 数量单位(库存单位)
+	single : double 单重
+	single_unit : String 单重单位
+
+	

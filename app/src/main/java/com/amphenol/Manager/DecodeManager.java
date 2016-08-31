@@ -804,6 +804,127 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
+    /**
+     * 生产订单查询
+     *
+     * @param jsonObject
+     * @param messageWhat
+     * @param handler
+     * @throws Exception
+     */
+    public static void decodeProductionOrderInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            WorkOrder workOrder = new WorkOrder();
+            Mater production = new Mater();
+            ArrayList<WorkOrder.MaterProduct> materProducts = new ArrayList<>();//材料集合
+            ArrayList<WorkOrder.Step> steps = new ArrayList<>();//工序集合
+            workOrder.setProduction(production);
+            workOrder.setMaterProducts(materProducts);
+            workOrder.setSteps(steps);
+
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            String warehouse = params.get("warehouse");
+            String work_order = params.get("work_order");
+            String department = jsonObject.optString("department");
+            int orderState = jsonObject.optInt("order_state");
+            String productName = jsonObject.optString("product_name");
+            String productDesc = jsonObject.optString("product_desc");
+            String productForm = jsonObject.optString("product_form");
+            double quantityOrderProduct = jsonObject.optDouble("quantity_order_product", 0);
+            double quantityFinishedProduct = jsonObject.optDouble("quantity_finished_product", 0);
+            double quantityRemainProduct = jsonObject.optDouble("quantity_remain_product", 0);
+            String plainStartDate = jsonObject.optString("plain_start_date");
+            String plainFinishedDate = jsonObject.optString("plain_finish_date");
+            String actualStartDate = jsonObject.optString("actual_start_date");
+            String customerName = jsonObject.optString("customer_name");
+            String customerCode = jsonObject.optString("customer_code");
+            String customerPurchaseOrderNumber = jsonObject.optString("customer_purchase_order_number");
+            double quantityOrderSale = jsonObject.optDouble("quantity_order_sale", 0);
+            double quantityShipmentSale = jsonObject.optDouble("quantity_shipmented_sale", 0);
+            double quantityRemainSale = jsonObject.optDouble("quantity_remain_sale", 0);
+            String complianceDate = jsonObject.optString("compliance_date");
+
+            production.setWarehouse(warehouse);
+            workOrder.setNumber(work_order);
+            workOrder.setDepartment(department);
+            workOrder.setState(orderState);
+            production.setNumber(productName);
+            production.setDesc(productDesc);
+            production.setFormat(productForm);
+            workOrder.setQuantityOrderProduct(quantityOrderProduct);
+            workOrder.setQuantityRemainProduct(quantityRemainProduct);
+            workOrder.setQuantityFinishedProduct(quantityFinishedProduct);
+            workOrder.setPlanStartDate(plainStartDate);
+            workOrder.setPlanFinishDate(plainFinishedDate);
+            workOrder.setActualStartDate(actualStartDate);
+            workOrder.setCustomerName(customerName);
+            workOrder.setCustomerCode(customerCode);
+            workOrder.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
+            workOrder.setQuantityOrderSale(quantityOrderSale);
+            workOrder.setQuantityShipmentSale(quantityShipmentSale);
+            workOrder.setQuantityRemainSale(quantityRemainSale);
+            workOrder.setComplianceDate(complianceDate);
+
+            JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
+            if (materJsonArray != null) {
+                for (int i = 0; i < materJsonArray.length(); i++) {
+                    WorkOrder.MaterProduct materProduct = new WorkOrder.MaterProduct();
+                    materProducts.add(materProduct);
+
+                    JSONObject materJsonObject = materJsonArray.getJSONObject(i);
+                    String materNumber = materJsonObject.optString("mater_number");
+                    String materName = materJsonObject.optString("mater_name");
+                    String materDesc = materJsonObject.optString("mater_desc");
+                    String materForm = materJsonObject.optString("mater_form");
+                    String last_hair_mater_date = materJsonObject.optString("last_hair_mater_date");
+                    double plan_usage_amount = materJsonObject.optDouble("plan_usage_amount", 0);
+                    double actual_usage_amount = materJsonObject.optDouble("actual_usage_amount", 0);
+
+                    materProduct.setSequenceNumber(materNumber);
+                    materProduct.setNumber(materName);
+                    materProduct.setDesc(materDesc);
+                    materProduct.setFormat(materForm);
+                    materProduct.setLastHairMaterDate(last_hair_mater_date);
+                    materProduct.setPlanUsageAmount(plan_usage_amount);
+                    materProduct.setActualUsageAmount(actual_usage_amount);
+                }
+            }
+
+            JSONArray stepJsonArray = jsonObject.optJSONArray("step_list");
+            if (stepJsonArray != null) {
+                for (int i = 0; i < stepJsonArray.length(); i++) {
+                    WorkOrder.Step step = new WorkOrder.Step();
+                    steps.add(step);
+
+                    JSONObject stepJsonObject = stepJsonArray.getJSONObject(i);
+                    String step_number = stepJsonObject.optString("step_number");
+                    String step_name = stepJsonObject.optString("step_name");
+                    String outsourcing_supplier = stepJsonObject.optString("outsourcing_supplier");
+                    String outsourcing_purchase_order_number = stepJsonObject.optString("outsourcing_purchase_order_number");
+                    double standard_working_hours = stepJsonObject.optDouble("standard_working_hours", 0);
+                    double actual_working_hours = stepJsonObject.optDouble("actual_working_hours", 0);
+                    double outsourcing_costs = stepJsonObject.optDouble("outsourcing_costs", 0);
+
+                    step.setStepNumber(step_number);
+                    step.setStepName(step_name);
+                    step.setOutsourcingSupplier(outsourcing_supplier);
+                    step.setOutsourcingPurchaseOrderNumber(outsourcing_purchase_order_number);
+                    step.setStandardWorkingHours(standard_working_hours);
+                    step.setActualWorkingHours(actual_working_hours);
+                    step.setOutsourcingCosts(outsourcing_costs);
+                }
+            }
+            data.putParcelable("workOrder", workOrder);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();

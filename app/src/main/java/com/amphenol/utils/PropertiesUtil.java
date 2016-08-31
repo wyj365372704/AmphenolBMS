@@ -53,6 +53,9 @@ public class PropertiesUtil {
     public static final String ACTION_PRODUCTION_STORAGE_INQUIRE = "ACTION_PRODUCTION_STORAGE_INQUIRE";//action 后缀,生产入库 - 工单查询
     public static final String ACTION_PRODUCTION_STORAGE_SUBMIT = "ACTION_PRODUCTION_STORAGE_SUBMIT";//action 后缀,生产入库 - 确认提交
 
+    public static final String ACTION_PRODUCTION_ORDER_INQUIRE = "ACTION_PRODUCTION_ORDER_INQUIRE";//action 后缀,生产入库 - 生产订单查询
+
+
 
 
     private static PropertiesUtil mPropertiesUtil;

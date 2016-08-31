@@ -29,7 +29,6 @@ public class WorkOrder implements Parcelable{
     private String customerName = "";//客户名称
     private String customerPurchaseOrderNumber = "";//客户采购订单号
     private double quantityOrderSale = 0 ;//销售订单数量
-    private double quantityFinishedSale = 0 ;//销售完工数量
     private double quantityShipmentSale = 0;//销售出货数量
     private double quantityRemainSale = 0;//销售剩余数量
     private String complianceDate = "";//承诺日期
@@ -147,14 +146,6 @@ public class WorkOrder implements Parcelable{
 
     public void setQuantityOrderSale(double quantityOrderSale) {
         this.quantityOrderSale = quantityOrderSale;
-    }
-
-    public double getQuantityFinishedSale() {
-        return quantityFinishedSale;
-    }
-
-    public void setQuantityFinishedSale(double quantityFinishedSale) {
-        this.quantityFinishedSale = quantityFinishedSale;
     }
 
     public double getQuantityShipmentSale() {
