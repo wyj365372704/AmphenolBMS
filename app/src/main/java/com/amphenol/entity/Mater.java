@@ -42,18 +42,6 @@ public class Mater implements Parcelable {
         branches = in.createTypedArrayList(Branch.CREATOR);
     }
 
-    public static final Creator<Mater> CREATOR = new Creator<Mater>() {
-        @Override
-        public Mater createFromParcel(Parcel in) {
-            return new Mater(in);
-        }
-
-        @Override
-        public Mater[] newArray(int size) {
-            return new Mater[size];
-        }
-    };
-
     public String getNumber() {
         return number;
     }

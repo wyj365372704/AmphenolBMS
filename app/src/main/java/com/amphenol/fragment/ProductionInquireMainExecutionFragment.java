@@ -14,22 +14,24 @@ import com.amphenol.entity.WorkOrder;
 /**
  * Created by Carl on 2016-08-23 023.
  */
-public class ProductionInquireExecutionFragment extends Fragment {
+public class ProductionInquireMainExecutionFragment extends Fragment {
     private View rootView = null;
     private WorkOrder mWorkOrder;
+
+    private boolean enable ;//当前fragment在viewPager活动下时,为true
 
     private TextView mWareHouseTextView, mDepartmentTextView, mOrderNumberTextView, mOrderStateTextView,
             mProductNameTextView, mProductDescTextView, mProductFormTextView, mOrderAmountTextView,
             mFinishedAmountTextView, mRemainAmountTextView, mPlanBeginDateTextView, mPlanFinishDateTextView,
             mActualBeginDateTextView;
 
-    public static ProductionInquireExecutionFragment newInstance(String title, WorkOrder workOrder) {
+    public static ProductionInquireMainExecutionFragment newInstance(String title, WorkOrder workOrder) {
 
         Bundle args = new Bundle();
         args.putString("title", title);
-        ProductionInquireExecutionFragment fragment = new ProductionInquireExecutionFragment();
+        args.putParcelable("workOrder", workOrder);
+        ProductionInquireMainExecutionFragment fragment = new ProductionInquireMainExecutionFragment();
         fragment.setArguments(args);
-        fragment.mWorkOrder = workOrder;
         return fragment;
     }
 
@@ -38,18 +40,22 @@ public class ProductionInquireExecutionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-
+            mWorkOrder = args.getParcelable("workOrder");
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (rootView != null)
-            return rootView;
         rootView = inflater.inflate(R.layout.fragment_production_inquire_execution, container, false);
+        initDate();
         initViews();
+        refreshShow(mWorkOrder);
         return rootView;
+    }
+
+    private void initDate() {
+        enable = true;
     }
 
     private void initViews() {
@@ -70,23 +76,34 @@ public class ProductionInquireExecutionFragment extends Fragment {
 
     public void refreshShow(WorkOrder workOrder) {
         mWorkOrder = workOrder;
-        mWareHouseTextView.setText(mWorkOrder.getProduction().getWarehouse());
-        mDepartmentTextView.setText(mWorkOrder.getDepartment());
-        mOrderNumberTextView.setText(mWorkOrder.getNumber());
-        mOrderStateTextView.setText(mWorkOrder.getState() == WorkOrder.ORDER_STATE_CANCELED ? "订单取消" :
-                mWorkOrder.getState() == WorkOrder.ORDER_STATE_BEGIN ? "开始生产" :
-                        mWorkOrder.getState() == WorkOrder.ORDER_STATE_ISSUED ? "已下达" :
-                                mWorkOrder.getState() == WorkOrder.ORDER_STATE_FINISHED ? "完成" :
-                                        mWorkOrder.getState() == WorkOrder.ORDER_STATE_MATER_FINISHED ? "物料完成" :
-                                                mWorkOrder.getState() == WorkOrder.ORDER_STATE_PROCESS_FINISHED ? "工序完成" : "");
-        mProductNameTextView.setText(mWorkOrder.getProduction().getNumber());
-        mProductDescTextView.setText(mWorkOrder.getProduction().getDesc());
-        mProductFormTextView.setText(mWorkOrder.getProduction().getFormat());
-        mOrderAmountTextView.setText(mWorkOrder.getQuantityOrderProduct()+"");
-        mFinishedAmountTextView.setText(mWorkOrder.getQuantityFinishedProduct()+"");
-        mRemainAmountTextView.setText(mWorkOrder.getQuantityRemainProduct()+"");
-        mPlanBeginDateTextView.setText(mWorkOrder.getPlanStartDate());
-        mPlanFinishDateTextView.setText(mWorkOrder.getPlanFinishDate());
-        mActualBeginDateTextView.setText(mWorkOrder.getActualStartDate());
+        getArguments().putParcelable("workOrder",mWorkOrder);
+        if (enable) {
+            mWareHouseTextView.setText(mWorkOrder.getProduction().getWarehouse());
+            mDepartmentTextView.setText(mWorkOrder.getDepartment());
+            mOrderNumberTextView.setText(mWorkOrder.getNumber());
+            mOrderStateTextView.setText(mWorkOrder.getState() == WorkOrder.ORDER_STATE_CANCELED ? "订单取消" :
+                    mWorkOrder.getState() == WorkOrder.ORDER_STATE_BEGIN ? "开始生产" :
+                            mWorkOrder.getState() == WorkOrder.ORDER_STATE_ISSUED ? "已下达" :
+                                    mWorkOrder.getState() == WorkOrder.ORDER_STATE_FINISHED ? "完成" :
+                                            mWorkOrder.getState() == WorkOrder.ORDER_STATE_MATER_FINISHED ? "物料完成" :
+                                                    mWorkOrder.getState() == WorkOrder.ORDER_STATE_PROCESS_FINISHED ? "工序完成" : "");
+            mProductNameTextView.setText(mWorkOrder.getProduction().getNumber());
+            mProductDescTextView.setText(mWorkOrder.getProduction().getDesc());
+            mProductFormTextView.setText(mWorkOrder.getProduction().getFormat());
+            mOrderAmountTextView.setText(mWorkOrder.getQuantityOrderProduct() + "");
+            mFinishedAmountTextView.setText(mWorkOrder.getQuantityFinishedProduct() + "");
+            mRemainAmountTextView.setText(mWorkOrder.getQuantityRemainProduct() + "");
+            mPlanBeginDateTextView.setText(mWorkOrder.getPlanStartDate());
+            mPlanFinishDateTextView.setText(mWorkOrder.getPlanFinishDate());
+            mActualBeginDateTextView.setText(mWorkOrder.getActualStartDate());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        enable = false;
+        getArguments().putBoolean("enable",enable);
+        getArguments().putParcelable("workOrder",mWorkOrder);
     }
 }

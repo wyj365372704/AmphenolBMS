@@ -14,21 +14,22 @@ import com.amphenol.entity.WorkOrder;
 /**
  * Created by Carl on 2016-08-23 023.
  */
-public class ProductionInquireSaleFragment extends Fragment {
+public class ProductionInquireMainSaleFragment extends Fragment {
     private WorkOrder mWorkOrder;
+    private boolean enable ;//当前fragment在viewPager活动下时,为true
 
     private TextView mCustomerNameTextView, mCustomerNumberTextView, mCustomerPurchaseOrderNumberTextView,
             mOrderAmountTextView, mShipmentAmountTextView, mRemainAmountTextView, mComplianceDateTextView;
 
     private View rootView = null;
 
-    public static ProductionInquireSaleFragment newInstance(String title, WorkOrder workOrder) {
+    public static ProductionInquireMainSaleFragment newInstance(String title, WorkOrder workOrder) {
 
         Bundle args = new Bundle();
         args.putString("title", title);
-        ProductionInquireSaleFragment fragment = new ProductionInquireSaleFragment();
+        args.putParcelable("workOrder",workOrder);
+        ProductionInquireMainSaleFragment fragment = new ProductionInquireMainSaleFragment();
         fragment.setArguments(args);
-        fragment.mWorkOrder = workOrder;
         return fragment;
     }
 
@@ -37,18 +38,22 @@ public class ProductionInquireSaleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-
+            mWorkOrder = args.getParcelable("workOrder");
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (rootView != null)
-            return rootView;
         rootView = inflater.inflate(R.layout.fragment_production_inquire_sale, container, false);
+        initDate();
         initViews();
+        refreshShow(mWorkOrder);
         return rootView;
+    }
+
+    private void initDate() {
+        enable = true;
     }
 
     private void initViews() {
@@ -63,12 +68,22 @@ public class ProductionInquireSaleFragment extends Fragment {
 
     public void refreshShow(WorkOrder workOrder) {
         mWorkOrder = workOrder;
-        mCustomerNameTextView.setText(mWorkOrder.getCustomerName());
-        mCustomerNumberTextView.setText(mWorkOrder.getCustomerCode());
-        mCustomerPurchaseOrderNumberTextView.setText(mWorkOrder.getCustomerPurchaseOrderNumber());
-        mOrderAmountTextView.setText(mWorkOrder.getQuantityOrderSale() + "");
-        mShipmentAmountTextView.setText(mWorkOrder.getQuantityShipmentSale() + "");
-        mRemainAmountTextView.setText(mWorkOrder.getQuantityRemainSale() + "");
-        mComplianceDateTextView.setText(mWorkOrder.getComplianceDate());
+        getArguments().putParcelable("workOrder",mWorkOrder);
+        if (enable) {
+            mCustomerNameTextView.setText(mWorkOrder.getCustomerName());
+            mCustomerNumberTextView.setText(mWorkOrder.getCustomerCode());
+            mCustomerPurchaseOrderNumberTextView.setText(mWorkOrder.getCustomerPurchaseOrderNumber());
+            mOrderAmountTextView.setText(mWorkOrder.getQuantityOrderSale() + "");
+            mShipmentAmountTextView.setText(mWorkOrder.getQuantityShipmentSale() + "");
+            mRemainAmountTextView.setText(mWorkOrder.getQuantityRemainSale() + "");
+            mComplianceDateTextView.setText(mWorkOrder.getComplianceDate());
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        enable = false;
+        getArguments().putBoolean("enable",enable);
+        getArguments().putParcelable("workOrder",mWorkOrder);
     }
 }

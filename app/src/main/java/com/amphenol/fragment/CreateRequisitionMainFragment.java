@@ -143,7 +143,6 @@ public class CreateRequisitionMainFragment extends Fragment {
 
             @Override
             public void OnItemCheckedChanged(int position, boolean isChecked) {
-                Log.d("wyj","OnItemCheckedChanged "+position+"   "+isChecked);
                 if (isChecked)
                     currentCheckedItemCount++;
                 else

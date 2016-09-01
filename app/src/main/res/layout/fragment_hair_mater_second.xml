@@ -18,7 +18,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:onClick="abcd"
             android:singleLine="true"
             android:text="发料明细"
             android:textColor="@android:color/white"

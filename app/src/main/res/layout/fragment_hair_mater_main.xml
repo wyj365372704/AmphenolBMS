@@ -22,7 +22,6 @@
             android:singleLine="true"
             android:text="生产发料"
             android:textColor="@android:color/white"
-            android:onClick="abcd"
             android:textSize="18sp" />
 
     </android.support.v7.widget.Toolbar>

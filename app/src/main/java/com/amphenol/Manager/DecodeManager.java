@@ -828,26 +828,27 @@ public class DecodeManager {
             workOrder.setSteps(steps);
 
             Map<String, String> params = (Map<String, String>) jsonObject.get("params");
-            String warehouse = params.get("warehouse");
-            String work_order = params.get("work_order");
-            String department = jsonObject.optString("department");
+            String warehouse = params.get("warehouse").trim();
+            String work_order = params.get("work_order").trim();
+            String department = jsonObject.optString("department").trim();
             int orderState = jsonObject.optInt("order_state");
-            String productName = jsonObject.optString("product_name");
-            String productDesc = jsonObject.optString("product_desc");
-            String productForm = jsonObject.optString("product_form");
+            String productName = jsonObject.optString("product_name").trim();
+            String productDesc = jsonObject.optString("product_desc").trim();
+            String productForm = jsonObject.optString("product_form").trim();
             double quantityOrderProduct = jsonObject.optDouble("quantity_order_product", 0);
             double quantityFinishedProduct = jsonObject.optDouble("quantity_finished_product", 0);
             double quantityRemainProduct = jsonObject.optDouble("quantity_remain_product", 0);
-            String plainStartDate = jsonObject.optString("plain_start_date");
-            String plainFinishedDate = jsonObject.optString("plain_finish_date");
-            String actualStartDate = jsonObject.optString("actual_start_date");
-            String customerName = jsonObject.optString("customer_name");
-            String customerCode = jsonObject.optString("customer_code");
-            String customerPurchaseOrderNumber = jsonObject.optString("customer_purchase_order_number");
+            String plainStartDate = jsonObject.optString("plain_start_date").trim();
+            String plainFinishedDate = jsonObject.optString("plain_finish_date").trim();
+            String actualStartDate = jsonObject.optString("actual_start_date").trim();
+            String sale_order_number = jsonObject.optString("sale_order_number").trim();
+            String customerName = jsonObject.optString("customer_name").trim();
+            String customerCode = jsonObject.optString("customer_code").trim();
+            String customerPurchaseOrderNumber = jsonObject.optString("customer_purchase_order_number").trim();
             double quantityOrderSale = jsonObject.optDouble("quantity_order_sale", 0);
             double quantityShipmentSale = jsonObject.optDouble("quantity_shipmented_sale", 0);
             double quantityRemainSale = jsonObject.optDouble("quantity_remain_sale", 0);
-            String complianceDate = jsonObject.optString("compliance_date");
+            String complianceDate = jsonObject.optString("compliance_date").trim();
 
             production.setWarehouse(warehouse);
             workOrder.setNumber(work_order);
@@ -862,6 +863,7 @@ public class DecodeManager {
             workOrder.setPlanStartDate(plainStartDate);
             workOrder.setPlanFinishDate(plainFinishedDate);
             workOrder.setActualStartDate(actualStartDate);
+            workOrder.setSaleOrderNumber(sale_order_number);
             workOrder.setCustomerName(customerName);
             workOrder.setCustomerCode(customerCode);
             workOrder.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
@@ -870,6 +872,8 @@ public class DecodeManager {
             workOrder.setQuantityRemainSale(quantityRemainSale);
             workOrder.setComplianceDate(complianceDate);
 
+            functionCreateMaterProductionTexst(materProducts);
+
             JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
             if (materJsonArray != null) {
                 for (int i = 0; i < materJsonArray.length(); i++) {
@@ -877,13 +881,14 @@ public class DecodeManager {
                     materProducts.add(materProduct);
 
                     JSONObject materJsonObject = materJsonArray.getJSONObject(i);
-                    String materNumber = materJsonObject.optString("mater_number");
-                    String materName = materJsonObject.optString("mater_name");
-                    String materDesc = materJsonObject.optString("mater_desc");
-                    String materForm = materJsonObject.optString("mater_form");
-                    String last_hair_mater_date = materJsonObject.optString("last_hair_mater_date");
+                    String materNumber = materJsonObject.optString("mater_number").trim();
+                    String materName = materJsonObject.optString("mater_name").trim();
+                    String materDesc = materJsonObject.optString("mater_desc").trim();
+                    String materForm = materJsonObject.optString("mater_form").trim();
+                    String last_hair_mater_date = materJsonObject.optString("last_hair_mater_date").trim();
                     double plan_usage_amount = materJsonObject.optDouble("plan_usage_amount", 0);
                     double actual_usage_amount = materJsonObject.optDouble("actual_usage_amount", 0);
+                    String mater_unit = materJsonObject.optString("mater_unit").trim();
 
                     materProduct.setSequenceNumber(materNumber);
                     materProduct.setNumber(materName);
@@ -892,6 +897,7 @@ public class DecodeManager {
                     materProduct.setLastHairMaterDate(last_hair_mater_date);
                     materProduct.setPlanUsageAmount(plan_usage_amount);
                     materProduct.setActualUsageAmount(actual_usage_amount);
+                    materProduct.setUnit(mater_unit);
                 }
             }
 
@@ -902,10 +908,10 @@ public class DecodeManager {
                     steps.add(step);
 
                     JSONObject stepJsonObject = stepJsonArray.getJSONObject(i);
-                    String step_number = stepJsonObject.optString("step_number");
-                    String step_name = stepJsonObject.optString("step_name");
-                    String outsourcing_supplier = stepJsonObject.optString("outsourcing_supplier");
-                    String outsourcing_purchase_order_number = stepJsonObject.optString("outsourcing_purchase_order_number");
+                    String step_number = stepJsonObject.optString("step_number").trim();
+                    String step_name = stepJsonObject.optString("step_name").trim();
+                    String outsourcing_supplier = stepJsonObject.optString("outsourcing_supplier").trim();
+                    String outsourcing_purchase_order_number = stepJsonObject.optString("outsourcing_purchase_order_number").trim();
                     double standard_working_hours = stepJsonObject.optDouble("standard_working_hours", 0);
                     double actual_working_hours = stepJsonObject.optDouble("actual_working_hours", 0);
                     double outsourcing_costs = stepJsonObject.optDouble("outsourcing_costs", 0);
@@ -923,6 +929,24 @@ public class DecodeManager {
         }
         msg.setData(data);
         handler.sendMessage(msg);
+    }
+
+    private static void functionCreateMaterProductionTexst(ArrayList<WorkOrder.MaterProduct> materProducts) {
+
+        for (int i = 0; i < 10; i++) {
+            WorkOrder.MaterProduct materProduct = new WorkOrder.MaterProduct();
+            materProducts.add(materProduct);
+            materProduct.setSequenceNumber("materNumber"+i);
+            materProduct.setNumber("materName"+i);
+            materProduct.setDesc("materDesc"+i);
+            materProduct.setFormat("materForm"+i);
+            materProduct.setLastHairMaterDate("last_hair_mater_date"+i);
+            materProduct.setPlanUsageAmount(i);
+            materProduct.setActualUsageAmount(i);
+            materProduct.setUnit("mater_unit"+i);
+        }
+
+
     }
 
 //通用模板

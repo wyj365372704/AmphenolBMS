@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * 工单/生产订单实体类
  * Created by Carl on 2016-08-11 011.
  */
-public class WorkOrder implements Parcelable{
+public class WorkOrder implements Parcelable {
     public static final int ORDER_STATE_ISSUED = 10, ORDER_STATE_BEGIN = 40, ORDER_STATE_MATER_FINISHED = 45,
             ORDER_STATE_PROCESS_FINISHED = 50, ORDER_STATE_FINISHED = 55, ORDER_STATE_CANCELED = 99, ORDER_STATE_NORMAL = 0;
 
@@ -28,7 +28,8 @@ public class WorkOrder implements Parcelable{
     private String customerCode = "";//客户代码
     private String customerName = "";//客户名称
     private String customerPurchaseOrderNumber = "";//客户采购订单号
-    private double quantityOrderSale = 0 ;//销售订单数量
+    private String saleOrderNumber = "";//销售订单号
+    private double quantityOrderSale = 0;//销售订单数量
     private double quantityShipmentSale = 0;//销售出货数量
     private double quantityRemainSale = 0;//销售剩余数量
     private String complianceDate = "";//承诺日期
@@ -140,6 +141,14 @@ public class WorkOrder implements Parcelable{
         this.customerPurchaseOrderNumber = customerPurchaseOrderNumber;
     }
 
+    public String getSaleOrderNumber() {
+        return saleOrderNumber;
+    }
+
+    public void setSaleOrderNumber(String saleOrderNumber) {
+        this.saleOrderNumber = saleOrderNumber;
+    }
+
     public double getQuantityOrderSale() {
         return quantityOrderSale;
     }
@@ -188,21 +197,11 @@ public class WorkOrder implements Parcelable{
         this.steps = steps;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
-
     /**
      * 材料明细单位
      */
-    public static class MaterProduct extends Mater{
-        private String sequenceNumber = "" ;//材料序号
+    public static class MaterProduct extends Mater {
+        private String sequenceNumber = "";//材料序号
         private double planUsageAmount = 0;//计划用量
         private double actualUsageAmount = 0;//实际用量
         private String lastHairMaterDate = "";//最近一次发料时间
@@ -238,12 +237,49 @@ public class WorkOrder implements Parcelable{
         public void setLastHairMaterDate(String lastHairMaterDate) {
             this.lastHairMaterDate = lastHairMaterDate;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeString(this.sequenceNumber);
+            dest.writeDouble(this.planUsageAmount);
+            dest.writeDouble(this.actualUsageAmount);
+            dest.writeString(this.lastHairMaterDate);
+        }
+
+        public MaterProduct() {
+        }
+
+        protected MaterProduct(Parcel in) {
+            super(in);
+            this.sequenceNumber = in.readString();
+            this.planUsageAmount = in.readDouble();
+            this.actualUsageAmount = in.readDouble();
+            this.lastHairMaterDate = in.readString();
+        }
+
+        public static final Creator<MaterProduct> CREATOR = new Creator<MaterProduct>() {
+            @Override
+            public MaterProduct createFromParcel(Parcel source) {
+                return new MaterProduct(source);
+            }
+
+            @Override
+            public MaterProduct[] newArray(int size) {
+                return new MaterProduct[size];
+            }
+        };
     }
 
     /**
      * 工序明细单位
      */
-    public static class Step{
+    public static class Step implements Parcelable {
         private String stepNumber = "";//工序编号
         private String stepName = "";//工序名称
         private double standardWorkingHours = 0;//标准工时
@@ -251,6 +287,9 @@ public class WorkOrder implements Parcelable{
         private double outsourcingCosts = 0;//外协成本
         private String outsourcingSupplier = "";//外协供应商
         private String outsourcingPurchaseOrderNumber = "";//外协采购订单号
+
+        public Step() {
+        }
 
         public String getStepNumber() {
             return stepNumber;
@@ -307,5 +346,110 @@ public class WorkOrder implements Parcelable{
         public void setOutsourcingPurchaseOrderNumber(String outsourcingPurchaseOrderNumber) {
             this.outsourcingPurchaseOrderNumber = outsourcingPurchaseOrderNumber;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.stepNumber);
+            dest.writeString(this.stepName);
+            dest.writeDouble(this.standardWorkingHours);
+            dest.writeDouble(this.actualWorkingHours);
+            dest.writeDouble(this.outsourcingCosts);
+            dest.writeString(this.outsourcingSupplier);
+            dest.writeString(this.outsourcingPurchaseOrderNumber);
+        }
+
+        protected Step(Parcel in) {
+            this.stepNumber = in.readString();
+            this.stepName = in.readString();
+            this.standardWorkingHours = in.readDouble();
+            this.actualWorkingHours = in.readDouble();
+            this.outsourcingCosts = in.readDouble();
+            this.outsourcingSupplier = in.readString();
+            this.outsourcingPurchaseOrderNumber = in.readString();
+        }
+
+        public static final Creator<Step> CREATOR = new Creator<Step>() {
+            @Override
+            public Step createFromParcel(Parcel source) {
+                return new Step(source);
+            }
+
+            @Override
+            public Step[] newArray(int size) {
+                return new Step[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.department);
+        dest.writeString(this.number);
+        dest.writeInt(this.state);
+        dest.writeParcelable(this.production, flags);
+        dest.writeDouble(this.quantityOrderProduct);
+        dest.writeDouble(this.quantityFinishedProduct);
+        dest.writeDouble(this.quantityRemainProduct);
+        dest.writeString(this.planStartDate);
+        dest.writeString(this.planFinishDate);
+        dest.writeString(this.ActualStartDate);
+        dest.writeString(this.customerCode);
+        dest.writeString(this.customerName);
+        dest.writeString(this.customerPurchaseOrderNumber);
+        dest.writeString(this.saleOrderNumber);
+        dest.writeDouble(this.quantityOrderSale);
+        dest.writeDouble(this.quantityShipmentSale);
+        dest.writeDouble(this.quantityRemainSale);
+        dest.writeString(this.complianceDate);
+        dest.writeTypedList(this.materProducts);
+        dest.writeTypedList(this.steps);
+    }
+
+    public WorkOrder() {
+    }
+
+    protected WorkOrder(Parcel in) {
+        this.department = in.readString();
+        this.number = in.readString();
+        this.state = in.readInt();
+        this.production = in.readParcelable(Mater.class.getClassLoader());
+        this.quantityOrderProduct = in.readDouble();
+        this.quantityFinishedProduct = in.readDouble();
+        this.quantityRemainProduct = in.readDouble();
+        this.planStartDate = in.readString();
+        this.planFinishDate = in.readString();
+        this.ActualStartDate = in.readString();
+        this.customerCode = in.readString();
+        this.customerName = in.readString();
+        this.customerPurchaseOrderNumber = in.readString();
+        this.saleOrderNumber = in.readString();
+        this.quantityOrderSale = in.readDouble();
+        this.quantityShipmentSale = in.readDouble();
+        this.quantityRemainSale = in.readDouble();
+        this.complianceDate = in.readString();
+        this.materProducts = in.createTypedArrayList(MaterProduct.CREATOR);
+        this.steps = in.createTypedArrayList(Step.CREATOR);
+    }
+
+    public static final Parcelable.Creator<WorkOrder> CREATOR = new Parcelable.Creator<WorkOrder>() {
+        @Override
+        public WorkOrder createFromParcel(Parcel source) {
+            return new WorkOrder(source);
+        }
+
+        @Override
+        public WorkOrder[] newArray(int size) {
+            return new WorkOrder[size];
+        }
+    };
 }

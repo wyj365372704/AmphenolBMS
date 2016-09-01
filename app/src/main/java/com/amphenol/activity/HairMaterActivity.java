@@ -133,10 +133,4 @@ public class HairMaterActivity extends BaseActivity {
     public void initData() {
 
     }
-
-    public void abcd(View view) {
-        if (mainFragmentCallBack != null) {
-            mainFragmentCallBack.gotoSecondFragment(new Pick.PickItem(), new ArrayList<String>());
-        }
-    }
 }
