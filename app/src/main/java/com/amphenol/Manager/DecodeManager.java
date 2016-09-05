@@ -872,7 +872,7 @@ public class DecodeManager {
             workOrder.setQuantityRemainSale(quantityRemainSale);
             workOrder.setComplianceDate(complianceDate);
 
-            functionCreateMaterProductionTexst(materProducts);
+//            functionCreateMaterProductionTexst(materProducts);
 
             JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
             if (materJsonArray != null) {
@@ -901,7 +901,7 @@ public class DecodeManager {
                 }
             }
 
-            functionCreateStepTexst(steps );
+//            functionCreateStepTexst(steps);
 
             JSONArray stepJsonArray = jsonObject.optJSONArray("step_list");
             if (stepJsonArray != null) {
@@ -935,18 +935,60 @@ public class DecodeManager {
         handler.sendMessage(msg);
     }
 
-    private static void functionCreateStepTexst( ArrayList<WorkOrder.Step> steps ) {
+    public static void decodeProductionOrderInquireGetMater(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            String mater_desc = jsonObject.optString("mater_desc");
+
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            int position = Integer.parseInt(params.get("position"));
+
+            data.putString("mater_desc", mater_desc);
+            data.putInt("position", position);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeProductionOrderInquireGetStepOutsourceInfo(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            String outsourcing_supplier = jsonObject.optString("outsourcing_supplier").trim();
+            double outsourcing_costs = jsonObject.optDouble("outsourcing_costs", 0);
+            String outsourcing_purchase_order_number = jsonObject.optString("outsourcing_purchase_order_number").trim();
+
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            int position = Integer.parseInt(params.get("position"));
+
+            data.putString("outsourcing_supplier", outsourcing_supplier);
+            data.putDouble("outsourcing_costs", outsourcing_costs);
+            data.putString("outsourcing_purchase_order_number", outsourcing_purchase_order_number);
+
+            data.putInt("position", position);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+
+    private static void functionCreateStepTexst(ArrayList<WorkOrder.Step> steps) {
         for (int i = 0; i < 10; i++) {
             WorkOrder.Step step = new WorkOrder.Step();
             steps.add(step);
-            step.setStepNumber("step_number"+i);
-            step.setStepName("step_name"+i);
-            step.setOutsourcingSupplier("outsourcing_supplier"+i);
-            step.setOutsourcingPurchaseOrderNumber("outsourcing_purchase_order_number"+i);
+            step.setStepNumber("step_number" + i);
+            step.setStepName("step_name" + i);
+            step.setOutsourcingSupplier("outsourcing_supplier" + i);
+            step.setOutsourcingPurchaseOrderNumber("outsourcing_purchase_order_number" + i);
             step.setStandardWorkingHours(i);
             step.setActualWorkingHours(i);
             step.setOutsourcingCosts(i);
-            step.setTBC("tbc"+i);
+            step.setTBC("tbc" + i);
         }
     }
 
@@ -955,17 +997,15 @@ public class DecodeManager {
         for (int i = 0; i < 10; i++) {
             WorkOrder.MaterProduct materProduct = new WorkOrder.MaterProduct();
             materProducts.add(materProduct);
-            materProduct.setSequenceNumber("materNumber"+i);
-            materProduct.setNumber("materName"+i);
-            materProduct.setDesc("materDesc"+i);
-            materProduct.setFormat("materForm"+i);
-            materProduct.setLastHairMaterDate("last_hair_mater_date"+i);
+            materProduct.setSequenceNumber("materNumber" + i);
+            materProduct.setNumber("materName" + i);
+            materProduct.setDesc("materDesc" + i);
+            materProduct.setFormat("materForm" + i);
+            materProduct.setLastHairMaterDate("last_hair_mater_date" + i);
             materProduct.setPlanUsageAmount(i);
             materProduct.setActualUsageAmount(i);
-            materProduct.setUnit("mater_unit"+i);
+            materProduct.setUnit("mater_unit" + i);
         }
-
-
     }
 
 //通用模板

@@ -34,7 +34,7 @@ public class PropertiesUtil {
     public static final String ACTION_RECEIPT_CLOSE = "ACTION_RECEIPT_CLOSE";//action 后缀，关闭物料收货
 
     public static final String ACTION_CREATE_REQUISITION_GET_MATER_LIST = "ACTION_CREATE_REQUISITION_GET_MATER_LIST";//action 后缀,创建调拨单,查询物料列表
-    public static final String ACTION_CREATE_REQUISITION_GET_MATER = "ACTION_CREATE_REQUISITION_GET_MATER";//action 后缀,创建调拨单,查询物料明细
+    public static final String ACTION_CREATE_REQUISITION_GET_MATER = "ACTION_CREATE_REQUISITION_GET_MATER";//action 后缀,创建调拨单/库存查询/生产订单-材料明细,查询物料明细
     public static final String ACTION_CREATE_REQUISITION_COMMIT = "ACTION_CREATE_REQUISITION_COMMIT";//action 后缀,创建调拨单,提交
     public static final String ACTION_FAST_REQUISITION_COMMIT = "ACTION_FAST_REQUISITION_COMMIT";//action 后缀,快速调拨,提交
     public static final String ACTION_CHECK_REQUISITION_GET_MATER_LIST = "ACTION_CHECK_REQUISITION_GET_MATER_LIST";//action 后缀,审核调拨单,查询物料列表
@@ -53,7 +53,8 @@ public class PropertiesUtil {
     public static final String ACTION_PRODUCTION_STORAGE_INQUIRE = "ACTION_PRODUCTION_STORAGE_INQUIRE";//action 后缀,生产入库 - 工单查询
     public static final String ACTION_PRODUCTION_STORAGE_SUBMIT = "ACTION_PRODUCTION_STORAGE_SUBMIT";//action 后缀,生产入库 - 确认提交
 
-    public static final String ACTION_PRODUCTION_ORDER_INQUIRE = "ACTION_PRODUCTION_ORDER_INQUIRE";//action 后缀,生产入库 - 生产订单查询
+    public static final String ACTION_PRODUCTION_ORDER_INQUIRE = "ACTION_PRODUCTION_ORDER_INQUIRE";//action 后缀, 生产订单查询
+    public static final String ACTION_PRODUCTION_ORDER_INQUIRE_GET_STEP_OUTSOURCE_INFO = "ACTION_PRODUCTION_ORDER_INQUIRE_GET_STEP_OUTSOURCE_INFO";//action 后缀, 生产订单查询-获取工序外协信息
 
 
 

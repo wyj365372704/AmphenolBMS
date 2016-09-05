@@ -1,4 +1,4 @@
-#Amphenol_android开发接口文档 version 1.6
+#Amphenol_android开发接口文档 version 1.7
 
 ##书写说明
 - api采用json数据格式返回
@@ -621,6 +621,20 @@
 				outsourcing_purchase_order_number : String 外协采购订单号
 				tbc : String Time Basis Code
 
+
+##生产订单查询 - 工序外协信息(补充接口)
+	请求方式:get
+	参数:
+		work_order	工单号
+		step_number 材料编码
+	action=production_order_inquire_get_step_outsource_info
+
+返回
+
+	outsourcing_costs : double 外协成本
+	outsourcing_supplier : String 外协供应商
+	outsourcing_purchase_order_number : String 外协采购订单号
+	
 
 ##打印物料标签-物料查询
 	请求方式:get

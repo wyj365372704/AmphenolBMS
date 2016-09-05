@@ -1,2 +1,3 @@
 include ':app', ':eqcodedemo'
+include ':wheeldatepicker'
 include ':hoinPrinterTooth'

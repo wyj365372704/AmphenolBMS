@@ -18,7 +18,7 @@ public class ProductionInquireMainSaleFragment extends Fragment {
     private WorkOrder mWorkOrder;
     private boolean enable ;//当前fragment在viewPager活动下时,为true
 
-    private TextView mCustomerNameTextView, mCustomerNumberTextView, mCustomerPurchaseOrderNumberTextView,
+    private TextView mSaleOrderNumbetTextView,mCustomerNameTextView, mCustomerNumberTextView, mCustomerPurchaseOrderNumberTextView,
             mOrderAmountTextView, mShipmentAmountTextView, mRemainAmountTextView, mComplianceDateTextView;
 
     private View rootView = null;
@@ -57,6 +57,7 @@ public class ProductionInquireMainSaleFragment extends Fragment {
     }
 
     private void initViews() {
+        mSaleOrderNumbetTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_sale_order_number_tv_in);
         mCustomerNameTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_warehouse_tv_in);
         mCustomerNumberTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_department_tv_in);
         mCustomerPurchaseOrderNumberTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_product_order_number_tv_in);
@@ -70,6 +71,7 @@ public class ProductionInquireMainSaleFragment extends Fragment {
         mWorkOrder = workOrder;
         getArguments().putParcelable("workOrder",mWorkOrder);
         if (enable) {
+            mSaleOrderNumbetTextView.setText(mWorkOrder.getSaleOrderNumber());
             mCustomerNameTextView.setText(mWorkOrder.getCustomerName());
             mCustomerNumberTextView.setText(mWorkOrder.getCustomerCode());
             mCustomerPurchaseOrderNumberTextView.setText(mWorkOrder.getCustomerPurchaseOrderNumber());

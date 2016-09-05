@@ -1,0 +1,447 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/fragment_fast_requisition_main_submit_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/negative_button_background"
+        android:text="打印"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fragment_fast_requisition_main_submit_bt"
+
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:navigationIcon="?attr/homeAsUpIndicator">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:singleLine="true"
+                android:text="打印物料标签"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"/>
+
+            <ImageView
+                android:id="@+id/toolbar_menu"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="right"
+                android:padding="16dp"
+                android:src="@drawable/icon_camera"/>
+        </android.support.v7.widget.Toolbar>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/fragment_purchase_receipt_scan_iv"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/scan"/>
+
+
+            <Button
+                android:id="@+id/fragment_purchase_receipt_inquire_bt"
+                android:layout_width="64dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/positive_button_background"
+                android:text="查询"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <EditText
+                android:id="@+id/purchase_receipt_main_code_et"
+                style="@style/NormalTheme.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@id/fragment_purchase_receipt_inquire_bt"
+                android:layout_toRightOf="@id/fragment_purchase_receipt_scan_iv"
+                android:hint="输入物料号"
+                android:imeOptions="actionDone"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorDevideLine"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="物料编号:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+                <TextView
+                    android:id="@+id/fragment_create_requisition_second_mater_number_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="物料规格:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+                <TextView
+                    android:id="@+id/activity_print_mater_label_mater_format"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="物料描述:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                    <TextView
+                        android:id="@+id/fragment_create_requisition_second_mater_desc_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="批次控制:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                    <TextView
+                        android:id="@+id/fragment_create_requisition_second_branched_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="批号:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                    <EditText
+                        android:id="@+id/fragment_fast_requisition_main_from_branch_et"
+                        style="@style/NormalTheme.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:hint="输入批号"
+                        android:imeOptions="actionDone"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="数量:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                    <EditText
+                        android:id="@+id/fragment_fast_requisition_main_from_xiangshu_et"
+                        style="@style/NormalTheme.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="24dp"
+                        android:hint="输入数量"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="数量单位:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+
+                    <TextView
+                        android:id="@+id/activity_print_mater_label_mater_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="单重:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                    <EditText
+                        android:id="@+id/activity_print_mater_label_single"
+                        style="@style/NormalTheme.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="24dp"
+                        android:hint="输入单重"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="单重单位:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+
+                    <TextView
+                        android:id="@+id/activity_print_mater_label_mater_single_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="净重:"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+                <TextView
+                    android:id="@+id/activity_print_mater_label_weight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/normal_font_size"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="日期:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                    <TextView
+                        android:id="@+id/activity_print_mater_label_date"
+                        style="@style/NormalTheme.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:hint="选择日期"
+                        android:imeOptions="actionDone"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="厂商:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/normal_font_size"/>
+
+                    <EditText
+                        android:id="@+id/activity_print_mater_label_firm"
+                        style="@style/NormalTheme.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:hint="输入厂商"
+                        android:imeOptions="actionDone"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

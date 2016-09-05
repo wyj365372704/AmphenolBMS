@@ -15,6 +15,7 @@ public class MenuItem{
     public static final int MENU_CODE_CHECK_REQUISITION = 32;//审核调拨单
     public static final int MENU_CODE_FAST_REQUISITION = 33;//快速调拨
     public static final int MENU_CODE_STOCK_SEARCH = 34;//库存查询
+    public static final int MENU_CODE_PRINT_MATER_LABEL = 36;//打印物料标签
     public static final int MENU_CODE_SET_UP_SYSTEM = 91;//系统设置
     public static final int MENU_CODE_SET_UP_WAREHOUSE = 92;//仓库设置
     private String title;
