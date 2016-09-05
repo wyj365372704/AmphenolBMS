@@ -56,6 +56,7 @@ public class PropertiesUtil {
     public static final String ACTION_PRODUCTION_ORDER_INQUIRE = "ACTION_PRODUCTION_ORDER_INQUIRE";//action 后缀, 生产订单查询
     public static final String ACTION_PRODUCTION_ORDER_INQUIRE_GET_STEP_OUTSOURCE_INFO = "ACTION_PRODUCTION_ORDER_INQUIRE_GET_STEP_OUTSOURCE_INFO";//action 后缀, 生产订单查询-获取工序外协信息
 
+    public static final String ACTION_PRINT_MATER_LABEL_GET_INQUIRE = "ACTION_PRINT_MATER_LABEL_GET_INQUIRE";//action 后缀, 打印物料标签-物料查询
 
 
 

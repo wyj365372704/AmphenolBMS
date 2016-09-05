@@ -976,38 +976,39 @@ public class DecodeManager {
         handler.sendMessage(msg);
     }
 
+    public static void decodePrintMaterLabelInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            String mater_format = jsonObject.optString("mater_format");
+            String mater_desc = jsonObject.optString("mater_desc");
+            int branched = jsonObject.optInt("branched", Mater.BRANCH_NORMAL);
+            String storage_unit = jsonObject.optString("storage_unit");
+            double single = jsonObject.optDouble("single");
+            String single_unit = jsonObject.optString("single_unit");
 
-    private static void functionCreateStepTexst(ArrayList<WorkOrder.Step> steps) {
-        for (int i = 0; i < 10; i++) {
-            WorkOrder.Step step = new WorkOrder.Step();
-            steps.add(step);
-            step.setStepNumber("step_number" + i);
-            step.setStepName("step_name" + i);
-            step.setOutsourcingSupplier("outsourcing_supplier" + i);
-            step.setOutsourcingPurchaseOrderNumber("outsourcing_purchase_order_number" + i);
-            step.setStandardWorkingHours(i);
-            step.setActualWorkingHours(i);
-            step.setOutsourcingCosts(i);
-            step.setTBC("tbc" + i);
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            String materNumber = params.get("mater");
+            String branchName = params.get("branch");
+
+            Mater.Branch branch = new Mater.Branch();
+            branch.setPo(branchName);
+            Mater mater = new Mater();
+            branch.setMater(mater);
+            mater.setNumber(materNumber);
+            mater.setFormat(mater_format);
+            mater.setDesc(mater_desc);
+            mater.setBranchControl(branched);
+            mater.setUnit(storage_unit);
+            mater.setSingle(single);
+            mater.setSingleUnit(single_unit);
+            data.putParcelable("branch", branch);
         }
+        msg.setData(data);
+        handler.sendMessage(msg);
     }
-
-    private static void functionCreateMaterProductionTexst(ArrayList<WorkOrder.MaterProduct> materProducts) {
-
-        for (int i = 0; i < 10; i++) {
-            WorkOrder.MaterProduct materProduct = new WorkOrder.MaterProduct();
-            materProducts.add(materProduct);
-            materProduct.setSequenceNumber("materNumber" + i);
-            materProduct.setNumber("materName" + i);
-            materProduct.setDesc("materDesc" + i);
-            materProduct.setFormat("materForm" + i);
-            materProduct.setLastHairMaterDate("last_hair_mater_date" + i);
-            materProduct.setPlanUsageAmount(i);
-            materProduct.setActualUsageAmount(i);
-            materProduct.setUnit("mater_unit" + i);
-        }
-    }
-
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();

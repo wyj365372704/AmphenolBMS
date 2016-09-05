@@ -20,6 +20,7 @@ public class Mater implements Parcelable {
     private double quantity = 0;//数量
     private int branchControl = BRANCH_NORMAL;//批次管控
     private double single = 0;//单重
+    private String singleUnit = "";//单重单位
     private String warehouse = "";//仓库
     private String shard = "";//收货子库
     private String location = "";//收货库位
@@ -36,6 +37,7 @@ public class Mater implements Parcelable {
         quantity = in.readDouble();
         branchControl = in.readInt();
         single = in.readDouble();
+        singleUnit = in.readString();
         warehouse = in.readString();
         shard = in.readString();
         location = in.readString();
@@ -130,6 +132,14 @@ public class Mater implements Parcelable {
         this.warehouse = warehouse;
     }
 
+    public String getSingleUnit() {
+        return singleUnit;
+    }
+
+    public void setSingleUnit(String singleUnit) {
+        this.singleUnit = singleUnit;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -144,6 +154,7 @@ public class Mater implements Parcelable {
         dest.writeDouble(quantity);
         dest.writeInt(branchControl);
         dest.writeDouble(single);
+        dest.writeString(singleUnit);
         dest.writeString(warehouse);
         dest.writeString(shard);
         dest.writeString(location);

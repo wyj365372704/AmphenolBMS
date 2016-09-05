@@ -199,6 +199,8 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.men_icon_product_stor;
             case MenuItem.MENU_CODE_PRODUCT_INQUIRE:
                 return R.mipmap.menu_icon_product_inquir;
+            case MenuItem.MENU_CODE_PRINT_MATER_LABEL:
+                return R.mipmap.menu_icon_print;
         }
         return R.mipmap.ic_launcher;
     }
