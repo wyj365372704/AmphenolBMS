@@ -51,9 +51,11 @@ public class ProductionInquireMainFragment extends Fragment {
     private ProductionInquireMainExecutionFragment mProductionInquireExecutionFragment;
     private ProductionInquireMainSaleFragment mProductionInquireSaleFragment;
     private ProductionInquireMainMaterFragment mProductionInquireMaterFragment;
-    private ProductionInquireStepFragment mProductionInquireStepFragment;
+    private ProductionInquireMainStepFragment mProductionInquireStepFragment;
     private ProductionInquireMainMaterFragment.ProductionInquireMaterFragmentCallBack mProductionInquireMaterFragmentCallBack;
+    private ProductionInquireMainStepFragment.ProductionInquireStepFragmentCallBack mProductionInquireStepFragmentCallBack;
     private ProductionInquireMaterDetailFragment mProductionInquireMaterDetailFragment;
+    private ProductionInquireStepDetailFragment mProductionInquireStepDetailFragment;
     private ProductionInquireViewPagerAdapter mProductionInquireViewPagerAdapter;
 
     private ViewPager mViewPager;
@@ -212,12 +214,23 @@ public class ProductionInquireMainFragment extends Fragment {
                 transaction.commitAllowingStateLoss();
             }
         };
+        mProductionInquireStepFragmentCallBack = new ProductionInquireMainStepFragment.ProductionInquireStepFragmentCallBack() {
+            @Override
+            public void gotoDetailPage(WorkOrder.Step step) {
+                mProductionInquireStepDetailFragment = ProductionInquireStepDetailFragment.newInstance(step);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_fast_requisition_fl, mProductionInquireStepDetailFragment);
+                transaction.addToBackStack(null);
+                transaction.commitAllowingStateLoss();
+            }
+        };
     }
 
     private void refreshShow() {
         mProductionInquireExecutionFragment.refreshShow(mWorkOrder);
         mProductionInquireSaleFragment.refreshShow(mWorkOrder);
         mProductionInquireMaterFragment.refreshShow(mWorkOrder);
+        mProductionInquireStepFragment.refreshShow(mWorkOrder);
 
         if (TextUtils.isEmpty(mWorkOrder.getNumber())) {
             mInquireButton.setTag(false);
@@ -234,7 +247,7 @@ public class ProductionInquireMainFragment extends Fragment {
         mProductionInquireExecutionFragment = ProductionInquireMainExecutionFragment.newInstance("执行", mWorkOrder);
         mProductionInquireSaleFragment = ProductionInquireMainSaleFragment.newInstance("销售", mWorkOrder);
         mProductionInquireMaterFragment = ProductionInquireMainMaterFragment.newInstance("材料",mWorkOrder,mProductionInquireMaterFragmentCallBack);
-        mProductionInquireStepFragment = ProductionInquireStepFragment.newInstance("工序");
+        mProductionInquireStepFragment = ProductionInquireMainStepFragment.newInstance("工序",mWorkOrder,mProductionInquireStepFragmentCallBack);
         mProductionInquireViewPagerAdapter = new ProductionInquireViewPagerAdapter(getChildFragmentManager(),
                 new Fragment[]{mProductionInquireExecutionFragment, mProductionInquireSaleFragment, mProductionInquireMaterFragment, mProductionInquireStepFragment});
     }

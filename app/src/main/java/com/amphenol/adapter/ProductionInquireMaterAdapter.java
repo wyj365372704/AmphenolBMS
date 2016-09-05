@@ -42,6 +42,9 @@ public class ProductionInquireMaterAdapter extends RecyclerView.Adapter<Producti
         holder.position = position;
         holder.sequenceTextView.setText(date.get(position).getSequenceNumber());
         holder.numberTextView.setText(date.get(position).getNumber());
+        holder.planUsageAmountTextView.setText(date.get(position).getPlanUsageAmount() + "");
+        holder.actualUsageAmountTextView.setText(date.get(position).getActualUsageAmount() + "");
+        holder.unitTextView.setText(date.get(position).getUnit());
         if (position % 2 == 0)
             holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_o));
         else
@@ -55,7 +58,7 @@ public class ProductionInquireMaterAdapter extends RecyclerView.Adapter<Producti
 
     class ViewHolderBody extends RecyclerView.ViewHolder {
         int position;
-        TextView sequenceTextView, numberTextView, planUsageAmountTextView, actualUsageAmountTextView;
+        TextView sequenceTextView, numberTextView, planUsageAmountTextView, actualUsageAmountTextView, unitTextView;
         View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +74,7 @@ public class ProductionInquireMaterAdapter extends RecyclerView.Adapter<Producti
             numberTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_wl_tv);
             planUsageAmountTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_sl_tv);
             actualUsageAmountTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_dw_tv);
+            unitTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_main_item_unit_tv);
             itemView.setOnClickListener(mOnClickListener);
         }
     }

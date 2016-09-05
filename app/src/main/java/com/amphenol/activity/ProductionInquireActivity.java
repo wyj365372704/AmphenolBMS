@@ -3,7 +3,6 @@ package com.amphenol.activity;
 import android.os.Bundle;
 
 import com.amphenol.amphenol.R;
-import com.amphenol.fragment.HairMaterMainFragment;
 import com.amphenol.fragment.ProductionInquireMainFragment;
 
 /**

@@ -901,6 +901,8 @@ public class DecodeManager {
                 }
             }
 
+            functionCreateStepTexst(steps );
+
             JSONArray stepJsonArray = jsonObject.optJSONArray("step_list");
             if (stepJsonArray != null) {
                 for (int i = 0; i < stepJsonArray.length(); i++) {
@@ -915,6 +917,7 @@ public class DecodeManager {
                     double standard_working_hours = stepJsonObject.optDouble("standard_working_hours", 0);
                     double actual_working_hours = stepJsonObject.optDouble("actual_working_hours", 0);
                     double outsourcing_costs = stepJsonObject.optDouble("outsourcing_costs", 0);
+                    String tbc = stepJsonObject.optString("tbc").trim();
 
                     step.setStepNumber(step_number);
                     step.setStepName(step_name);
@@ -923,12 +926,28 @@ public class DecodeManager {
                     step.setStandardWorkingHours(standard_working_hours);
                     step.setActualWorkingHours(actual_working_hours);
                     step.setOutsourcingCosts(outsourcing_costs);
+                    step.setTBC(tbc);
                 }
             }
             data.putParcelable("workOrder", workOrder);
         }
         msg.setData(data);
         handler.sendMessage(msg);
+    }
+
+    private static void functionCreateStepTexst( ArrayList<WorkOrder.Step> steps ) {
+        for (int i = 0; i < 10; i++) {
+            WorkOrder.Step step = new WorkOrder.Step();
+            steps.add(step);
+            step.setStepNumber("step_number"+i);
+            step.setStepName("step_name"+i);
+            step.setOutsourcingSupplier("outsourcing_supplier"+i);
+            step.setOutsourcingPurchaseOrderNumber("outsourcing_purchase_order_number"+i);
+            step.setStandardWorkingHours(i);
+            step.setActualWorkingHours(i);
+            step.setOutsourcingCosts(i);
+            step.setTBC("tbc"+i);
+        }
     }
 
     private static void functionCreateMaterProductionTexst(ArrayList<WorkOrder.MaterProduct> materProducts) {

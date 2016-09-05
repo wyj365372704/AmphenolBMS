@@ -287,6 +287,7 @@ public class WorkOrder implements Parcelable {
         private double outsourcingCosts = 0;//外协成本
         private String outsourcingSupplier = "";//外协供应商
         private String outsourcingPurchaseOrderNumber = "";//外协采购订单号
+        private String TBC = "";//TBC
 
         public Step() {
         }
@@ -347,6 +348,14 @@ public class WorkOrder implements Parcelable {
             this.outsourcingPurchaseOrderNumber = outsourcingPurchaseOrderNumber;
         }
 
+        public String getTBC() {
+            return TBC;
+        }
+
+        public void setTBC(String TBC) {
+            this.TBC = TBC;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -361,6 +370,7 @@ public class WorkOrder implements Parcelable {
             dest.writeDouble(this.outsourcingCosts);
             dest.writeString(this.outsourcingSupplier);
             dest.writeString(this.outsourcingPurchaseOrderNumber);
+            dest.writeString(this.TBC);
         }
 
         protected Step(Parcel in) {
@@ -371,6 +381,7 @@ public class WorkOrder implements Parcelable {
             this.outsourcingCosts = in.readDouble();
             this.outsourcingSupplier = in.readString();
             this.outsourcingPurchaseOrderNumber = in.readString();
+            this.TBC = in.readString();
         }
 
         public static final Creator<Step> CREATOR = new Creator<Step>() {
