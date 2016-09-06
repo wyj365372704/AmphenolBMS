@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <TextView
+        android:id="@+id/activity_device_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:text="选择连接的蓝牙设备"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@android:color/darker_gray"
+        android:padding="6dp"
+        android:text="已配对设备"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"/>
+
+    <ListView
+        android:id="@+id/activity_device_list_paired"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="16dp"
+        android:scrollbars="none"
+        android:stackFromBottom="true"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@android:color/darker_gray"
+        android:padding="6dp"
+        android:text="可用设备"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"/>
+
+    <ListView
+        android:id="@+id/activity_device_list_available"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:minHeight="16dp"
+        android:scrollbars="none"
+        android:stackFromBottom="true"/>
+
+    <Button
+        android:id="@+id/activity_device_bt"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/negative_button_background"
+        android:text="立即搜索"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+</LinearLayout>

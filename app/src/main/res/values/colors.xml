@@ -23,4 +23,7 @@
     <color name="color_login_button_background_normal">#0063A7</color>
     <color name="color_login_button_background_pressed">#d00063A7</color>
 
+    <color name="color_printer_connected">#7FFF00</color>
+    <color name="color_printer_disconnected">#fff</color>
+    <color name="color_bluetooth_disable">#ff00</color>
 </resources>

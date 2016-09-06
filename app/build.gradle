@@ -31,4 +31,5 @@ dependencies {
     compile 'com.baoyz.actionsheet:library:1.1.5'
     compile 'com.pgyersdk:sdk:2.4.0'
     compile project(':wheeldatepicker')
+    compile files('libs/hoinsdk.jar')
 }

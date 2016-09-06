@@ -20,9 +20,15 @@
         <item name="windowActionBar">false</item>
     </style>
 
+    <style name="AppTheme.FloatActivity" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/activity_device_list_background</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
 
 
     <style name="NormalTheme"></style>
+
     <style name="NormalTheme.EditText">
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
@@ -32,6 +38,7 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
     <style name="NormalTheme.TextView">
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>

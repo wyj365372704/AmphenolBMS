@@ -44,13 +44,18 @@
                 android:textColor="@android:color/white"
                 android:textSize="18sp"/>
 
-            <ImageView
+            <com.amphenol.ui.CustomMarqueeTextView
                 android:id="@+id/toolbar_menu"
-                android:layout_width="?attr/actionBarSize"
+                android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="right"
-                android:padding="16dp"
-                android:src="@drawable/icon_camera"/>
+                android:gravity="center"
+                android:maxWidth="100dp"
+                android:padding="8dp"
+                android:singleLine="true"
+                android:text="abcefghijklmn"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"/>
         </android.support.v7.widget.Toolbar>
 
         <RelativeLayout

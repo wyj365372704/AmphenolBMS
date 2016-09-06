@@ -133,6 +133,11 @@ public class CheckRequisitionSecondFragment extends Fragment {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.fragment_check_requisition_second_submit_bt:
+                        if(mStringArrayAdapter == null || mStringArrayAdapter.getCount() == 0){
+                            ((BaseActivity) getActivity()).ShowToast("目标子库列表为空,不允许调拨");
+                            break;
+                        }
+
                         double actualQuantity = 0;
                         try {
                             actualQuantity = Double.parseDouble(actualQuantityEditText.getText().toString());

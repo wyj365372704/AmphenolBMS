@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
     <!-- **********蒲公英sdk部分 -->
     <!-- 必选 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -101,6 +103,11 @@
         <activity
             android:name="com.amphenol.activity.PrintMaterLabelActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name="com.amphenol.activity.DeviceListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.FloatActivity"
             android:windowSoftInputMode="adjustPan"/>
         <!-- *********蒲公英配置部分 -->
         <meta-data
