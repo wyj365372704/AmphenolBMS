@@ -1,19 +1,25 @@
 package com.amphenol.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,6 +40,9 @@ import com.amphenol.Manager.SPManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.amphenol.R;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,16 +50,20 @@ import java.util.Map;
 import java.util.Set;
 
 import com.amphenol.entity.Mater;
+import com.amphenol.entity.Pick;
 import com.amphenol.entity.Purchase;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
+import com.amphenol.utils.QRCodeUtil;
 import com.baoyz.actionsheet.ActionSheet;
+import com.btsdk.BluetoothService;
+import com.btsdk.PrintPic;
 import com.graduate.squirrel.ui.wheel.ScreenInfo;
 import com.graduate.squirrel.ui.wheel.WheelMain;
-import com.hoin.btsdk.BluetoothService;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -62,7 +75,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
     private static final int REQUEST_ENABLE_BT = 0x12;
     private static final int REQUEST_CONNECT_DEVICE = 0x13;
     private ImageView mScanImageView;
-    private Button mInquireButton;
+    private Button mInquireButton, mPrintButton;
     private TextView actionBarRight;
     private TextView materNumberTextView, materFormatTextView, materDescTextView, branchedTextView, unitTextView, singleUnitTextView, totalWeightTextView, mDateEditText;
     private View.OnClickListener mOnClickListener;
@@ -75,6 +88,8 @@ public class PrintMaterLabelActivity extends BaseActivity {
     private MyHandler myHandler = new MyHandler();
     private BluetoothService mService;
     private BluetoothDevice con_dev = null;
+    private TextWatcher mSingleTextWatcher;
+    private TextWatcher mAmountTextWatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +103,16 @@ public class PrintMaterLabelActivity extends BaseActivity {
         if (mService.isAvailable() == false) {
             ShowToast("本设备蓝牙不可用,无法连接打印机!");
             actionBarRight.setText("本设备蓝牙不可用,无法连接打印机");
-            actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.color_bluetooth_disable));
+            actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.color_bluetooth_disable));
         } else if (mService.isBTopen() == false) {
             actionBarRight.setText("点击此处打开蓝牙");
-            actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.color_printer_disconnected));
+            actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.color_printer_disconnected));
 //            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 //            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         } else {
             if (con_dev == null) {
                 actionBarRight.setText("点击此处连接打印机");
-                actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.color_printer_disconnected));
+                actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.color_printer_disconnected));
                 String defaultPrinterAddress = SPManager.getInstance(this).getSP("printer_address_default", "");
                 if (TextUtils.isEmpty(defaultPrinterAddress))
                     return;
@@ -116,6 +131,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
             }
         }
     }
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_print_mater_label);
@@ -123,6 +139,9 @@ public class PrintMaterLabelActivity extends BaseActivity {
 
     @Override
     public void initViews() {
+        mPrintButton = (Button) findViewById(R.id.fragment_fast_requisition_main_submit_bt);
+        mPrintButton.setOnClickListener(mOnClickListener);
+
         actionBarRight = (TextView) findViewById(R.id.toolbar_menu);
         actionBarRight.setOnClickListener(mOnClickListener);
 
@@ -188,6 +207,47 @@ public class PrintMaterLabelActivity extends BaseActivity {
                     case R.id.fragment_purchase_receipt_scan_iv:
                         startActivityForResult(new Intent(PrintMaterLabelActivity.this, ScanActivity.class), REQUEST_CODE_FOR_SCAN);
                         break;
+                    case R.id.fragment_fast_requisition_main_submit_bt:
+                        if (con_dev == null) {
+                            ShowToast("未连接上打印机");
+                            break;
+                        }
+                        if (TextUtils.isEmpty(branch.getMater().getNumber())) {
+                            ShowToast("未查询物料标签");
+                            break;
+                        }
+                        if (branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(branchEditText.getText().toString())) {
+                            ShowToast("该物料批次控制,请输入批号");
+                            break;
+                        }
+
+                        if (TextUtils.isEmpty(mDateEditText.getText().toString())) {
+                            ShowToast("请选择日期");
+                            break;
+                        }
+                        if (TextUtils.isEmpty(firmEditText.getText().toString())) {
+                            ShowToast("请输入厂商");
+                            break;
+                        }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(PrintMaterLabelActivity.this);
+                        builder.setTitle("确认打印").setMessage("将调用打印机" + con_dev.getName() + "执行打印任务?");
+                        builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    handlePrint(branch.getMater().getNumber(), branch.getMater().getDesc(), branch.getMater().getFormat(),
+                                            amountEditText.getText().toString().trim(), branch.getMater().getUnit(),
+                                            singleEditText.getText().toString().trim(), branch.getMater().getSingleUnit(),
+                                            totalWeightTextView.getText().toString().trim(), "KG",
+                                            mDateEditText.getText().toString(), firmEditText.getText().toString().trim(),
+                                            branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? true : false, branchEditText.getText().toString().trim());
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        builder.create().show();
+                        break;
                 }
             }
         };
@@ -204,6 +264,50 @@ public class PrintMaterLabelActivity extends BaseActivity {
                     return true;
                 }
                 return false;
+            }
+        };
+
+        mSingleTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double single = 0;
+                try {
+                    single = Double.parseDouble(String.valueOf(s));
+                } catch (Throwable e) {
+                    ShowToast("单重输入非法");
+                }
+                updateReceiptTotalWeight();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        mAmountTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double total = 0;
+                try {
+                    total = Double.parseDouble(String.valueOf(s));
+                } catch (Throwable e) {
+                    ShowToast("实收总数输入非法");
+                }
+                updateReceiptTotalWeight();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         };
 
@@ -258,6 +362,115 @@ public class PrintMaterLabelActivity extends BaseActivity {
         };
     }
 
+    private void handlePrint(String number, String desc, String format, String amount,
+                             String unit, String single, String singleUnit, String totalWeight, String weightUnit,
+                             String date, String firm, boolean branchControl, String branch) throws UnsupportedEncodingException {
+        Bitmap bitmap = fif(number, desc, format, amount, unit, branchControl ? branch : "", single, singleUnit, totalWeight, weightUnit, date, firm);
+        byte[] sendData = null;
+        PrintPic pg = new PrintPic();
+        pg.initCanvas(bitmap.getWidth());
+        pg.initPaint();
+        pg.drawImage(0, 0, bitmap);
+        sendData = pg.printDraw();
+//        mService.write(new byte[]{0x1B,0x61,0x01});
+        mService.write(sendData);   //打印byte流数据
+        mService.write(new byte[]{0x1B, 0x4A, 0x60});
+
+        Log.d("蓝牙调试", "" + sendData.length);
+
+    }
+
+    private Bitmap fif(String mater, String desc, String format, String amount, String unit, String branch, String single, String singleUnit, String weight, String weightUnit, String date, String firm) {
+        String qCode = "*M" + mater + "*Q" + amount + "*B" + branch;
+
+        float width = 580;
+        int currentBottonBase = 0;
+        int lineSpace = 18;
+        float textSize = 24f;
+        float height = 0;
+
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(textSize);
+        paint.setStyle(Paint.Style.FILL);
+
+        Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+        height = 6 * (Math.abs(fontMetrics.top)) + 7 * lineSpace + Math.abs(fontMetrics.bottom);
+
+        Bitmap bitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.TRANSPARENT);
+
+        //画二维码
+        Bitmap qrBirmap = QRCodeUtil.createQRImage(qCode, 3 * lineSpace + 3 * (int) Math.abs(fontMetrics.top), 3 * lineSpace + 3 * (int) Math.abs(fontMetrics.top), null);
+        canvas.drawBitmap(qrBirmap, width - qrBirmap.getWidth() - lineSpace, lineSpace, paint);
+
+        String message = "物料:" + mater;
+        currentBottonBase += Math.abs(fontMetrics.top) + lineSpace;
+        canvas.drawText(message, lineSpace, currentBottonBase, paint);
+
+        message = "说明:" + desc;
+        currentBottonBase += Math.abs(fontMetrics.top) + lineSpace;
+        canvas.drawText(message, lineSpace, currentBottonBase, paint);
+
+        message = "规格:" + format;
+        currentBottonBase += Math.abs(fontMetrics.top) + lineSpace;
+        canvas.drawText(message, lineSpace, currentBottonBase, paint);
+
+        message = "数量:" + amount + " " + unit;
+        currentBottonBase += Math.abs(fontMetrics.top) + lineSpace;
+        canvas.drawText(message, lineSpace, currentBottonBase, paint);
+
+        message = "批号:" + branch;
+        canvas.drawText(message, canvas.getWidth() / 2, currentBottonBase, paint);
+
+        message = "单重:" + single + " " + singleUnit;
+        currentBottonBase += Math.abs(fontMetrics.top) + lineSpace;
+        canvas.drawText(message, lineSpace, currentBottonBase, paint);
+
+        message = "净重:" + weight + " " + weightUnit;
+        canvas.drawText(message, canvas.getWidth() / 2, currentBottonBase, paint);
+
+        message = "日期:" + date;
+        currentBottonBase += Math.abs(fontMetrics.top) + lineSpace;
+        canvas.drawText(message, lineSpace, currentBottonBase, paint);
+
+        message = "厂商:" + firm;
+        canvas.drawText(message, canvas.getWidth() / 2, currentBottonBase, paint);
+
+        //画边框
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2);
+        canvas.drawRect(lineSpace / 2, lineSpace / 2, width - lineSpace / 2, height - lineSpace / 2, paint);
+
+        return bitmap;
+    }
+
+    private void updateReceiptTotalWeight() {
+        double single = 0;
+        double amount = 0;
+
+        try {
+            amount = Double.parseDouble(amountEditText.getText().toString().trim());
+            single = Double.parseDouble(singleEditText.getText().toString().trim());
+        } catch (Throwable e) {
+        }
+
+        if (!TextUtils.isEmpty(branch.getMater().getUnit())) {
+            if (TextUtils.equals(branch.getMater().getUnit(), "GM") || TextUtils.equals(branch.getMater().getUnit(), "gm") || TextUtils.equals(branch.getMater().getUnit(), "G") || TextUtils.equals(branch.getMater().getUnit(), "g")) {
+                totalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(amount))).divide(new BigDecimal(Double.toString(1000d))).toString() + "KG");
+                return;
+            } else if (TextUtils.equals(branch.getMater().getUnit(), "KG") || TextUtils.equals(branch.getMater().getUnit(), "kg")) {
+                totalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(amount))).toString() + "KG");
+                return;
+            }
+        }
+
+        totalWeightTextView.setText("0KG");
+
+    }
+
     private void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
@@ -309,9 +522,22 @@ public class PrintMaterLabelActivity extends BaseActivity {
         amountEditText.setText(branch.getMater().getQuantity() + "");
         singleEditText.setText(branch.getMater().getSingle() + "");
 
+        updateReceiptTotalWeight();
+
         if (TextUtils.isEmpty(branch.getMater().getNumber())) {
+            mInquireButton.setTag(false);
+            mInquireButton.setText("查询");
+            materEditText.getText().clear();
+            materEditText.setHint("输入领料单号");
             mDateEditText.setText("");
             firmEditText.getText().clear();
+            collapseButton();
+        } else {
+            mInquireButton.setText("清除");
+            mInquireButton.setTag(true);
+            materEditText.getText().clear();
+            materEditText.setHint("在此扫描物料标签快速选中");
+            popUpButton();
         }
     }
 
@@ -355,7 +581,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
                 }
                 if (con_dev == null) {
                     actionBarRight.setText("点击此处连接打印机");
-                    actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.color_printer_disconnected));
+                    actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.color_printer_disconnected));
                 }
                 break;
             case REQUEST_CONNECT_DEVICE:     //请求连接某一蓝牙设备
@@ -370,7 +596,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
     }
 
     private void collapseButton() {
-        if (mInquireButton.getVisibility() == View.GONE)
+        if (mPrintButton.getVisibility() == View.GONE)
             return;
         Animation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f);
         animation.setDuration(300);
@@ -390,16 +616,16 @@ public class PrintMaterLabelActivity extends BaseActivity {
 
             }
         });
-        mInquireButton.startAnimation(animation);
+        mPrintButton.startAnimation(animation);
     }
 
     private void popUpButton() {
-        if (mInquireButton.getVisibility() == View.VISIBLE)
+        if (mPrintButton.getVisibility() == View.VISIBLE)
             return;
         Animation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 0f);
         animation.setDuration(300);
-        mInquireButton.setVisibility(View.VISIBLE);
-        mInquireButton.startAnimation(animation);
+        mPrintButton.setVisibility(View.VISIBLE);
+        mPrintButton.startAnimation(animation);
     }
 
     private void showSetDatePicker(int year, int month, int day) {
@@ -452,7 +678,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
                         case BluetoothService.STATE_CONNECTED:   //已连接
                             ShowToast("连接成功");
                             actionBarRight.setText("连接至:" + con_dev.getName());
-                            actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.color_printer_connected));
+                            actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.color_printer_connected));
                             SPManager.getInstance(PrintMaterLabelActivity.this).putSP("printer_address_default", con_dev.getAddress());
                         case BluetoothService.STATE_CONNECTING:  //正在连接
                             Log.d("蓝牙调试", "正在连接.....");
@@ -466,13 +692,13 @@ public class PrintMaterLabelActivity extends BaseActivity {
                 case BluetoothService.MESSAGE_CONNECTION_LOST:    //蓝牙已断开连接
                     ShowToast("连接断开");
                     actionBarRight.setText("点击此处连接打印机");
-                    actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.color_printer_disconnected));
+                    actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.color_printer_disconnected));
                     con_dev = null;
                     break;
                 case BluetoothService.MESSAGE_UNABLE_CONNECT:     //无法连接设备
                     ShowToast("无法连接设备");
                     actionBarRight.setText("点击此处连接打印机");
-                    actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.color_printer_disconnected));
+                    actionBarRight.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.color_printer_disconnected));
                     con_dev = null;
                     break;
             }

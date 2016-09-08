@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.amphenol.adapter.DeviceListAdapter;
 import com.amphenol.amphenol.R;
-import com.hoin.btsdk.BluetoothService;
+import com.btsdk.BluetoothService;
 
 import java.util.ArrayList;
 import java.util.Set;

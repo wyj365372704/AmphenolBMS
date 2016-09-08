@@ -281,7 +281,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends Fragment {
         }
 
         if (mPurchaseItem.getUnit() != null) {
-            if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "GM") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "gm")) {
+            if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "GM") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "gm") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "G") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "g")) {
                 mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).divide(new BigDecimal(Double.toString(1000d))).toString());
             } else if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "KG") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "kg")) {
                 mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).toString());

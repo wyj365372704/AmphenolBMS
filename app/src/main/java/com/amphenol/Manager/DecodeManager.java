@@ -986,7 +986,7 @@ public class DecodeManager {
             String mater_desc = jsonObject.optString("mater_desc");
             int branched = jsonObject.optInt("branched", Mater.BRANCH_NORMAL);
             String storage_unit = jsonObject.optString("storage_unit");
-            double single = jsonObject.optDouble("single");
+            double single = jsonObject.optDouble("single",0);
             String single_unit = jsonObject.optString("single_unit");
 
             Map<String, String> params = (Map<String, String>) jsonObject.get("params");

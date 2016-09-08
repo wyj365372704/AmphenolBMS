@@ -7,8 +7,8 @@ android {
         applicationId "com.amphenol.amphenol"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 9
-        versionName "0.1.10"
+        versionCode 10
+        versionName "0.1.11"
     }
     buildTypes {
         release {
@@ -31,5 +31,5 @@ dependencies {
     compile 'com.baoyz.actionsheet:library:1.1.5'
     compile 'com.pgyersdk:sdk:2.4.0'
     compile project(':wheeldatepicker')
-    compile files('libs/hoinsdk.jar')
+    compile 'com.google.zxing:core:3.2.1'
 }
