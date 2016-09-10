@@ -159,7 +159,6 @@ public class ProductionInquireMainMaterFragment extends Fragment {
     }
 
     public void refreshShow(WorkOrder workOrder) {
-        Log.d("wyj","refreshShow"+workOrder.getMaterProducts().size());
         mWorkOrder = workOrder;
         getArguments().putParcelable("workOrder",mWorkOrder);
         if (enable) {
