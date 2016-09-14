@@ -44,7 +44,7 @@ public class ProductionInquireMainStepFragment extends Fragment {
     private ProductionInquireStepAdapter mProductionInquireStepAdapter;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
-    private MyHandler myHandler;
+    private MyHandler myHandler = new MyHandler();
 
     public static ProductionInquireMainStepFragment newInstance(String title, WorkOrder workOrder, ProductionInquireStepFragmentCallBack productionInquireStepFragmentCallBack) {
 
@@ -81,7 +81,7 @@ public class ProductionInquireMainStepFragment extends Fragment {
         mOnItemClickListener = new ProductionInquireStepAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                handleInquireStep(mWorkOrder.getNumber(),mWorkOrder.getSteps().get(position).getStepNumber());
+                handleInquireStep(mWorkOrder.getNumber(),mWorkOrder.getSteps().get(position).getStepNumber(),position);
             }
         };
         mRequestTaskListener = new NetWorkAccessTools.RequestTaskListener() {
@@ -135,7 +135,7 @@ public class ProductionInquireMainStepFragment extends Fragment {
         };
     }
 
-    private void handleInquireStep(String workOrder,String stepNumber) {
+    private void handleInquireStep(String workOrder,String stepNumber,int position) {
         if (!this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -143,6 +143,7 @@ public class ProductionInquireMainStepFragment extends Fragment {
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("work_order",workOrder);
         param.put("step_number",stepNumber);
+        param.put("position",position+"");
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_ORDER_INQUIRE_GET_STEP_OUTSOURCE_INFO, getContext()), param, REQUEST_CODE_GET_OUTSOURCE_INFO, mRequestTaskListener);
     }
 
@@ -191,9 +192,11 @@ public class ProductionInquireMainStepFragment extends Fragment {
                     if (bundle.getInt("code") == 1) {
                         String outsourcing_supplier = bundle.getString("outsourcing_supplier");
                         double outsourcing_costs = bundle.getDouble("outsourcing_costs");
-                        String outsourcing_purchase_order_number = bundle.getString("outsourcing_supplier");
+                        String outsourcing_costs_unit = bundle.getString("outsourcing_costs_unit");
+                        String outsourcing_purchase_order_number = bundle.getString("outsourcing_purchase_order_number");
                         int position = bundle.getInt("position");
                         mWorkOrder.getSteps().get(position).setOutsourcingCosts(outsourcing_costs);
+                        mWorkOrder.getSteps().get(position).setOutsourcing_costs_unit(outsourcing_costs_unit);
                         mWorkOrder.getSteps().get(position).setOutsourcingSupplier(outsourcing_supplier);
                         mWorkOrder.getSteps().get(position).setOutsourcingPurchaseOrderNumber(outsourcing_purchase_order_number);
                         if (mProductionInquireStepFragmentCallBack != null) {

@@ -206,8 +206,14 @@
                 <TextView
                     android:id="@+id/fragment_production_inquire_step_outsourcing_cost_tv_in"
                     style="@style/NormalTheme.TextView"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/fragment_production_inquire_step_outsourcing_cost_unit_tv_in"
+                    style="@style/NormalTheme.TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
             </LinearLayout>
 
         </LinearLayout>

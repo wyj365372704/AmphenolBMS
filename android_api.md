@@ -626,12 +626,13 @@
 	请求方式:get
 	参数:
 		work_order	工单号
-		step_number 材料编码
+		step_number 工序编号
 	action=production_order_inquire_get_step_outsource_info
 
 返回
 
 	outsourcing_costs : double 外协成本
+	outsourcing_costs_unit : double 外协成本单位
 	outsourcing_supplier : String 外协供应商
 	outsourcing_purchase_order_number : String 外协采购订单号
 	

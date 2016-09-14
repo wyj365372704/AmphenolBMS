@@ -962,12 +962,14 @@ public class DecodeManager {
             String outsourcing_supplier = jsonObject.optString("outsourcing_supplier").trim();
             double outsourcing_costs = jsonObject.optDouble("outsourcing_costs", 0);
             String outsourcing_purchase_order_number = jsonObject.optString("outsourcing_purchase_order_number").trim();
+            String outsourcing_costs_unit = jsonObject.optString("outsourcing_costs_unit").trim();
 
             Map<String, String> params = (Map<String, String>) jsonObject.get("params");
             int position = Integer.parseInt(params.get("position"));
 
             data.putString("outsourcing_supplier", outsourcing_supplier);
             data.putDouble("outsourcing_costs", outsourcing_costs);
+            data.putString("outsourcing_costs_unit", outsourcing_costs_unit);
             data.putString("outsourcing_purchase_order_number", outsourcing_purchase_order_number);
 
             data.putInt("position", position);

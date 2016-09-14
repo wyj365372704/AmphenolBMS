@@ -285,6 +285,7 @@ public class WorkOrder implements Parcelable {
         private double standardWorkingHours = 0;//标准工时
         private double actualWorkingHours = 0;//实际工时
         private double outsourcingCosts = 0;//外协成本
+        private String outsourcing_costs_unit=  "";//外协成本单位
         private String outsourcingSupplier = "";//外协供应商
         private String outsourcingPurchaseOrderNumber = "";//外协采购订单号
         private String TBC = "";//TBC
@@ -356,6 +357,14 @@ public class WorkOrder implements Parcelable {
             this.TBC = TBC;
         }
 
+        public String getOutsourcing_costs_unit() {
+            return outsourcing_costs_unit;
+        }
+
+        public void setOutsourcing_costs_unit(String outsourcing_costs_unit) {
+            this.outsourcing_costs_unit = outsourcing_costs_unit;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -368,6 +377,7 @@ public class WorkOrder implements Parcelable {
             dest.writeDouble(this.standardWorkingHours);
             dest.writeDouble(this.actualWorkingHours);
             dest.writeDouble(this.outsourcingCosts);
+            dest.writeString(this.outsourcing_costs_unit);
             dest.writeString(this.outsourcingSupplier);
             dest.writeString(this.outsourcingPurchaseOrderNumber);
             dest.writeString(this.TBC);
@@ -379,6 +389,7 @@ public class WorkOrder implements Parcelable {
             this.standardWorkingHours = in.readDouble();
             this.actualWorkingHours = in.readDouble();
             this.outsourcingCosts = in.readDouble();
+            this.outsourcing_costs_unit = in.readString();
             this.outsourcingSupplier = in.readString();
             this.outsourcingPurchaseOrderNumber = in.readString();
             this.TBC = in.readString();

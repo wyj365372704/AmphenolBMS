@@ -23,7 +23,7 @@ public class ProductionInquireStepDetailFragment extends Fragment {
     private WorkOrder.Step mStep;
 
     TextView numberTextView, nameTextView, standardWorkingHoursTextView, actualWorkingHoursTextView,
-            outsourceOrderNumberTextView, outsourceSupplierTextView, outsourceCostTextView;
+            outsourceOrderNumberTextView, outsourceSupplierTextView, outsourceCostTextView, outsourceCostUnitTextView, tbcTextView;
 
     public static ProductionInquireStepDetailFragment newInstance(WorkOrder.Step step) {
 
@@ -65,6 +65,9 @@ public class ProductionInquireStepDetailFragment extends Fragment {
         outsourceOrderNumberTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_step_outsourcing_order_number_tv_in);
         outsourceSupplierTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_step_outsourcing_supplier_tv_in);
         outsourceCostTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_step_outsourcing_cost_tv_in);
+        outsourceCostUnitTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_step_outsourcing_cost_unit_tv_in);
+        tbcTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_step_tbc_tv_in);
+
 
         numberTextView.setText(mStep.getStepNumber());
         nameTextView.setText(mStep.getStepName());
@@ -73,6 +76,8 @@ public class ProductionInquireStepDetailFragment extends Fragment {
         outsourceOrderNumberTextView.setText(mStep.getOutsourcingPurchaseOrderNumber());
         outsourceSupplierTextView.setText(mStep.getOutsourcingSupplier());
         outsourceCostTextView.setText(mStep.getOutsourcingCosts() + "");
+        outsourceCostUnitTextView.setText(mStep.getOutsourcing_costs_unit() + "");
+        tbcTextView.setText(mStep.getTBC());
     }
 
     @Override
