@@ -17,7 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -33,7 +32,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SPManager;
@@ -42,7 +40,6 @@ import com.amphenol.amphenol.R;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,20 +47,16 @@ import java.util.Map;
 import java.util.Set;
 
 import com.amphenol.entity.Mater;
-import com.amphenol.entity.Pick;
-import com.amphenol.entity.Purchase;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
 import com.amphenol.utils.QRCodeUtil;
-import com.baoyz.actionsheet.ActionSheet;
 import com.btsdk.BluetoothService;
 import com.btsdk.PrintPic;
 import com.graduate.squirrel.ui.wheel.ScreenInfo;
 import com.graduate.squirrel.ui.wheel.WheelMain;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -155,7 +148,9 @@ public class PrintMaterLabelActivity extends BaseActivity {
 
         branchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
         amountEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_xiangshu_et);
+        amountEditText.addTextChangedListener(mAmountTextWatcher);
         singleEditText = (EditText) findViewById(R.id.activity_print_mater_label_single);
+        singleEditText.addTextChangedListener(mSingleTextWatcher);
         firmEditText = (EditText) findViewById(R.id.activity_print_mater_label_firm);
 
 
@@ -238,7 +233,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
                                     handlePrint(branch.getMater().getNumber(), branch.getMater().getDesc(), branch.getMater().getFormat(),
                                             amountEditText.getText().toString().trim(), branch.getMater().getUnit(),
                                             singleEditText.getText().toString().trim(), branch.getMater().getSingleUnit(),
-                                            totalWeightTextView.getText().toString().trim(), "KG",
+                                            totalWeightTextView.getText().toString().trim().replace("KG", ""), "KG",
                                             mDateEditText.getText().toString(), firmEditText.getText().toString().trim(),
                                             branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? true : false, branchEditText.getText().toString().trim());
                                 } catch (UnsupportedEncodingException e) {
@@ -384,15 +379,15 @@ public class PrintMaterLabelActivity extends BaseActivity {
         String qCode = "*M" + mater + "*Q" + amount + "*B" + branch;
 
         float width = 580;
-        int currentBottonBase = 0;
         int lineSpace = 18;
+        int currentBottonBase = 0;
         float textSize = 24f;
         float height = 0;
 
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
-        paint.setTextSize(textSize);
         paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(textSize);
 
         Paint.FontMetrics fontMetrics = paint.getFontMetrics();
         height = 6 * (Math.abs(fontMetrics.top)) + 7 * lineSpace + Math.abs(fontMetrics.bottom);
@@ -458,17 +453,16 @@ public class PrintMaterLabelActivity extends BaseActivity {
         }
 
         if (!TextUtils.isEmpty(branch.getMater().getUnit())) {
-            if (TextUtils.equals(branch.getMater().getUnit(), "GM") || TextUtils.equals(branch.getMater().getUnit(), "gm") || TextUtils.equals(branch.getMater().getUnit(), "G") || TextUtils.equals(branch.getMater().getUnit(), "g")) {
+            if (TextUtils.equals(branch.getMater().getSingleUnit(), "GM") || TextUtils.equals(branch.getMater().getSingleUnit(), "gm") ||
+                    TextUtils.equals(branch.getMater().getSingleUnit(), "G") || TextUtils.equals(branch.getMater().getSingleUnit(), "g")) {
                 totalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(amount))).divide(new BigDecimal(Double.toString(1000d))).toString() + "KG");
                 return;
-            } else if (TextUtils.equals(branch.getMater().getUnit(), "KG") || TextUtils.equals(branch.getMater().getUnit(), "kg")) {
+            } else if (TextUtils.equals(branch.getMater().getSingleUnit(), "KG") || TextUtils.equals(branch.getMater().getSingleUnit(), "kg")) {
                 totalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(amount))).toString() + "KG");
                 return;
             }
         }
-
         totalWeightTextView.setText("0KG");
-
     }
 
     private void handleScanCode(String code) {

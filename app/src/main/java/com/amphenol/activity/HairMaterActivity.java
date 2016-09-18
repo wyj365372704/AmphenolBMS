@@ -2,7 +2,6 @@ package com.amphenol.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Pick;

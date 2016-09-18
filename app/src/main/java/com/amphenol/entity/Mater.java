@@ -3,7 +3,6 @@ package com.amphenol.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class Mater implements Parcelable {
     private String number = "";//物料编号
     private String desc = "";//物料描述
     private String format = "";//物料规格
-    private String unit = "";//单位
+    private String unit = "";//数量单位
     private double quantity = 0;//数量
     private int branchControl = BRANCH_NORMAL;//批次管控
     private double single = 0;//单重
