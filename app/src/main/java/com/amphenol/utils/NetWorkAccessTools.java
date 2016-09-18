@@ -96,7 +96,7 @@ public class NetWorkAccessTools {
 
             @Override
             public void onSuccess(String t) {
-                Log.d("NetWorkAccessTools-->", "onSuccess :" + t);
+                Log.d("NetWorkAccessTools-->", "onSuccess :" + t.trim());
                 JSONObject jsonObject = null;
                 try {
                     jsonObject = new JSONObject(t);
@@ -112,7 +112,7 @@ public class NetWorkAccessTools {
 
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
-                Log.d("NetWorkAccessTools-->", "onFailure : -errorNo:" + errorNo + " -message:" + strMsg + " -exception:" + t.getMessage());
+                Log.d("NetWorkAccessTools-->", "onFailure : -errorNo:" + errorNo + " -message:" + strMsg.trim() + " -exception:" + t.getMessage());
                 if (listener != null)
                     listener.onRequestFail(requestCode, errorNo);
             }
