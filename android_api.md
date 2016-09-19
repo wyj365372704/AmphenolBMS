@@ -286,6 +286,7 @@
 	default
 
 ##快速调拨 - 提交
+
 	请求方式：get
 	参数：
 		mater_list 调拨物料批次集合的json字符串，服务器进行json解析，说明如下

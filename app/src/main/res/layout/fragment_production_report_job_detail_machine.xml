@@ -1,0 +1,62 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/fragment_purchase_receipt_scan_iv"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/scan"/>
+
+
+            <Button
+                android:id="@+id/fragment_purchase_receipt_inquire_bt"
+                android:layout_width="64dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/positive_button_background"
+                android:text="查询"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <EditText
+                android:id="@+id/purchase_receipt_main_code_et"
+                style="@style/NormalTheme.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@id/fragment_purchase_receipt_inquire_bt"
+                android:layout_toRightOf="@id/fragment_purchase_receipt_scan_iv"
+                android:hint="输入设备号"
+                android:imeOptions="actionDone"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorDevideLine"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+</LinearLayout>
