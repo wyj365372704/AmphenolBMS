@@ -7,10 +7,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 /**
  * Created by Carl on 2016-08-23 023.
  */
-public class ProductionInquireViewPagerAdapter extends FragmentStatePagerAdapter {
+public class MyFragmentViewPagerAdapter extends FragmentStatePagerAdapter {
     private Fragment[] data;
 
-    public ProductionInquireViewPagerAdapter(FragmentManager fm, Fragment[] data) {
+    public MyFragmentViewPagerAdapter(FragmentManager fm, Fragment[] data) {
         super(fm);
         this.data = data;
     }

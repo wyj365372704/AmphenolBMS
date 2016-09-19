@@ -29,7 +29,7 @@ import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
-import com.amphenol.adapter.ProductionInquireViewPagerAdapter;
+import com.amphenol.adapter.MyFragmentViewPagerAdapter;
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.WorkOrder;
 import com.amphenol.ui.LoadingDialog;
@@ -56,7 +56,7 @@ public class ProductionInquireMainFragment extends Fragment {
     private ProductionInquireMainStepFragment.ProductionInquireStepFragmentCallBack mProductionInquireStepFragmentCallBack;
     private ProductionInquireMaterDetailFragment mProductionInquireMaterDetailFragment;
     private ProductionInquireStepDetailFragment mProductionInquireStepDetailFragment;
-    private ProductionInquireViewPagerAdapter mProductionInquireViewPagerAdapter;
+    private MyFragmentViewPagerAdapter mMyFragmentViewPagerAdapter;
 
     private ViewPager mViewPager;
     private EditText mWorkOrderEditText;
@@ -109,7 +109,7 @@ public class ProductionInquireMainFragment extends Fragment {
 
     public void initViews() {
         mViewPager = (ViewPager) rootView.findViewById(R.id.activity_production_inquire_vp);
-        mViewPager.setAdapter(mProductionInquireViewPagerAdapter);
+        mViewPager.setAdapter(mMyFragmentViewPagerAdapter);
         mWorkOrderEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_purchase_receipt_inquire_bt);
         mScanImageView = (ImageView) rootView.findViewById(R.id.fragment_purchase_receipt_scan_iv);
@@ -248,7 +248,7 @@ public class ProductionInquireMainFragment extends Fragment {
         mProductionInquireSaleFragment = ProductionInquireMainSaleFragment.newInstance("销售", mWorkOrder);
         mProductionInquireMaterFragment = ProductionInquireMainMaterFragment.newInstance("材料",mWorkOrder,mProductionInquireMaterFragmentCallBack);
         mProductionInquireStepFragment = ProductionInquireMainStepFragment.newInstance("工序",mWorkOrder,mProductionInquireStepFragmentCallBack);
-        mProductionInquireViewPagerAdapter = new ProductionInquireViewPagerAdapter(getChildFragmentManager(),
+        mMyFragmentViewPagerAdapter = new MyFragmentViewPagerAdapter(getChildFragmentManager(),
                 new Fragment[]{mProductionInquireExecutionFragment, mProductionInquireSaleFragment, mProductionInquireMaterFragment, mProductionInquireStepFragment});
     }
 

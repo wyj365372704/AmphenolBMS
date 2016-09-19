@@ -97,6 +97,9 @@ public class MenuActivity extends BaseActivity {
                     case MenuItem.MENU_CODE_PRINT_MATER_LABEL:
                         componentName = new ComponentName(MenuActivity.this, PrintMaterLabelActivity.class);
                         break;
+                    case MenuItem.MENU_CODE_PRODUCT_REPORT:
+                        componentName = new ComponentName(MenuActivity.this, ProductionReportActivity.class);
+                        break;
                 }
                 if (componentName != null) {
                     intent.setComponent(componentName);

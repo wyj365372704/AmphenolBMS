@@ -1,12 +1,15 @@
 package com.amphenol.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by Carl on 2016-09-19 019.
  * 作业实体
  */
-public class Job {
+public class Job implements Parcelable{
     private String jobNumber = "";//作业号
     private WorkOrder workOrder = new WorkOrder();//所在生产订单
     private String stepNumber = "";//工序编号
@@ -89,5 +92,15 @@ public class Job {
 
     public void setMachines(ArrayList<Machine> machines) {
         this.machines = machines;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }

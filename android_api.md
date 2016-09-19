@@ -662,7 +662,7 @@
 	请求方式:get
 	参数:
 		work_order 生产订单号
-	action=product_report_add_new_job_work_order_inquire
+	action=production_report_add_new_job_work_order_inquire
 
 返回
 
@@ -685,7 +685,7 @@
 		work_order 生产订单号
 		step_number 工序号
 		propr_number 生产线号
-	action=product_report_add_new_job_employee_inquire
+	action=production_report_add_new_job_employee_inquire
 
 返回
 
@@ -708,7 +708,7 @@
 		work_order 生产订单号
 		step_number 工序号
 		propr_number 生产线号
-	action=product_report_add_new_job_machine_inquire
+	action=production_report_add_new_job_machine_inquire
 
 返回
 
@@ -739,7 +739,7 @@
 			machine_list : List<Map<String,Object>> 按此生成json字符串
 				Map<String,Object>
 					machine_number : String 设备编号
-	action=product_report_add_new_job_submit
+	action=production_report_add_new_job_submit
 
 返回
 
@@ -750,7 +750,7 @@
 	请求方式:get
 	参数:
 		default
-	action=product_report_get_job_list
+	action=production_report_get_job_list
 
 返回
 
@@ -767,7 +767,7 @@
 	请求方式:get
 	参数:
 		job_number 作业号
-	action=product_report_get_job_detail
+	action=production_report_get_job_detail
 
 返回
 
@@ -797,7 +797,7 @@
 		propr_number 生产线号
 		job_number 作业号
 		employee_number 员工编号
-	action=product_report_employee_inquire
+	action=production_report_employee_inquire
 
 返回
 
@@ -815,7 +815,7 @@
 		propr_number 生产线号
 		job_number 作业号
 		machine_number 设备编号
-	action=product_report_machine_inquire
+	action=production_report_machine_inquire
 
 返回
 
@@ -833,7 +833,7 @@
 		propr_number 生产线号
 		job_number 作业号
 		employee_number 员工编号
-	action=product_report_employee_add
+	action=production_report_employee_add
 
 返回
 
@@ -847,7 +847,7 @@
 		propr_number 生产线号
 		job_number 作业号
 		machine_number 设备编号
-	action=product_report_machine_add
+	action=production_report_machine_add
 
 返回
 
@@ -861,7 +861,7 @@
 		propr_number 生产线号
 		job_number 作业号
 		employee_number 员工编号
-	action=product_report_employee_remove
+	action=production_report_employee_remove
 
 返回
 
@@ -876,7 +876,7 @@
 		propr_number 生产线号
 		job_number 作业号
 		machine_number 设备编号
-	action=product_report_machine_remove
+	action=production_report_machine_remove
 
 返回
 
@@ -891,7 +891,7 @@
 		step_number 工序号
 		propr_number 生产线号
 		job_number 作业号
-	action=product_report_job_finish
+	action=production_report_job_finish
 
 返回
 

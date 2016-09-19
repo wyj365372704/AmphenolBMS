@@ -58,7 +58,7 @@ public class PropertiesUtil {
 
     public static final String ACTION_PRINT_MATER_LABEL_GET_INQUIRE = "ACTION_PRINT_MATER_LABEL_GET_INQUIRE";//action 后缀, 打印物料标签-物料查询
 
-
+    public static final String ACTION_PRODUCTION_REPORT_GET_JOB_LIST = "ACTION_PRODUCTION_REPORT_GET_JOB_LIST";//action 后缀, 生产报工-获取作业列表
 
     private static PropertiesUtil mPropertiesUtil;
     private  Properties mProperties;

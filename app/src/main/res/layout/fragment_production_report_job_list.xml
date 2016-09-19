@@ -22,6 +22,15 @@
             android:text="生产报工"
             android:textColor="@android:color/white"
             android:textSize="18sp"/>
+        <ImageView
+            android:id="@+id/toolbar_menu"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="right"
+            android:padding="16dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:src="@drawable/icon_add"/>
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
@@ -38,15 +47,16 @@
         android:orientation="vertical">
 
         <ImageView
+            android:src="@mipmap/icon_no_message"
             android:layout_width="100dp"
             android:layout_height="100dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="无作业信息"
-            android:textColor="@android:color/black"
+            android:textColor="#d8d8d8"
             android:textSize="16sp"/>
     </LinearLayout>
 </LinearLayout>
