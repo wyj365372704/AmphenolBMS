@@ -60,6 +60,10 @@ public class PropertiesUtil {
 
     public static final String ACTION_PRODUCTION_REPORT_GET_JOB_LIST = "ACTION_PRODUCTION_REPORT_GET_JOB_LIST";//action 后缀, 生产报工-获取作业列表
 
+    public static final String ACTION_PRODUCTION_REPORT_JOB_FINISH = "ACTION_PRODUCTION_REPORT_JOB_FINISH";//action 后缀, 生产报工-结束作业
+    public static final String ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE = "ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE";//action 后缀, 生产报工-查询员工信息
+    public static final String ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE = "ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE";//action 后缀, 生产报工-查询设备信息
+
     private static PropertiesUtil mPropertiesUtil;
     private  Properties mProperties;
 

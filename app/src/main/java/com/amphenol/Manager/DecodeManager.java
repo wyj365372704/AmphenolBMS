@@ -1082,6 +1082,57 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
+    public static void decodeProductionReportEmployeeInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+
+            Map<String,String> params = (Map<String, String>) jsonObject.get("params");
+            String number = params.get("employee_number");
+            String name = jsonObject.optString("name").trim();
+            String type = jsonObject.optString("type").trim();
+            int state = jsonObject.optInt("state",Employee.STATE_CODE_DEFAULT);
+            String department = jsonObject.optString("department").trim();
+
+            Employee employee = new Employee();
+            employee.setNumber(number);
+            employee.setName(name);
+            employee.setType(type);
+            employee.setState(state);
+            employee.setDepartment(department);
+            data.putParcelable("employee",employee);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+    public static void decodeProductionReportMachineInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Map<String,String> params = (Map<String, String>) jsonObject.get("params");
+            String number = params.get("machine_number");
+            String name = jsonObject.optString("name").trim();
+            String type = jsonObject.optString("type").trim();
+            int state = jsonObject.optInt("state",Employee.STATE_CODE_DEFAULT);
+            String department = jsonObject.optString("department").trim();
+
+            Machine machine = new Machine();
+            machine.setNumber(number);
+            machine.setName(name);
+            machine.setType(type);
+            machine.setState(state);
+            machine.setDepartment(department);
+            data.putParcelable("machine",machine);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();

@@ -803,7 +803,9 @@
 
 	name : String 员工姓名
 	type : String 工种
-	estate : String 当前状态
+	state : String 当前状态
+	    0 空闲
+	    1 忙碌
 	department : String 所属部门
 
 
@@ -822,6 +824,8 @@
 	name : String 设备名称
 	type : String 类型
 	state : String 当前状态
+	    0 空闲
+	    1 忙碌
 	department : String 所属部门
 
 

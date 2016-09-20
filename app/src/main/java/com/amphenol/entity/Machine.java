@@ -1,10 +1,13 @@
 package com.amphenol.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Carl on 2016-09-19 019.
  * 设备
  */
-public class Machine {
+public class Machine implements Parcelable{
     public static final int STATE_CODE_ON = 1,STATE_CODE_OFF = 0,STATE_CODE_DEFAULT = 9;
     private String number = "";//设备号
     private int state = STATE_CODE_DEFAULT;//状态
@@ -59,5 +62,15 @@ public class Machine {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }
