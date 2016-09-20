@@ -7,14 +7,15 @@ import android.os.Parcelable;
  * Created by Carl on 2016-09-19 019.
  * 员工
  */
-public class Employee implements Parcelable{
-    public static final int STATE_CODE_ON = 1,STATE_CODE_OFF = 0,STATE_CODE_DEFAULT = 9;
+public class Employee implements Parcelable {
+    public static final int STATE_CODE_ON = 1, STATE_CODE_OFF = 0, STATE_CODE_DEFAULT = 9;
     private String number = "";//员工号
     private int state = STATE_CODE_DEFAULT;//状态
     private String startTime = "";//开始时间
     private String name = "";//员工姓名
     private String department = "";//所属部门
     private String type = "";//工种
+    private boolean isChecked = false;
 
     public String getNumber() {
         return number;
@@ -62,6 +63,14 @@ public class Employee implements Parcelable{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     @Override

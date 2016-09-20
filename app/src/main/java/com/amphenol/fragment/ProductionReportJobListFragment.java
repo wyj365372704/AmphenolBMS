@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -31,7 +30,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,6 +46,8 @@ public class ProductionReportJobListFragment extends Fragment {
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
     private MyHandler myHandler;
+
+    private View.OnClickListener mOnClickListener;
 
     public static ProductionReportJobListFragment newInstance() {
 
@@ -105,6 +105,7 @@ public class ProductionReportJobListFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rl);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mProductionReportJobListAdapter);
+        rootView.findViewById(R.id.toolbar_menu).setOnClickListener(mOnClickListener);
     }
 
     private void initData() {
@@ -114,7 +115,15 @@ public class ProductionReportJobListFragment extends Fragment {
     }
 
     private void initListeners() {
-
+        mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportAddJobStep1Fragment.newInstance());
+                transaction.addToBackStack(null);
+                transaction.commitAllowingStateLoss();
+            }
+        };
         mOnItemClickListener = new ProductionReportJobListAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(int position) {

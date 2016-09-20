@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 
 
+import com.amphenol.entity.Dict;
 import com.amphenol.entity.Employee;
 import com.amphenol.entity.Job;
 import com.amphenol.entity.Machine;
@@ -1090,11 +1091,11 @@ public class DecodeManager {
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
 
-            Map<String,String> params = (Map<String, String>) jsonObject.get("params");
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
             String number = params.get("employee_number");
             String name = jsonObject.optString("name").trim();
             String type = jsonObject.optString("type").trim();
-            int state = jsonObject.optInt("state",Employee.STATE_CODE_DEFAULT);
+            int state = jsonObject.optInt("state", Employee.STATE_CODE_DEFAULT);
             String department = jsonObject.optString("department").trim();
 
             Employee employee = new Employee();
@@ -1103,22 +1104,23 @@ public class DecodeManager {
             employee.setType(type);
             employee.setState(state);
             employee.setDepartment(department);
-            data.putParcelable("employee",employee);
+            data.putParcelable("employee", employee);
         }
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeProductionReportMachineInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            Map<String,String> params = (Map<String, String>) jsonObject.get("params");
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
             String number = params.get("machine_number");
             String name = jsonObject.optString("name").trim();
             String type = jsonObject.optString("type").trim();
-            int state = jsonObject.optInt("state",Employee.STATE_CODE_DEFAULT);
+            int state = jsonObject.optInt("state", Employee.STATE_CODE_DEFAULT);
             String department = jsonObject.optString("department").trim();
 
             Machine machine = new Machine();
@@ -1127,12 +1129,167 @@ public class DecodeManager {
             machine.setType(type);
             machine.setState(state);
             machine.setDepartment(department);
-            data.putParcelable("machine",machine);
+            data.putParcelable("machine", machine);
         }
         msg.setData(data);
         handler.sendMessage(msg);
     }
 
+    public static void decodeProductionReportAddNewJobWorkOrderInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            String workOrder = params.get("work_order");
+            data.putString("workOrder", workOrder);
+
+            ArrayList<Dict> stepDictList = new ArrayList<>();
+            ArrayList<Dict> proprDictList = new ArrayList<>();
+
+            /*JSONArray stepJsonArray = jsonObject.optJSONArray("step_list");
+            if (stepJsonArray != null) {
+                for (int i = 0; i < stepJsonArray.length(); i++) {
+                    JSONObject stepJsonObject = stepJsonArray.optJSONObject(i);
+                    if (stepJsonObject != null) {
+                        String step_number = stepJsonObject.optString("step_number").trim();
+                        String step_name = stepJsonObject.optString("step_name").trim();
+                        Dict dict = new Dict(step_number, step_name);
+                        stepDictList.add(dict);
+                    }
+                }
+            }
+
+            JSONArray proprJsonArray = jsonObject.optJSONArray("propr_list");
+            if (proprJsonArray != null) {
+                for (int i = 0; i < proprJsonArray.length(); i++) {
+                    JSONObject proprJsonObject = proprJsonArray.optJSONObject(i);
+                    if (proprJsonObject != null) {
+                        String propr_number = proprJsonObject.optString("propr_number").trim();
+                        String propr_name = proprJsonObject.optString("propr_name").trim();
+                        Dict dict = new Dict(propr_number, propr_name);
+                        proprDictList.add(dict);
+                    }
+                }
+            }*/
+
+            //test
+            for (int i = 1; i < 10; i++) {
+                stepDictList.add(new Dict("number" + i, "name" + i));
+                proprDictList.add(new Dict("number" + i, "name" + i));
+
+            }
+
+
+            //test
+            data.putParcelableArrayList("stepDictList", stepDictList);
+            data.putParcelableArrayList("proprDictList", proprDictList);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeProductionReportAddNewJobEmployeeInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            String work_order = params.get("work_order");
+            String step_number = params.get("step_number");
+            String propr_number = params.get("propr_number");
+
+            data.putString("work_order", work_order);
+            data.putString("step_number", step_number);
+            data.putString("propr_number", propr_number);
+
+            ArrayList<Employee> employees = new ArrayList<>();
+            /*JSONArray employeeJsonArray = jsonObject.optJSONArray("employee_list");
+            if (employeeJsonArray != null) {
+                for (int i = 0; i < employeeJsonArray.length(); i++) {
+                    JSONObject employeeJsonObject = employeeJsonArray.optJSONObject(i);
+                    if (employeeJsonObject != null) {
+                        String employee_number = employeeJsonObject.optString("employee_number").trim();
+                        String employee_name = employeeJsonObject.optString("employee_name").trim();
+                        String employee_type = employeeJsonObject.optString("employee_type").trim();
+                        int default_checked = employeeJsonObject.optInt("default_checked", Employee.IS_CHECKED_NO);
+                        Employee employee = new Employee();
+                        employee.setNumber(employee_number);
+                        employee.setName(employee_name);
+                        employee.setType(employee_type);
+                        employee.setChecked(default_checked == 1?true:false);
+                        employees.add(employee);
+                    }
+                }
+            }*/
+            //test
+            for (int i = 1; i < 10; i++) {
+                Employee employee = new Employee();
+                employee.setNumber("employee_number" + i);
+                employee.setName("employee_name" + i);
+                employee.setType("employee_type" + i);
+                employee.setChecked(i % 2 == 0 ? true : false);
+                employees.add(employee);
+
+            }
+            //test
+            data.putParcelableArrayList("employees", employees);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+    public static void decodeProductionReportAddNewJobMachineInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            String work_order = params.get("work_order");
+            String step_number = params.get("step_number");
+            String propr_number = params.get("propr_number");
+
+            data.putString("work_order", work_order);
+            data.putString("step_number", step_number);
+            data.putString("propr_number", propr_number);
+
+            ArrayList<Machine> machines = new ArrayList<>();
+           /* JSONArray machineJsonArray = jsonObject.optJSONArray("machine_list");
+            if (machineJsonArray != null) {
+                for (int i = 0; i < machineJsonArray.length(); i++) {
+                    JSONObject machineJsonObject = machineJsonArray.optJSONObject(i);
+                    if (machineJsonObject != null) {
+                        String machine_number = machineJsonObject.optString("machine_number").trim();
+                        String machine_name = machineJsonObject.optString("machine_name").trim();
+                        String machine_type = machineJsonObject.optString("machine_type").trim();
+                        int default_checked = machineJsonObject.optInt("default_checked");
+                        Machine machine = new Machine();
+                        machine.setNumber(machine_number);
+                        machine.setName(machine_name);
+                        machine.setType(machine_type);
+                        machine.setChecked(default_checked == 1?true:false);
+                        machines.add(machine);
+                    }
+                }
+            }*/
+            //test
+            for (int i = 1; i < 10; i++) {
+               Machine machine = new Machine();
+                machine.setNumber("machine_number" + i);
+                machine.setName("machine_name" + i);
+                machine.setType("machine_type" + i);
+                machine.setChecked(i % 2 == 0 ? true : false);
+                machines.add(machine);
+
+            }
+            //test
+            data.putParcelableArrayList("machines", machines);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();

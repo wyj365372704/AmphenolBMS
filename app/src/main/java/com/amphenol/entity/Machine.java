@@ -15,6 +15,7 @@ public class Machine implements Parcelable{
     private String name = "";//设备名称
     private String department = "";//所属部门
     private String type = "";//类型
+    private boolean isChecked = false;
 
     public String getNumber() {
         return number;
@@ -62,6 +63,14 @@ public class Machine implements Parcelable{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     @Override

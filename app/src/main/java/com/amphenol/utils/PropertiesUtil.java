@@ -64,6 +64,13 @@ public class PropertiesUtil {
     public static final String ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE = "ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE";//action 后缀, 生产报工-查询员工信息
     public static final String ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE = "ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE";//action 后缀, 生产报工-查询设备信息
 
+
+    public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE";//action 后缀, 生产报工-新增作业-生产订单号查询
+    public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_EMPLOYEE_INQUIRE = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_EMPLOYEE_INQUIRE";//action 后缀, 生产报工-新增作业-获取员工列表
+    public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_MACHINE_INQUIRE = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_MACHINE_INQUIRE";//action 后缀, 生产报工-新增作业-获取设备列表
+    public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_SUBMIT = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_SUBMIT";//action 后缀, 生产报工-新增作业-提交
+
+
     private static PropertiesUtil mPropertiesUtil;
     private  Properties mProperties;
 
