@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Employee;
+import com.amphenol.entity.Machine;
 
 import java.util.List;
 
@@ -19,15 +20,15 @@ import java.util.List;
  * Created by Carl on 2016/7/12/012.
  */
 public class ProductionReportAddJobMachineListAdapter extends RecyclerView.Adapter<ProductionReportAddJobMachineListAdapter.ViewHolderBody> {
-    private List<Employee> date;
+    private List<Machine> date;
     private Context mContext;
 
-    public ProductionReportAddJobMachineListAdapter(Context mContext, List<Employee> employees) {
-        this.date = employees;
+    public ProductionReportAddJobMachineListAdapter(Context mContext, List<Machine> machines) {
+        this.date = machines;
         this.mContext = mContext;
     }
 
-    public void setDate(List<Employee> date) {
+    public void setDate(List<Machine> date) {
         this.date = date;
     }
 

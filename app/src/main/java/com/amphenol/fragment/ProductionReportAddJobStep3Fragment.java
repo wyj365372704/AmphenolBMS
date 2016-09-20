@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
+import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.ProductionReportAddJobEmployeeListAdapter;
@@ -38,20 +41,26 @@ import com.amphenol.entity.Requisition;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
+import com.amphenol.utils.PropertiesUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductionReportAddJobStep3Fragment extends Fragment {
     private static final int REQUEST_CODE_GET_MATER_LIST = 0x10;
     private static final int REQUEST_CODE_GET_MATER = 0x11;
     private static final int REQUEST_CODE_FOR_SCAN = 0x12;
+    private static final int REQUEST_CODE_SUBMIT = 0X13;
     private View rootView = null;
     private ImageView mScanImageView;
     private RecyclerView mRecyclerView;
-    private Button mInquireButton,mNextButton;
+    private Button mInquireButton, mNextButton;
     private EditText mRequisitionEditText;
     private TextView.OnEditorActionListener mOnEditorActionListener;
     private View.OnClickListener mOnClickListener;
@@ -113,7 +122,7 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
 
     private void initData() {
         myHandler = new MyHandler();
-        mProductionReportAddJobMachineListAdapter = new ProductionReportAddJobMachineListAdapter(getContext(), employees);
+        mProductionReportAddJobMachineListAdapter = new ProductionReportAddJobMachineListAdapter(getContext(), machines);
     }
 
     private void initViews() {
@@ -138,15 +147,15 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
                     case R.id.fragment_purchase_receipt_inquire_bt:
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
                         if (state) {//当前按钮状态为“非选”
-                            for(Employee employee:employees){
-                                employee.setChecked(false);
+                            for (Machine machine : machines) {
+                                machine.setChecked(false);
                             }
                             mProductionReportAddJobMachineListAdapter.notifyDataSetChanged();
                             mInquireButton.setTag(!state);
                             mInquireButton.setText("全选");
                         } else {
-                            for(Employee employee:employees){
-                                employee.setChecked(true);
+                            for (Machine machine : machines) {
+                                machine.setChecked(true);
                             }
                             mProductionReportAddJobMachineListAdapter.notifyDataSetChanged();
                             mInquireButton.setTag(!state);
@@ -157,7 +166,7 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
                         startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN);
                         break;
                     case R.id.fragment_create_requisition_create_bt:
-                        handleSubmit(work_order, step_number, propr_number,employees,machines);
+                        handleSubmit(work_order, step_number, propr_number, employees, machines);
                         break;
                 }
             }
@@ -198,11 +207,8 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
             public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
                 try {
                     switch (requestCode) {
-                        case REQUEST_CODE_GET_MATER_LIST:
-                            DecodeManager.decodeCheckRequisitionGetMaterList(jsonObject, requestCode, myHandler);
-                            break;
-                        case REQUEST_CODE_GET_MATER:
-                            DecodeManager.decodeCheckRequisitionGetMater(jsonObject, requestCode, myHandler);
+                        case REQUEST_CODE_SUBMIT:
+                            DecodeManager.decodeProductionReportAddNewJobSubmit(jsonObject, requestCode, myHandler);
                             break;
                     }
 
@@ -234,6 +240,50 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
     }
 
     private void handleSubmit(String work_order, String step_number, String propr_number, ArrayList<Employee> employees, ArrayList<Machine> machines) {
+        if (!this.isVisible())
+            return;
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getContext()));
+        param.put("env", SessionManager.getEnv(getContext()));
+        param.put("work_order", work_order);
+        param.put("propr_number", propr_number);
+        param.put("step_number", step_number);
+
+        JSONArray employeeJsonArray = new JSONArray();
+        JSONArray machineJsonArray = new JSONArray();
+        for (Employee employee : employees) {
+            if(!employee.isChecked()){
+                continue;
+            }
+            JSONObject employeeObject = new JSONObject();
+            try {
+                employeeObject.put("employee_number",employee.getNumber());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            employeeJsonArray.put(employeeObject);
+        }
+        for (Machine machine : machines) {
+            if(!machine.isChecked()){
+                continue;
+            }
+            JSONObject machineObject = new JSONObject();
+            try {
+                machineObject.put("machine_number",machine.getNumber());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            machineJsonArray.put(machineObject);
+        }
+        try {
+            param.put("employee_list", new JSONObject().put("employee_list",employeeJsonArray).toString());
+            param.put("machine_list",new JSONObject().put("machine_list",machineJsonArray).toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
+
 
     }
 
@@ -288,7 +338,6 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
             mRequisitionEditText.setText(code);
             handleScanCode(mRequisitionEditText.getText().toString().trim());
         }
-
     }
 
     public interface MainFragmentCallBack extends Serializable {
@@ -299,7 +348,17 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
-
+            switch (msg.what) {
+                case REQUEST_CODE_SUBMIT:
+                    if (bundle.getInt("code") == 1) {
+                        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    } else if (bundle.getInt("code") == 5) {
+                        ((BaseActivity) getActivity()).ShowToast("该作业任务已存在,不可重复添加");
+                    } else {
+                        ((BaseActivity) getActivity()).ShowToast("新增作业失败");
+                    }
+                    break;
+            }
         }
     }
 }
