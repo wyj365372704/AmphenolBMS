@@ -1,11 +1,13 @@
 package com.amphenol.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -31,10 +33,13 @@ import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
+import com.graduate.squirrel.ui.wheel.ScreenInfo;
+import com.graduate.squirrel.ui.wheel.WheelMain;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +52,7 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
     private static final int REQUEST_CODE_INQUIRE = 0x10;
     private static final int REQUEST_CODE_NEXT = 0X11;
     private View rootView;
-    private TextView mWorkOrderTextView;
+    private TextView mWorkOrderTextView,mDateEditText;
     private Spinner mStepSpinner, mProprSpinner;
     private Button mNextStepButton, mSearchButton;
     private View.OnClickListener mOnClickListener;
@@ -116,6 +121,9 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
         mStepSpinner.setAdapter(mStepDictArrayAdapter);
         mProprSpinner = (Spinner) rootView.findViewById(R.id.propr_spinner);
         mProprSpinner.setAdapter(mProprDictArrayAdapter);
+
+        mDateEditText = (TextView) rootView.findViewById(R.id.activity_print_mater_label_date);
+        mDateEditText.setOnClickListener(mOnClickListener);
     }
 
     private void initData() {
@@ -135,6 +143,10 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
+                    case R.id.activity_print_mater_label_date:
+                        Calendar calendar = Calendar.getInstance();
+                        showSetDatePicker(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE));
+                        break;
                     case R.id.fragment_create_requisition_create_bt:
                         if (TextUtils.isEmpty(workOrder)) {
                             ((BaseActivity) getActivity()).ShowToast("未查询到生产订单");
@@ -308,7 +320,29 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
         mNextStepButton.setVisibility(View.VISIBLE);
         mNextStepButton.startAnimation(animation);
     }
+    private void showSetDatePicker(int year, int month, int day,int hour,int minute) {
 
+        final WheelMain wheelMain;
+
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View timepickerview = inflater.inflate(R.layout.timepicker, null);
+        ScreenInfo screenInfo = new ScreenInfo(getActivity());
+        wheelMain = new WheelMain(timepickerview,true);
+        wheelMain.screenheight = screenInfo.getHeight();
+        wheelMain.initDateTimePicker(year, month, day,hour,minute);
+        new AlertDialog.Builder(getActivity())
+                .setTitle("选择日期")
+                .setView(timepickerview)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        mDateEditText.setText(wheelMain.getTime());
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {

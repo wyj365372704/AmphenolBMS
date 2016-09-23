@@ -352,6 +352,8 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
                 case REQUEST_CODE_SUBMIT:
                     if (bundle.getInt("code") == 1) {
                         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        ProductionReportJobListFragment a= (ProductionReportJobListFragment) getFragmentManager().findFragmentByTag(ProductionReportJobListFragment.class.getName());
+                        a.handleGetJobList();
                     } else if (bundle.getInt("code") == 5) {
                         ((BaseActivity) getActivity()).ShowToast("该作业任务已存在,不可重复添加");
                     } else {

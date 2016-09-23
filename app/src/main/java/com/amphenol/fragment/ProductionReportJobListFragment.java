@@ -79,26 +79,28 @@ public class ProductionReportJobListFragment extends Fragment {
         initListeners();
         initData();
         initViews();
-        rootView.post(new Runnable() {
-            @Override
-            public void run() {
-                handleGetJobList();
-            }
-        });
+        handleGetJobList();
         return rootView;
     }
 
     /**
      * 联网获取jobList数据
      */
-    private void handleGetJobList() {
-        if (!this.isVisible())
+    public void handleGetJobList() {
+//        if (!this.isVisible())
+//            return;
+        if (rootView == null)
             return;
-        Map<String, String> param = new HashMap<>();
-        param.put("username", SessionManager.getUserName(getContext()));
-        param.put("env", SessionManager.getEnv(getContext()));
+        rootView.post(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, String> param = new HashMap<>();
+                param.put("username", SessionManager.getUserName(getContext()));
+                param.put("env", SessionManager.getEnv(getContext()));
 //        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_GET_JOB_LIST, getContext()), param, REQUEST_CODE_GET_JOB_LIST, mRequestTaskListener);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_GET_JOB_LIST, mRequestTaskListener);
+                NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_GET_JOB_LIST, mRequestTaskListener);
+            }
+        });
     }
 
     private void initViews() {

@@ -175,7 +175,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
                 switch (v.getId()) {
                     case R.id.activity_print_mater_label_date:
                         Calendar calendar = Calendar.getInstance();
-                        showSetDatePicker(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                        showSetDatePicker(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE));
                         break;
                     case R.id.fragment_purchase_receipt_inquire_bt:
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
@@ -622,32 +622,24 @@ public class PrintMaterLabelActivity extends BaseActivity {
         mPrintButton.startAnimation(animation);
     }
 
-    private void showSetDatePicker(int year, int month, int day) {
+    private void showSetDatePicker(int year, int month, int day,int hour,int minute) {
 
         final WheelMain wheelMain;
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View timepickerview = inflater.inflate(R.layout.timepicker, null);
         ScreenInfo screenInfo = new ScreenInfo(this);
-        wheelMain = new WheelMain(timepickerview);
+        wheelMain = new WheelMain(timepickerview,true);
         wheelMain.screenheight = screenInfo.getHeight();
-        wheelMain.initDateTimePicker(year, month, day);
+        wheelMain.initDateTimePicker(year, month, day,hour,minute);
         new AlertDialog.Builder(this)
                 .setTitle("选择日期")
                 .setView(timepickerview)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String newDate = wheelMain.getTime();
-                        String[] split = newDate.split("-");
-                        if (split[1].length() == 1) {
-                            split[1] = "0" + split[1];
-                        }
-                        if (split[2].length() == 1) {
-                            split[2] = "0" + split[2];
-                        }
-                        newDate = split[0] + "/" + split[1] + "/" + split[2];
-                        mDateEditText.setText(newDate);
+
+                        mDateEditText.setText(wheelMain.getTime());
                     }
                 })
                 .setNegativeButton("取消", null)
