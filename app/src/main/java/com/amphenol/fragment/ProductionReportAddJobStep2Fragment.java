@@ -65,14 +65,15 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
     private MyHandler myHandler;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
 
-    private String work_order = "", step_number = "", propr_number = "";
+    private String work_order = "", step_number = "", propr_number = "",begin_time = "";
     private ArrayList<Employee> employees = new ArrayList<>();
 
-    public static ProductionReportAddJobStep2Fragment newInstance(String work_order, String step_number, String propr_number, ArrayList<Employee> employees) {
+    public static ProductionReportAddJobStep2Fragment newInstance(String work_order, String step_number, String propr_number,String begin_time, ArrayList<Employee> employees) {
         Bundle args = new Bundle();
         args.putString("work_order", work_order);
         args.putString("step_number", step_number);
         args.putString("propr_number", propr_number);
+        args.putString("begin_time", begin_time);
         args.putParcelableArrayList("employees", employees);
         ProductionReportAddJobStep2Fragment fragment = new ProductionReportAddJobStep2Fragment();
         fragment.setArguments(args);
@@ -87,6 +88,7 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
             work_order = args.getString("work_order");
             step_number = args.getString("step_number");
             propr_number = args.getString("propr_number");
+            begin_time  = args.getString("begin_time");
             employees = args.getParcelableArrayList("employees");
         }
     }
@@ -243,8 +245,7 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
         param.put("work_order", work_order);
         param.put("step_number", step_number);
         param.put("propr_number", propr_number);
-//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_MACHINE_INQUIRE, getContext()), param, REQUEST_CODE_NEXT, mRequestTaskListener);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_NEXT, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_MACHINE_INQUIRE, getContext()), param, REQUEST_CODE_NEXT, mRequestTaskListener);
     }
 
 
@@ -317,7 +318,7 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
                         String step_number = bundle.getString("step_number");
                         String propr_number = bundle.getString("propr_number");
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportAddJobStep3Fragment.newInstance(work_order, step_number, propr_number,employees, machines));
+                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportAddJobStep3Fragment.newInstance(work_order, step_number, propr_number,begin_time,employees, machines));
                         transaction.addToBackStack(null);
                         transaction.commitAllowingStateLoss();
 

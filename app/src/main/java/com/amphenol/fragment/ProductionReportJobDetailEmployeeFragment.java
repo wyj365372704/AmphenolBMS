@@ -78,7 +78,7 @@ public class ProductionReportJobDetailEmployeeFragment extends Fragment {
         mOnItemClickListener = new ProductionReportJobDetailEmployeeListAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(int position) {
-                handleInquireEmployee(mJob.getJobNumber(), mJob.getEmployees().get(position).getNumber());
+                handleInquireEmployee(mJob.getWorkOrder().getNumber(),mJob.getStepNumber(),mJob.getProprNumber(),mJob.getJobNumber(), mJob.getEmployees().get(position).getNumber());
             }
         };
         mRequestTaskListener = new NetWorkAccessTools.RequestTaskListener() {
@@ -133,16 +133,18 @@ public class ProductionReportJobDetailEmployeeFragment extends Fragment {
         };
     }
 
-    private void handleInquireEmployee(String jobNumber, String employeeNumber) {
+    private void handleInquireEmployee(String workOrder,String stepNumber,String proprNumber,String jobNumber, String employeeNumber) {
         if (!this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
+        param.put("work_order", workOrder);
+        param.put("step_number", stepNumber);
+        param.put("propr_number", proprNumber);
         param.put("job_number", jobNumber);
         param.put("employee_number", employeeNumber);
-//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
 
     private void refreshShow() {

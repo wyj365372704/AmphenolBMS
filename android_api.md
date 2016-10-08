@@ -1,4 +1,4 @@
-#Amphenol_android开发接口文档 version 1.7
+#Amphenol_android开发接口文档 version 1.9
 
 ##书写说明
 - api采用json数据格式返回
@@ -655,8 +655,6 @@
 	single : double 单重
 	single_unit : String 单重单位
 
-	
-	
 
 ##生产报工-新增作业-生产订单号查询
 	请求方式:get
@@ -665,19 +663,18 @@
 	action=production_report_add_new_job_work_order_inquire
 
 返回
-
-	step_list : String 订单工序信息集合json字符串
-		step_list : List<Map<String,Object>> 按此生成json字符串
-			Map<String,Object> 工序明细单位
-				step_number : String 工序编号
-				step_name : String 工序名称
-	propr_list : String 订单生产线信息集合json字符串
-		propr_list : List<Map<String,Object>> 按此生成json字符串
-			Map<String,Object> 生产线明细单位
-				propr_number : String 生产线编号
-				propr_name : String 生产线名称
-	
-
+	code : int
+		5 该订单不存在工序信息
+		6 不存在生产线
+		
+	step_list : List<Map<String,Object>> 订单工序信息集合json字符串
+		Map<String,Object> 工序明细单位
+			step_number : String 工序编号
+			step_name : String 工序名称
+	propr_list : List<Map<String,Object>> 按此生成json字符串
+		Map<String,Object> 生产线明细单位
+			propr_number : String 生产线编号
+			propr_name : String 生产线名称
 
 ##生产报工-新增作业-获取员工列表
 	请求方式:get
@@ -691,15 +688,14 @@
 
 	code : int 
 		5 已添加了该订单+工序+生产线 的作业任务,此时其他信息不再返回
-	employee_list : String 员工信息集合json字符串.注意:员工排序按照默认选中优先排前规则,所列项目的状态为空闲
-		employee_list : List<Map<String,Object>> 按此生成json字符串
-			Map<String,Object> 员工信息单位
-				employee_number : String 员工编号
-				employee_name : String 员工名称
-				employee_type : String 工种
-				default_checked : int 默认选中
-					0 : 否
-					1 : 是
+	employee_list : List<Map<String,Object>> 员工信息集合json字符串.注意:员工排序按照默认选中优先排前规则,所列项目的状态为空闲
+		Map<String,Object> 员工信息单位
+			employee_number : String 员工编号
+			employee_name : String 员工名称
+			employee_dept : String 所属部门
+			default_checked : int 默认选中
+				0 : 否
+				1 : 是
 
 
 ##生产报工-新增作业-获取设备列表
@@ -714,15 +710,14 @@
 
 	code : int 
 		5 已添加了该订单+工序+生产线 的作业任务,此时其他信息不再返回
-	machine_list : String 设备信息集合json字符串.注意:设备排序按照默认选中优先排前规则,所列项目的状态为空闲
-		machine_list : List<Map<String,Object>> 按此生成json字符串
-			Map<String,Object> 设备信息单位
-				machine_number : String 设备编号
-				machine_name : String 设备名称
-				machine_type : String 类型
-				default_checked : int 默认选中
-					0 : 否
-					1 : 是
+	machine_list : List<Map<String,Object>> 设备信息集合json字符串.注意:设备排序按照默认选中优先排前规则,所列项目的状态为空闲
+		Map<String,Object> 设备信息单位
+			machine_number : String 设备编号
+			machine_name : String 设备名称
+			machine_dept : String 所属部门
+			default_checked : int 默认选中
+				0 : 否
+				1 : 是
 
 
 ##生产报工-新增作业-提交
@@ -731,6 +726,7 @@
 		work_order 生产订单号
 		step_number 工序号
 		propr_number 生产线号
+		begin_time 开始时间 ，注意格式为：(yyyy-MM-dd HH:mm:ss)
 		employee_list	员工信息集合的json字符串，服务器端进行json解析。说明如下
 			employee_list : List<Map<String,Object>> 按此生成json字符串
 				Map<String,Object>
@@ -743,6 +739,9 @@
 
 返回
 
+	code : int 
+		5 已添加了该订单+工序+生产线 的作业任务,此时其他信息不再返回
+		6	生产订单不存在
 	default
 	
 
@@ -760,7 +759,9 @@
 				job_number : String 作业号
 				work_order : String 生产订单号
 				step_name : String 工序名称
+				step_number : String 工序编号
 				proper_name : String 生产线名称
+				proper_number : String 生产线编号
 
 
 ##生产报工-获取作业详细
@@ -771,21 +772,21 @@
 
 返回
 
+	code : int
+		5 作业不存在
 	work_order : String 生产订单号
-	step_name : String 工序名称
-	proper_name : String 生产线名称
 	department : String 生产部门
 	create_time : String 创建时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-	employee_list : String 员工信息集合的json字符串。注意:所列项目的状态为工作中
-		employee_list : List<Map<String,Object>> 按此生成json字符串
-			Map<String,Object>
-				employee_number : String 员工编号
-				begin_time : String 开始时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-	machine_list : String 设备信息集合的json字符串。注意:所列项目的状态为工作中
-		machine_list : List<Map<String,Object>> 按此生成json字符串
-			Map<String,Object>
-				machine_number : String 设备编号
-				begin_time : String 开始时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	employee_list : List<Map<String,Object>> 员工信息集合的json字符串。注意:所列项目的状态为工作中
+		Map<String,Object>
+			employee_number : String 员工编号
+			employee_name : String 员工姓名
+			begin_time : String 开始时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
+	machine_list : List<Map<String,Object>> 设备信息集合的json字符串。注意:所列项目的状态为工作中
+		Map<String,Object>
+			machine_number : String 设备编号
+			machine_name : String 设备名称
+			begin_time : String 开始时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 					
 
 
@@ -801,8 +802,10 @@
 
 返回
 
+	code : Int 
+		5 无该员工信息
+		6 该员工不在当前作业可支配范围
 	name : String 员工姓名
-	type : String 工种
 	state : String 当前状态
 	    0 空闲
 	    1 忙碌
@@ -821,8 +824,10 @@
 
 返回
 
+	code : Int 
+		5 无该设备信息
+		6 该设备不在当前作业可支配范围
 	name : String 设备名称
-	type : String 类型
 	state : String 当前状态
 	    0 空闲
 	    1 忙碌
@@ -837,10 +842,14 @@
 		propr_number 生产线号
 		job_number 作业号
 		employee_number 员工编号
+		warehouse 仓库
 	action=production_report_employee_add
 
 返回
-
+	code : Int 
+		5 无该员工信息
+		6 该员工不在当前作业可支配范围
+		7 该员工当前忙碌
 	default
 
 ##生产报工-中途加入设备
@@ -851,6 +860,7 @@
 		propr_number 生产线号
 		job_number 作业号
 		machine_number 设备编号
+		warehouse 仓库
 	action=production_report_machine_add
 
 返回
@@ -886,7 +896,18 @@
 
 	default
 
+##生产报工-开始作业
+	请求方式:get
+	参数:
+		work_order 生产订单号
+		step_number 工序号
+		propr_number 生产线号
+		job_number 作业号
+	action=production_report_job_begin
 
+返回
+
+	default
 
 ##生产报工-结束作业
 	请求方式:get

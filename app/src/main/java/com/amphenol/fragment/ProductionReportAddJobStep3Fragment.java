@@ -69,15 +69,16 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
     private MyHandler myHandler;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
 
-    private String work_order = "", step_number = "", propr_number = "";
+    private String work_order = "", step_number = "", propr_number = "",begin_time = "";
     private ArrayList<Employee> employees = new ArrayList<>();
     private ArrayList<Machine> machines = new ArrayList<>();
 
-    public static ProductionReportAddJobStep3Fragment newInstance(String work_order, String step_number, String propr_number, ArrayList<Employee> employees, ArrayList<Machine> machines) {
+    public static ProductionReportAddJobStep3Fragment newInstance(String work_order, String step_number, String propr_number,String begin_time, ArrayList<Employee> employees, ArrayList<Machine> machines) {
         Bundle args = new Bundle();
         args.putString("work_order", work_order);
         args.putString("step_number", step_number);
         args.putString("propr_number", propr_number);
+        args.putString("begin_time", begin_time);
         args.putParcelableArrayList("employees", employees);
         args.putParcelableArrayList("machines", machines);
         ProductionReportAddJobStep3Fragment fragment = new ProductionReportAddJobStep3Fragment();
@@ -93,6 +94,7 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
             work_order = args.getString("work_order");
             step_number = args.getString("step_number");
             propr_number = args.getString("propr_number");
+            begin_time = args.getString("begin_time");
             employees = args.getParcelableArrayList("employees");
             machines = args.getParcelableArrayList("machines");
         }
@@ -248,6 +250,8 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
         param.put("work_order", work_order);
         param.put("propr_number", propr_number);
         param.put("step_number", step_number);
+        param.put("begin_time", begin_time);
+
 
         JSONArray employeeJsonArray = new JSONArray();
         JSONArray machineJsonArray = new JSONArray();
@@ -281,9 +285,7 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
-
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
 
     }
 

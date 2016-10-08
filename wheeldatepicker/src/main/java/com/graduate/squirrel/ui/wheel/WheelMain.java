@@ -197,7 +197,8 @@ public class WheelMain {
                     .append((wv_month.getCurrentItem() + 1) < 10 ? "0" + (wv_month.getCurrentItem() + 1) : (wv_month.getCurrentItem() + 1)).append("/")
                     .append((wv_day.getCurrentItem() + 1) < 10 ? "0" + (wv_day.getCurrentItem() + 1) : (wv_day.getCurrentItem() + 1)).append(" ")
                     .append(wv_hours.getCurrentItem()<10?"0"+wv_hours.getCurrentItem():wv_hours.getCurrentItem()).append(":")
-                    .append(wv_mins.getCurrentItem()<10?"0"+wv_mins.getCurrentItem():wv_mins.getCurrentItem());
+                    .append(wv_mins.getCurrentItem()<10?"0"+wv_mins.getCurrentItem():wv_mins.getCurrentItem()).append(":")
+                    .append("00");
         return sb.toString();
     }
 }

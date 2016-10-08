@@ -145,7 +145,7 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
                 switch (v.getId()) {
                     case R.id.activity_print_mater_label_date:
                         Calendar calendar = Calendar.getInstance();
-                        showSetDatePicker(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE));
+                        showSetDatePicker(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE));
                         break;
                     case R.id.fragment_create_requisition_create_bt:
                         if (TextUtils.isEmpty(workOrder)) {
@@ -160,7 +160,12 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
                             ((BaseActivity) getActivity()).ShowToast("未查询到生产线记录");
                             break;
                         }
-                        handleEmployeesInquire(workOrder, mStepDictArrayAdapter.getItem(mStepSpinner.getSelectedItemPosition()).getId(), mProprDictArrayAdapter.getItem(mProprSpinner.getSelectedItemPosition()).getId());
+                        if (TextUtils.isEmpty(mDateEditText.getText().toString())) {
+                            ((BaseActivity) getActivity()).ShowToast("先输入开始时间");
+                            break;
+                        }
+                        handleEmployeesInquire(workOrder, mStepDictArrayAdapter.getItem(mStepSpinner.getSelectedItemPosition()).getId(),
+                                mProprDictArrayAdapter.getItem(mProprSpinner.getSelectedItemPosition()).getId());
                         break;
                     case R.id.fragment_purchase_receipt_inquire_bt:
                         boolean state = mSearchButton.getTag() == null ? false : (boolean) mSearchButton.getTag();
@@ -239,8 +244,7 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
         param.put("work_order", workOrder);
         param.put("step_number", step_number);
         param.put("propr_number", propr_number);
-//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_EMPLOYEE_INQUIRE, getContext()), param, REQUEST_CODE_NEXT, mRequestTaskListener);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_NEXT, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_EMPLOYEE_INQUIRE, getContext()), param, REQUEST_CODE_NEXT, mRequestTaskListener);
     }
 
     private void handleScanWorkOrder(String code) {
@@ -256,8 +260,7 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("work_order", code);
-//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
 
     private void refreshShow() {
@@ -355,11 +358,11 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
                         stepDictList.addAll((ArrayList) (bundle.getParcelableArrayList("stepDictList")));
                         proprDictList.clear();
                         proprDictList.addAll((ArrayList) bundle.getParcelableArrayList("proprDictList"));
-//                       stepDictList = bundle.getParcelableArrayList("stepDictList");
-//                       proprDictList = bundle.getParcelableArrayList("proprDictList");
                         refreshShow();
                     } else if (bundle.getInt("code") == 5) {
-                        ((BaseActivity) getActivity()).ShowToast("该生产工单不存在");
+                        ((BaseActivity) getActivity()).ShowToast("不存在工序信息");
+                    } else  if (bundle.getInt("code") == 6) {
+                        ((BaseActivity) getActivity()).ShowToast("不存在生产线信息");
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("获取工单信息失败");
                     }
@@ -371,7 +374,7 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
                         String step_number = bundle.getString("step_number");
                         String propr_number = bundle.getString("propr_number");
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportAddJobStep2Fragment.newInstance(work_order,step_number,propr_number,employees));
+                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportAddJobStep2Fragment.newInstance(work_order,step_number,propr_number,mDateEditText.getText().toString().trim(),employees));
                         transaction.addToBackStack(null);
                         transaction.commitAllowingStateLoss();
 

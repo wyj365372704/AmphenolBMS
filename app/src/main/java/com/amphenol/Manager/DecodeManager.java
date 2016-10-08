@@ -1025,60 +1025,100 @@ public class DecodeManager {
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
             ArrayList<Job> jobs = new ArrayList<>();
-            /*JSONArray jobListJsonArray = jsonObject.optJSONArray("job_list");
+            JSONArray jobListJsonArray = jsonObject.optJSONArray("job_list");
             if (jobListJsonArray != null) {
                 for (int i = 0; i < jobListJsonArray.length(); i++) {
                     JSONObject JobInfo = jobListJsonArray.getJSONObject(i);
                     String job_number = JobInfo.optString("job_number").trim();
                     String work_order = JobInfo.optString("work_order").trim();
                     String step_name = JobInfo.optString("step_name").trim();
+                    String step_number = JobInfo.optString("step_number").trim();
                     String proper_name = JobInfo.optString("proper_name").trim();
+                    String proper_number = JobInfo.optString("proper_number").trim();
                     Job job = new Job();
                     job.setJobNumber(job_number);
                     WorkOrder workOrder = new WorkOrder();
                     workOrder.setNumber(work_order);
                     job.setWorkOrder(workOrder);
                     job.setStepName(step_name);
+                    job.setStepNumber(step_number);
                     job.setProprName(proper_name);
+                    job.setProprNumber(proper_number);
                     jobs.add(job);
                 }
-            }*/
-            //test
-            for (int i = 1; i < 10; i++) {
-                Job job = new Job();
-                job.setJobNumber("number" + i);
-                WorkOrder workOrder = new WorkOrder();
-                workOrder.setNumber("workOrder" + i);
-                job.setWorkOrder(workOrder);
-                job.setStepName("stepName" + i);
-                job.setProprName("proprName" + i);
-                jobs.add(job);
-
-                ArrayList<Employee> employees = new ArrayList<>();
-                for (int j = 1; j < 10; j++) {
-                    Employee employee = new Employee();
-                    employee.setNumber("number" + j);
-                    employee.setName("name" + j);
-                    employee.setStartTime("time" + j);
-                    employees.add(employee);
-                }
-                job.setEmployees(employees);
-
-                ArrayList<Machine> machines = new ArrayList<>();
-                for (int j = 1; j < 10; j++) {
-                    Machine machine = new Machine();
-                    machine.setNumber("number" + j);
-                    machine.setName("name" + j);
-                    machine.setStartTime("time" + j);
-                    machines.add(machine);
-                }
-                job.setMachines(machines);
             }
-
-            //test
 
 
             data.putParcelableArrayList("jobs", jobs);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+    public static void decodeProductionReportGetJobDetail(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Job job =new Job();
+
+            Map<String,String> params = (Map<String, String>) jsonObject.get("params");
+            String job_number = params.get("job_number");
+            String step_name = params.get("step_name");
+            String step_number = params.get("step_number");
+            String proper_name = params.get("proper_name");
+            String proper_number = params.get("proper_number");
+
+            job.setJobNumber(job_number);
+            job.setStepName(step_name);
+            job.setStepNumber(step_number);
+            job.setProprName(proper_name);
+            job.setProprNumber(proper_number);
+
+            String work_order = jsonObject.optString("work_order").trim();
+            String department = jsonObject.optString("department").trim();
+            String create_time = jsonObject.optString("create_time").trim();
+            WorkOrder workOrder = new WorkOrder();
+            workOrder.setNumber(work_order);
+            workOrder.setDepartment(department);
+            job.setWorkOrder(workOrder);
+            job.setCreateTime(create_time);
+
+            ArrayList<Employee> employees = new ArrayList<>();
+            JSONArray employeeJsonArray = jsonObject.optJSONArray("employee_list");
+            if (employeeJsonArray != null) {
+                for (int i = 0; i < employeeJsonArray.length(); i++) {
+                    JSONObject employeeJsonObject = employeeJsonArray.getJSONObject(i);
+                    String employee_number = employeeJsonObject.optString("employee_number").trim();
+                    String employee_name = employeeJsonObject.optString("employee_name").trim();
+                    String begin_time = employeeJsonObject.optString("begin_time").trim();
+                    Employee employee = new Employee();
+                    employee.setNumber(employee_number);
+                    employee.setName(employee_name);
+                    employee.setStartTime(begin_time);
+                    employees.add(employee);
+                }
+            }
+
+            ArrayList<Machine> machines = new ArrayList<>();
+            JSONArray machineJsonArray = jsonObject.optJSONArray("machine_list");
+            if (machineJsonArray != null) {
+                for (int i = 0; i < machineJsonArray.length(); i++) {
+                    JSONObject machineJsonObject = machineJsonArray.getJSONObject(i);
+                    String machine_number = machineJsonObject.optString("machine_number").trim();
+                    String machine_name = machineJsonObject.optString("machine_name").trim();
+                    String begin_time = machineJsonObject.optString("begin_time").trim();
+                    Machine machine = new Machine();
+                    machine.setNumber(machine_number);
+                    machine.setName(machine_name);
+                    machine.setStartTime(begin_time);
+                    machines.add(machine);
+                }
+            }
+            job.setEmployees(employees);
+            job.setMachines(machines);
+
+            data.putParcelable("job",job);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -1148,7 +1188,7 @@ public class DecodeManager {
             ArrayList<Dict> stepDictList = new ArrayList<>();
             ArrayList<Dict> proprDictList = new ArrayList<>();
 
-            /*JSONArray stepJsonArray = jsonObject.optJSONArray("step_list");
+            JSONArray stepJsonArray = jsonObject.optJSONArray("step_list");
             if (stepJsonArray != null) {
                 for (int i = 0; i < stepJsonArray.length(); i++) {
                     JSONObject stepJsonObject = stepJsonArray.optJSONObject(i);
@@ -1172,17 +1212,8 @@ public class DecodeManager {
                         proprDictList.add(dict);
                     }
                 }
-            }*/
-
-            //test
-            for (int i = 1; i < 10; i++) {
-                stepDictList.add(new Dict("number" + i, "name" + i));
-                proprDictList.add(new Dict("number" + i, "name" + i));
-
             }
 
-
-            //test
             data.putParcelableArrayList("stepDictList", stepDictList);
             data.putParcelableArrayList("proprDictList", proprDictList);
         }
@@ -1206,35 +1237,24 @@ public class DecodeManager {
             data.putString("propr_number", propr_number);
 
             ArrayList<Employee> employees = new ArrayList<>();
-            /*JSONArray employeeJsonArray = jsonObject.optJSONArray("employee_list");
+            JSONArray employeeJsonArray = jsonObject.optJSONArray("employee_list");
             if (employeeJsonArray != null) {
                 for (int i = 0; i < employeeJsonArray.length(); i++) {
                     JSONObject employeeJsonObject = employeeJsonArray.optJSONObject(i);
                     if (employeeJsonObject != null) {
                         String employee_number = employeeJsonObject.optString("employee_number").trim();
                         String employee_name = employeeJsonObject.optString("employee_name").trim();
-                        String employee_type = employeeJsonObject.optString("employee_type").trim();
-                        int default_checked = employeeJsonObject.optInt("default_checked", Employee.IS_CHECKED_NO);
+                        String employee_dept = employeeJsonObject.optString("employee_dept").trim();
+                        int default_checked = employeeJsonObject.optInt("default_checked",0);
                         Employee employee = new Employee();
                         employee.setNumber(employee_number);
                         employee.setName(employee_name);
-                        employee.setType(employee_type);
+                        employee.setDepartment(employee_dept);
                         employee.setChecked(default_checked == 1?true:false);
                         employees.add(employee);
                     }
                 }
-            }*/
-            //test
-            for (int i = 1; i < 10; i++) {
-                Employee employee = new Employee();
-                employee.setNumber("employee_number" + i);
-                employee.setName("employee_name" + i);
-                employee.setType("employee_type" + i);
-                employee.setChecked(i % 2 == 0 ? true : false);
-                employees.add(employee);
-
             }
-            //test
             data.putParcelableArrayList("employees", employees);
         }
         msg.setData(data);
@@ -1256,35 +1276,24 @@ public class DecodeManager {
             data.putString("propr_number", propr_number);
 
             ArrayList<Machine> machines = new ArrayList<>();
-           /* JSONArray machineJsonArray = jsonObject.optJSONArray("machine_list");
+            JSONArray machineJsonArray = jsonObject.optJSONArray("machine_list");
             if (machineJsonArray != null) {
                 for (int i = 0; i < machineJsonArray.length(); i++) {
                     JSONObject machineJsonObject = machineJsonArray.optJSONObject(i);
                     if (machineJsonObject != null) {
                         String machine_number = machineJsonObject.optString("machine_number").trim();
                         String machine_name = machineJsonObject.optString("machine_name").trim();
-                        String machine_type = machineJsonObject.optString("machine_type").trim();
+                        String machine_dept = machineJsonObject.optString("machine_dept").trim();
                         int default_checked = machineJsonObject.optInt("default_checked");
                         Machine machine = new Machine();
                         machine.setNumber(machine_number);
                         machine.setName(machine_name);
-                        machine.setType(machine_type);
+                        machine.setDepartment(machine_dept);
                         machine.setChecked(default_checked == 1?true:false);
                         machines.add(machine);
                     }
                 }
-            }*/
-            //test
-            for (int i = 1; i < 10; i++) {
-               Machine machine = new Machine();
-                machine.setNumber("machine_number" + i);
-                machine.setName("machine_name" + i);
-                machine.setType("machine_type" + i);
-                machine.setChecked(i % 2 == 0 ? true : false);
-                machines.add(machine);
-
             }
-            //test
             data.putParcelableArrayList("machines", machines);
         }
         msg.setData(data);

@@ -11,7 +11,6 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Employee;
 import com.amphenol.entity.Machine;
 
 import java.util.List;
@@ -42,7 +41,7 @@ public class ProductionReportAddJobMachineListAdapter extends RecyclerView.Adapt
         holder.position = position;
         holder.nameTextView.setText(date.get(position).getName());
         holder.numberTextView.setText(date.get(position).getNumber());
-        holder.typeTextView.setText(date.get(position).getType());
+        holder.deptTextView.setText(date.get(position).getDepartment());
         holder.checkBox.setChecked(date.get(position).isChecked());
         if (position % 2 == 0)
             holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_o));
@@ -57,7 +56,7 @@ public class ProductionReportAddJobMachineListAdapter extends RecyclerView.Adapt
 
     class ViewHolderBody extends RecyclerView.ViewHolder {
         int position;
-        TextView numberTextView, nameTextView,typeTextView;
+        TextView numberTextView, nameTextView, deptTextView;
         CheckBox checkBox;
         CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -74,7 +73,7 @@ public class ProductionReportAddJobMachineListAdapter extends RecyclerView.Adapt
             super(itemView);
             numberTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_location_tv);
             nameTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_mater_tv);
-            typeTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_branch_tv);
+            deptTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_branch_tv);
             checkBox = (CheckBox) itemView.findViewById(R.id.create_requisition_main_item_body_cb);
             checkBox.setOnCheckedChangeListener(mOnCheckedChangeListener);
         }

@@ -157,8 +157,7 @@ public class ProductionReportJobDetailMachineFragment extends Fragment {
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("job_number", jobNumber);
         param.put("machine_number", machineNumber);
-//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
 
     private class MyHandler extends Handler {

@@ -38,6 +38,7 @@ import java.util.Map;
 public class ProductionReportJobListFragment extends Fragment {
 
     private static final int REQUEST_CODE_GET_JOB_LIST = 0X10;
+    private static final int REQUEST_CODE_GET_JOB_DETAIL = 0X11;
     private View rootView;
     private RecyclerView mRecyclerView;
     private ProductionReportJobListAdapter mProductionReportJobListAdapter;
@@ -97,12 +98,23 @@ public class ProductionReportJobListFragment extends Fragment {
                 Map<String, String> param = new HashMap<>();
                 param.put("username", SessionManager.getUserName(getContext()));
                 param.put("env", SessionManager.getEnv(getContext()));
-//        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_GET_JOB_LIST, getContext()), param, REQUEST_CODE_GET_JOB_LIST, mRequestTaskListener);
-                NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_WAREHOUSE, getContext()), param, REQUEST_CODE_GET_JOB_LIST, mRequestTaskListener);
+                NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_GET_JOB_LIST, getContext()), param, REQUEST_CODE_GET_JOB_LIST, mRequestTaskListener);
             }
         });
     }
-
+    private void handleGetJobDetail(String jobNumber,String stepName,String stepNumber,String properName,String properNumber) {
+        if (!this.isVisible())
+            return;
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getContext()));
+        param.put("env", SessionManager.getEnv(getContext()));
+        param.put("job_number", jobNumber);
+        param.put("step_name", stepName);
+        param.put("step_number",stepNumber);
+        param.put("proper_name",properName);
+        param.put("proper_number",properNumber);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_GET_JOB_DETAIL, getContext()), param, REQUEST_CODE_GET_JOB_DETAIL, mRequestTaskListener);
+    }
     private void initViews() {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rl);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -129,10 +141,7 @@ public class ProductionReportJobListFragment extends Fragment {
         mOnItemClickListener = new ProductionReportJobListAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(int position) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportJobDetailFragment.newInstance(date.get(position)));
-                transaction.addToBackStack(null);
-                transaction.commitAllowingStateLoss();
+                handleGetJobDetail(date.get(position).getJobNumber(),date.get(position).getStepName(),date.get(position).getStepNumber(),date.get(position).getProprName(),date.get(position).getProprNumber());
             }
         };
 
@@ -158,6 +167,9 @@ public class ProductionReportJobListFragment extends Fragment {
                     switch (requestCode) {
                         case REQUEST_CODE_GET_JOB_LIST:
                             DecodeManager.decodeProductionReportGetJobList(jsonObject, requestCode, myHandler);
+                            break;
+                        case REQUEST_CODE_GET_JOB_DETAIL:
+                            DecodeManager.decodeProductionReportGetJobDetail(jsonObject, requestCode, myHandler);
                             break;
                     }
                 } catch (Exception e) {
@@ -200,12 +212,27 @@ public class ProductionReportJobListFragment extends Fragment {
             Bundle bundle = msg.getData();
             switch (msg.what) {
                 case REQUEST_CODE_GET_JOB_LIST:
-                    ArrayList<Job> jobs = bundle.getParcelableArrayList("jobs");
-                    if (jobs != null) {
-                        date.clear();
-                        date.addAll(jobs);
-                        refreshShow();
+                    if (bundle.getInt("code") == 1) {
+                        ArrayList<Job> jobs = bundle.getParcelableArrayList("jobs");
+                        if (jobs != null) {
+                            date.clear();
+                            date.addAll(jobs);
+                            refreshShow();
+                        }
+                    } else {
+                        ((BaseActivity) getActivity()).ShowToast("获取作业信息失败");
                     }
+                    break;
+                case REQUEST_CODE_GET_JOB_DETAIL:
+                    if (bundle.getInt("code") == 1) {
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportJobDetailFragment.newInstance((Job) bundle.getParcelable("job")));
+                        transaction.addToBackStack(null);
+                        transaction.commitAllowingStateLoss();
+                    } else {
+                        ((BaseActivity) getActivity()).ShowToast("获取作业详细失败");
+                    }
+                    break;
             }
         }
     }

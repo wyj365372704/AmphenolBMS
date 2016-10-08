@@ -77,6 +77,7 @@ public class ProductionReportInquireEmployeeFragment extends Fragment {
 
 
     private void initViews() {
+        mStorButton = (Button) rootView.findViewById(R.id.bt);
         employeeNumberTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_warehouse_tv_in);
         employeeNameTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_department_tv_in);
         departmentTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_product_order_number_tv_in);
