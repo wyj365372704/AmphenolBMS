@@ -787,7 +787,6 @@
 			machine_number : String 设备编号
 			machine_name : String 设备名称
 			begin_time : String 开始时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
-					
 
 
 ##生产报工-查询员工信息
@@ -850,7 +849,7 @@
 		5 无该员工信息
 		6 该员工不在当前作业可支配范围
 		7 该员工当前忙碌
-	default
+	begin_time : String 开始时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 
 ##生产报工-中途加入设备
 	请求方式:get
@@ -865,7 +864,7 @@
 
 返回
 
-	default
+	begin_time : String 开始时间  ，注意返回格式为：(yyyy-MM-dd HH:mm:ss)
 
 ##生产报工-中途离开员工
 	请求方式:get

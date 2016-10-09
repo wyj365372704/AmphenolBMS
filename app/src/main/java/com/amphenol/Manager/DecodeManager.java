@@ -1149,6 +1149,16 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+    public static void decodeProductionReportAddOrRemoveOption(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
 
     public static void decodeProductionReportMachineInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();

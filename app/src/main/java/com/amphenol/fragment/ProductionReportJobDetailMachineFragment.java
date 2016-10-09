@@ -11,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -38,6 +41,11 @@ public class ProductionReportJobDetailMachineFragment extends Fragment {
     private static final int REQUEST_CODE_INQUIRE = 0x10;
     private View rootView = null;
     private Job mJob;
+
+    private Button mInquireButton;
+    private ImageView mScanImageView;
+    private EditText mEditText;
+
     private RecyclerView mRecyclerView;
     private ProductionReportJobDetailMachineListAdapter.OnItemClickListener mOnItemClickListener;
     private ProductionReportJobDetailMachineListAdapter mProductionReportJobDetailMachineListAdapter;
