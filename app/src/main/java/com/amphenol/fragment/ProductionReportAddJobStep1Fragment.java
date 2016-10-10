@@ -363,6 +363,8 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
                         ((BaseActivity) getActivity()).ShowToast("不存在工序信息");
                     } else  if (bundle.getInt("code") == 6) {
                         ((BaseActivity) getActivity()).ShowToast("不存在生产线信息");
+                    } else if (bundle.getInt("code") == 7) {
+                        ((BaseActivity) getActivity()).ShowToast("改生产订单不存在");
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("获取工单信息失败");
                     }

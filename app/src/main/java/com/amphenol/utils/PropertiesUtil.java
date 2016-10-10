@@ -61,12 +61,14 @@ public class PropertiesUtil {
     public static final String ACTION_PRODUCTION_REPORT_GET_JOB_LIST = "ACTION_PRODUCTION_REPORT_GET_JOB_LIST";//action 后缀, 生产报工-获取作业列表
     public static final String ACTION_PRODUCTION_REPORT_GET_JOB_DETAIL = "ACTION_PRODUCTION_REPORT_GET_JOB_DETAIL";//action 后缀, 生产报工-获取作业列表
 
-    public static final String ACTION_PRODUCTION_REPORT_JOB_FINISH = "ACTION_PRODUCTION_REPORT_JOB_FINISH";//action 后缀, 生产报工-结束作业
+    public static final String ACTION_PRODUCTION_REPORT_JOB_FINISH_INQUIRE = "ACTION_PRODUCTION_REPORT_JOB_FINISH_INQUIRE";//action 后缀, 生产报工-结束作业-计算公式查询
+    public static final String ACTION_PRODUCTION_REPORT_JOB_FINISH_SUBMIT = "ACTION_PRODUCTION_REPORT_JOB_FINISH_SUBMIT";//action 后缀, 生产报工-结束作业-提交
     public static final String ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE = "ACTION_PRODUCTION_REPORT_EMPLOYEE_INQUIRE";//action 后缀, 生产报工-查询员工信息
     public static final String ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE = "ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE";//action 后缀, 生产报工-查询设备信息
     public static final String ACTION_PRODUCTION_REPORT_EMPLOYEE_ADD = "ACTION_PRODUCTION_REPORT_EMPLOYEE_ADD";//action 后缀, 生产报工-中途加入员工
     public static final String ACTION_PRODUCTION_REPORT_EMPLOYEE_REMOVE = "ACTION_PRODUCTION_REPORT_EMPLOYEE_REMOVE";//action 后缀, 生产报工-中途离开员工
-
+    public static final String ACTION_PRODUCTION_REPORT_MACHINE_ADD = "ACTION_PRODUCTION_REPORT_MACHINE_ADD";//action 后缀, 生产报工-中途加入设备
+    public static final String ACTION_PRODUCTION_REPORT_MACHINE_REMOVE = "ACTION_PRODUCTION_REPORT_MACHINE_REMOVE";//action 后缀, 生产报工-中途离开设备
 
     public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE";//action 后缀, 生产报工-新增作业-生产订单号查询
     public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_EMPLOYEE_INQUIRE = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_EMPLOYEE_INQUIRE";//action 后缀, 生产报工-新增作业-获取员工列表

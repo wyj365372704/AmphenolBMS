@@ -40,7 +40,7 @@ public class ProductionReportInquireEmployeeFragment extends Fragment {
     private Employee employee;
     private View rootView;
     private Button mStorButton;
-    private TextView employeeNumberTextView, employeeNameTextView, departmentTextView, typeTextView, stateTextView;
+    private TextView employeeNumberTextView, employeeNameTextView, departmentTextView,  stateTextView;
     private OptionCallBack mOptionCallBack;
     private View.OnClickListener mOnClickListener;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
@@ -91,7 +91,6 @@ public class ProductionReportInquireEmployeeFragment extends Fragment {
         employeeNumberTextView.setText(employee.getNumber());
         employeeNameTextView.setText(employee.getName());
         departmentTextView.setText(employee.getDepartment());
-        typeTextView.setText(employee.getType());
         stateTextView.setText(employee.getState() == Employee.STATE_CODE_ON ? "忙碌" : employee.getState() == Employee.STATE_CODE_OFF ? "空闲" : "");
         if (employee.getState() == Employee.STATE_CODE_ON) {
             mStorButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.negative_button_background));
@@ -108,7 +107,6 @@ public class ProductionReportInquireEmployeeFragment extends Fragment {
         employeeNumberTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_warehouse_tv_in);
         employeeNameTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_department_tv_in);
         departmentTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_product_order_number_tv_in);
-        typeTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_order_state_tv_in);
         stateTextView = (TextView) rootView.findViewById(R.id.fragment_production_inquire_execution_product_desc_tv_in);
 
         mStorButton.setOnClickListener(mOnClickListener);

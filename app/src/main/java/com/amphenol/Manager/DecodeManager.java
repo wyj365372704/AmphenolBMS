@@ -1054,15 +1054,16 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeProductionReportGetJobDetail(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            Job job =new Job();
+            Job job = new Job();
 
-            Map<String,String> params = (Map<String, String>) jsonObject.get("params");
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
             String job_number = params.get("job_number");
             String step_name = params.get("step_name");
             String step_number = params.get("step_number");
@@ -1118,7 +1119,7 @@ public class DecodeManager {
             job.setEmployees(employees);
             job.setMachines(machines);
 
-            data.putParcelable("job",job);
+            data.putParcelable("job", job);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -1149,6 +1150,7 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeProductionReportAddOrRemoveOption(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
@@ -1255,12 +1257,12 @@ public class DecodeManager {
                         String employee_number = employeeJsonObject.optString("employee_number").trim();
                         String employee_name = employeeJsonObject.optString("employee_name").trim();
                         String employee_dept = employeeJsonObject.optString("employee_dept").trim();
-                        int default_checked = employeeJsonObject.optInt("default_checked",0);
+                        int default_checked = employeeJsonObject.optInt("default_checked", 0);
                         Employee employee = new Employee();
                         employee.setNumber(employee_number);
                         employee.setName(employee_name);
                         employee.setDepartment(employee_dept);
-                        employee.setChecked(default_checked == 1?true:false);
+                        employee.setChecked(default_checked == 1 ? true : false);
                         employees.add(employee);
                     }
                 }
@@ -1270,6 +1272,7 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeProductionReportAddNewJobMachineInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
@@ -1299,7 +1302,7 @@ public class DecodeManager {
                         machine.setNumber(machine_number);
                         machine.setName(machine_name);
                         machine.setDepartment(machine_dept);
-                        machine.setChecked(default_checked == 1?true:false);
+                        machine.setChecked(default_checked == 1 ? true : false);
                         machines.add(machine);
                     }
                 }
@@ -1310,7 +1313,7 @@ public class DecodeManager {
         handler.sendMessage(msg);
     }
 
-        public static void decodeProductionReportAddNewJobSubmit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+    public static void decodeProductionReportAddNewJobSubmit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
         msg.what = messageWhat;
@@ -1319,8 +1322,24 @@ public class DecodeManager {
 
 
         }
-    msg.setData(data);
-    handler.sendMessage(msg);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeProductionReportJobFinishInquire(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            double artificial_hours = jsonObject.optDouble("artificial_hours",0);
+            double machine_hours = jsonObject.optDouble("machine_hours",0);
+
+            data.putDouble("artificial_hours",artificial_hours);
+            data.putDouble("machine_hours",machine_hours);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
     }
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {

@@ -22,7 +22,6 @@ import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.adapter.MyFragmentViewPagerAdapter;
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Employee;
 import com.amphenol.entity.Job;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -38,7 +37,7 @@ import java.util.Map;
  * Created by Carl on 2016-09-19 019.
  */
 public class ProductionReportJobDetailFragment extends Fragment {
-    private static final int REQUEST_CODE_FINISH = 0X10;
+    private static final int REQUEST_CODE_FINISH_INQUIRE = 0X10;
     private View rootView;
     private TextView actionBarTitleView;
 
@@ -135,15 +134,8 @@ public class ProductionReportJobDetailFragment extends Fragment {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.toolbar_menu:
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("结束作业").setMessage("将要进行结束作业?");
-                        builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                handlerFinishJob(mJob.getJobNumber());
-                            }
-                        });
-                        builder.create().show();
+
+                        handlerFinishJob(mJob.getJobNumber());
                         break;
                 }
             }
@@ -168,8 +160,8 @@ public class ProductionReportJobDetailFragment extends Fragment {
             public void onRequestSuccess(JSONObject jsonObject, int requestCode) {
                 try {
                     switch (requestCode) {
-                        case REQUEST_CODE_FINISH:
-                            DecodeManager.decodeCheckRequisitionSure(jsonObject, requestCode, myHandler);
+                        case REQUEST_CODE_FINISH_INQUIRE:
+                            DecodeManager.decodeProductionReportJobFinishInquire(jsonObject, requestCode, myHandler);
                             break;
                     }
 
@@ -209,7 +201,7 @@ public class ProductionReportJobDetailFragment extends Fragment {
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("job_number", jobNumber);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_JOB_FINISH, getContext()), param, REQUEST_CODE_FINISH, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_JOB_FINISH_INQUIRE, getContext()), param, REQUEST_CODE_FINISH_INQUIRE, mRequestTaskListener);
     }
 
     @Override
@@ -234,9 +226,16 @@ public class ProductionReportJobDetailFragment extends Fragment {
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
             switch (msg.what) {
-                case REQUEST_CODE_FINISH:
-
-                    break;
+                case REQUEST_CODE_FINISH_INQUIRE:
+                    if (bundle.getInt("code") == 1) {
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportJobFinishFragment.newInstance(mJob, bundle.getDouble("artificial_hours"), bundle.getDouble("machine_hours")));
+                        transaction.addToBackStack(null);
+                        transaction.commitAllowingStateLoss();
+                        break;
+                    }else{
+                        ((BaseActivity)getActivity()).ShowToast("操作失败");
+                    }
             }
         }
     }

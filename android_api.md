@@ -666,6 +666,7 @@
 	code : int
 		5 该订单不存在工序信息
 		6 不存在生产线
+		7 该订单不存在
 		
 	step_list : List<Map<String,Object>> 订单工序信息集合json字符串
 		Map<String,Object> 工序明细单位
@@ -908,14 +909,27 @@
 
 	default
 
-##生产报工-结束作业
+##生产报工-结束作业-计算公式查询
 	请求方式:get
 	参数:
-		work_order 生产订单号
-		step_number 工序号
-		propr_number 生产线号
 		job_number 作业号
-	action=production_report_job_finish
+	action=production_report_job_finish_inquire
+
+返回
+
+	artificial_hours : double 人工工时
+	machine_hours : double 机器工时
+
+##生产报工-结束作业-提交
+	请求方式:get
+	参数:
+		job_number 作业号
+		step_quantity 工序数量
+		artificial_hours_after 调整后人工工时
+		machine_hours_after 调整后机器工时
+		abnormal_hours 异常工时
+		abnormal_reason 异常原因
+	action=production_report_job_finish_submit
 
 返回
 
