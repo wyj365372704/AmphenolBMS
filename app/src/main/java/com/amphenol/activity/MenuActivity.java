@@ -69,6 +69,7 @@ public class MenuActivity extends BaseActivity {
                         componentName = new ComponentName(MenuActivity.this, PurchaseReceiptActivity.class);
                         break;
                     case MenuItem.MENU_CODE_PURCHASE_RETURN:
+                        componentName = new ComponentName(MenuActivity.this, PurchaseReturnActivity.class);
                         break;
                     case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
                         componentName = new ComponentName(MenuActivity.this, WareHouseSetUpActivity.class);
@@ -99,6 +100,9 @@ public class MenuActivity extends BaseActivity {
                         break;
                     case MenuItem.MENU_CODE_PRODUCT_REPORT:
                         componentName = new ComponentName(MenuActivity.this, ProductionReportActivity.class);
+                        break;
+                    case MenuItem.MENU_CODE_INVENTORY:
+//                        componentName = new ComponentName(MenuActivity.this, PurchaseReturnActivity.class);
                         break;
                 }
                 if (componentName != null) {
@@ -206,6 +210,8 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.menu_icon_print;
             case MenuItem.MENU_CODE_PRODUCT_REPORT:
                 return R.mipmap.menu_icon_production_report;
+            case MenuItem.MENU_CODE_INVENTORY:
+                return R.mipmap.menu_icon_inventory;
         }
         return R.mipmap.ic_launcher;
     }

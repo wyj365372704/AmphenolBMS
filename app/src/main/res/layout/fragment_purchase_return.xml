@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:singleLine="true"
-            android:text="收货"
+            android:text="退货"
             android:textColor="@android:color/white"
             android:textSize="18sp"/>
 
@@ -65,7 +65,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@id/fragment_purchase_receipt_inquire_bt"
                 android:layout_toRightOf="@id/fragment_purchase_receipt_scan_iv"
-                android:hint="输入送货单号"
+                android:hint="输入退货单号"
                 android:imeOptions="actionDone"/>
         </RelativeLayout>
 
@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/fragment_purchase_receipt_shcs_tv"
                 android:layout_marginTop="16dp"
-                android:text="送货单号:"
+                android:text="退货单号:"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/normal_font_size"/>
 

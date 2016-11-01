@@ -1,4 +1,4 @@
-#Amphenol_android开发接口文档 version 2.0
+#Amphenol_android开发接口文档 version 2.1
 
 ##书写说明
 - api采用json数据格式返回
@@ -154,7 +154,7 @@
 	    "status_code": 1
 	}
 
-##查询物料明细
+##收货-查询物料明细
 	请求方式：get
 	参数：
 		receipt_number	送货单号码
@@ -223,6 +223,77 @@
 	code = 3 收货库位不存在
 	code = 4 实际单重更新失败
 	code = other 确认收货失败
+
+
+##查询退货单
+	请求方式：get
+	参数：return_number	供应商退货单号码
+	action=query_return
+
+返回
+
+	firm:String	供应商
+	status_code:int	退货单状态
+		10：活动
+		40：部分退货
+		50：退货完成
+	mater_list:List<Map<String,Object>> 物料集合
+		Map<String,Object>
+			mater_po: String 采购单-项次
+			number: String 退货单行号
+			mate: String 物料编号
+			quantity： Double 数量
+			unit： String 单位
+
+
+##退货-查询物料明细
+	请求方式：get
+	参数：
+		return_number	退货单号码
+		return_line	退货单行号
+	action=query_return_item
+
+返回
+
+	mate_number:String	物料编号
+	mate_desc:String 物料描述
+	return_quantity:double 退货数量
+	location_list:List<Map<String,Object>> 库位集合
+		Map<String,Object>
+			shard : String 子库
+			location : String 库位
+			branch :String 生产批次
+			quantity:double 库存数量
+
+
+##关闭物料退货
+	请求方式：get
+	参数：
+		return_number	退货单号码
+		return_line	退货单行号
+	action=mate_return_close
+
+返回
+
+	code = 1 成功
+
+
+##确认物料退货
+	请求方式：get
+	参数：
+		return_number	退货单号码
+		return_line	退货单行号
+		mater_list	物料信息集合的json字符串。说明如下
+			mater_list:List<Map<String,Object>> 按此生成json字符串
+				Map<String,Object>
+				    location : String 库位
+					branch_desc:String 生产批次
+					return_quantity:double 退货数量
+	action=mate_return_confirm
+
+返回
+
+    default
 
 ##创建调拨单/快速调拨 - 查询物料列表
 	请求方式：get

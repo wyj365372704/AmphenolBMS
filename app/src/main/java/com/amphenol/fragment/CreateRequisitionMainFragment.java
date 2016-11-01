@@ -2,12 +2,14 @@ package com.amphenol.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -475,9 +477,20 @@ public class CreateRequisitionMainFragment extends Fragment {
                     break;
                 case REQUEST_CODE_CREATE_REQUISITION:
                     if (bundle.getInt("code") == 1) {
-                        ((BaseActivity) getActivity()).ShowToast("调拨单创建成功");
-                        requisition = new Requisition();
-                        refreshShow();
+                        String number = bundle.getString("number");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("调拨单创建成功");
+                        builder.setMessage("新创建调拨单号:"+number);
+                        builder.setCancelable(true);
+                        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requisition = new Requisition();
+                                refreshShow();
+                            }
+                        });
+                        builder.create().show();
+
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("调拨单创建失败");
                     }
