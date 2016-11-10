@@ -102,7 +102,7 @@ public class MenuActivity extends BaseActivity {
                         componentName = new ComponentName(MenuActivity.this, ProductionReportActivity.class);
                         break;
                     case MenuItem.MENU_CODE_INVENTORY:
-//                        componentName = new ComponentName(MenuActivity.this, PurchaseReturnActivity.class);
+                        componentName = new ComponentName(MenuActivity.this, InventoryActivity.class);
                         break;
                 }
                 if (componentName != null) {

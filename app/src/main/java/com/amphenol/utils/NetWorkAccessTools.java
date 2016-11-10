@@ -112,7 +112,7 @@ public class NetWorkAccessTools {
 
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
-                Log.d("NetWorkAccessTools-->", "onFailure : -errorNo:" + errorNo + " -message:" + strMsg.trim() + " -exception:" + t.getMessage());
+//                Log.d("NetWorkAccessTools-->", "onFailure : -errorNo:" + errorNo + " -message:" + strMsg.trim() + " -exception:" + t.getMessage());
                 if (listener != null)
                     listener.onRequestFail(requestCode, errorNo);
             }

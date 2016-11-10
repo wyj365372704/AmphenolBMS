@@ -295,7 +295,7 @@
 
     default
 
-##创建调拨单/快速调拨 - 查询物料列表
+##创建调拨单/快速调拨/库存查询/盘点 - 查询物料列表
 	请求方式：get
 	参数：
 		warehouse	仓库
@@ -1007,3 +1007,35 @@
 	default
 
 
+##物料盘点-确认
+	请求方式:get
+	参数:
+	    warehouse 仓库
+		mater 物料号
+		location 库位
+		branch 批次
+		ia_quantity IA调整数量
+	action=inventory_update_submit
+
+返回
+    code : int
+        5 库位不存在
+	default
+
+
+##盘点-物料基础信息查询-新增盘点
+	请求方式:get
+	参数:
+	    warehouse 仓库
+		mater 物料号
+	action=inventory_add_query
+
+返回
+    code : int
+        6 未找到该物料
+	mater_desc:String 物料描述
+   	mater_format:String	物料规格
+    branched:int 是否需要批次控制
+    	0 不需要
+ 		1 需要
+    unit： String 库存单位

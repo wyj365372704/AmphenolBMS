@@ -77,6 +77,8 @@ public class PropertiesUtil {
     public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_MACHINE_INQUIRE = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_MACHINE_INQUIRE";//action 后缀, 生产报工-新增作业-获取设备列表
     public static final String ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_SUBMIT = "ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_SUBMIT";//action 后缀, 生产报工-新增作业-提交
 
+    public static final String ACTION_INVENTORY_UPDATE_SUBMIT = "ACTION_INVENTORY_UPDATE_SUBMIT";//action 后缀, 物料盘点-确认
+    public static final String ACTION_INVENTORY_ADD_QUERY = "ACTION_INVENTORY_ADD_QUERY";//action 后缀, 盘点-新增库存-查询物料
 
     private static PropertiesUtil mPropertiesUtil;
     private  Properties mProperties;

@@ -3,6 +3,7 @@ package com.amphenol.Manager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 
 import com.amphenol.entity.Dict;
@@ -579,7 +580,7 @@ public class DecodeManager {
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
             String number = jsonObject.optString("number");
-            data.putString("number",number.trim());
+            data.putString("number", number.trim());
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -1461,11 +1462,46 @@ public class DecodeManager {
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            double artificial_hours = jsonObject.optDouble("artificial_hours",0);
-            double machine_hours = jsonObject.optDouble("machine_hours",0);
+            double artificial_hours = jsonObject.optDouble("artificial_hours", 0);
+            double machine_hours = jsonObject.optDouble("machine_hours", 0);
 
-            data.putDouble("artificial_hours",artificial_hours);
-            data.putDouble("machine_hours",machine_hours);
+            data.putDouble("artificial_hours", artificial_hours);
+            data.putDouble("machine_hours", machine_hours);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeInventoryUpdateSubmit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeInventoryAddQuery(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+            String mater_number = params.get("mater");
+            String mater_desc = jsonObject.optString("mater_desc");
+            String mater_format = jsonObject.optString("mater_format");
+            String unit = jsonObject.optString("unit");
+            String branched= jsonObject.optString("branched");
+
+            Mater mater = new Mater();
+            mater.setNumber(mater_number.trim());
+            mater.setDesc(mater_desc.trim());
+            mater.setFormat(mater_format.trim());
+            mater.setUnit(unit.trim());
+            mater.setBranchControl(TextUtils.equals(branched,"1")?Mater.BRANCH_CONTROL:TextUtils.equals(branched,"0")?Mater.BRANCH_NO_CONTROL:Mater.BRANCH_NORMAL);
+
+            data.putParcelable("mater",mater);
         }
         msg.setData(data);
         handler.sendMessage(msg);
