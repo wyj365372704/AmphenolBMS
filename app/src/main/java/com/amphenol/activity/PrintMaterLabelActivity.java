@@ -468,15 +468,12 @@ public class PrintMaterLabelActivity extends BaseActivity {
     private void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        String mater = CommonTools.decodeScanString("M", code);
+        String mater =  CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
         if (TextUtils.isEmpty(mater)) {
             ShowToast("无效物料标签");
             return;
         }
-        String branch = "";
-        if (code.contains("*B")) {
-            branch = CommonTools.decodeScanString("B", code);
-        }
+        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
         materEditText.setText("");
         handleInquireMater(mater, branch);
     }

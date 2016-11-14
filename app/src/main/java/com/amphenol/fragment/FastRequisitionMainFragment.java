@@ -348,7 +348,7 @@ public class FastRequisitionMainFragment extends Fragment {
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
-        code = CommonTools.decodeScanString("L", code);
+        code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), code);
         targetLocationEditText.setText(code);
         targetLocationEditText.requestFocus();
     }
@@ -358,7 +358,7 @@ public class FastRequisitionMainFragment extends Fragment {
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
-        code = CommonTools.decodeScanString("L", code);
+        code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), code);
         fromLocationEditText.setText(code);
         targetLocationEditText.requestFocus();
     }
@@ -368,8 +368,8 @@ public class FastRequisitionMainFragment extends Fragment {
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
-        String mater = CommonTools.decodeScanString("M", code);
-        String branch = CommonTools.decodeScanString("B", code);
+        String mater = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
+        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
         if (state) {//当前按钮状态为“清除” ,扫码选中物料
             int count = 0;

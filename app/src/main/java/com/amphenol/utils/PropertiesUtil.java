@@ -19,6 +19,24 @@ public class PropertiesUtil {
 
     public static final String NETWORK_RETRY_COUNT = "NETWORK_RETRY_COUNT";//网络访问超时时间
 
+
+    public static final String BARCODE_PREFIX_MATER = "BARCODE_PREFIX_MATER";//
+    public static final String BARCODE_PREFIX_BRANCH = "BARCODE_PREFIX_BRANCH";//
+    public static final String BARCODE_PREFIX_QUANTITY = "BARCODE_PREFIX_QUANTITY";//
+    public static final String BARCODE_PREFIX_LOCATION = "BARCODE_PREFIX_LOCATION";//
+    public static final String BARCODE_PREFIX_MANUFACTURING_DATE = "BARCODE_PREFIX_MANUFACTURING_DATE";//
+    public static final String BARCODE_PREFIX_UNITY_OF_MEASURE = "BARCODE_PREFIX_UNITY_OF_MEASURE";//
+    public static final String BARCODE_PREFIX_ROUTING = "BARCODE_PREFIX_ROUTING";//
+    public static final String BARCODE_PREFIX_MANUFACTURING_ORDER = "BARCODE_PREFIX_MANUFACTURING_ORDER";//
+    public static final String BARCODE_PREFIX_CUSTOMER_ORDER = "BARCODE_PREFIX_CUSTOMER_ORDER";//
+    public static final String BARCODE_PREFIX_SUPPLIER_ORDER = "BARCODE_PREFIX_SUPPLIER_ORDER";//
+    public static final String BARCODE_PREFIX_PURCHASE_ORDER = "BARCODE_PREFIX_PURCHASE_ORDER";//
+    public static final String BARCODE_PREFIX_MANUFACTURING_HAIR_ORDER = "BARCODE_PREFIX_MANUFACTURING_HAIR_ORDER";//
+    public static final String BARCODE_PREFIX_TRANSFER_ORDER = "BARCODE_PREFIX_TRANSFER_ORDER";//
+
+
+
+
     public static final String INQUIRE_URL_PREFIX = "INQUIRE_URL_PREFIX";//网络访问url前缀
     public static final String ACTION_GET_ENV = "ACTION_GET_ENV";//action 后缀，获取登录环境map集
     public static final String ACTION_LOGIN_CHECK = "ACTION_LOGIN_CHECK";//action 后缀，获取登录环境map集

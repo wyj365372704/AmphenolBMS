@@ -379,7 +379,7 @@ public class CreateRequisitionMainFragment extends Fragment {
         if (!CreateRequisitionMainFragment.this.isVisible())
             return;
         if (requisition.getRequisitionItems().size() == 0) {//当前物料列表为空,查询物料列表
-            code = CommonTools.decodeScanString("L", code);
+            code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), code);
             mLocationEditText.setText(code);
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
@@ -393,8 +393,8 @@ public class CreateRequisitionMainFragment extends Fragment {
             param.put("location", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
         } else {//当前物料列表不为空,扫描定位物料项
-            String mater = CommonTools.decodeScanString("M", code);
-            String branch = CommonTools.decodeScanString("B", code);
+            String mater = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
+            String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
             if (TextUtils.isEmpty(mater)) {
                 Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;

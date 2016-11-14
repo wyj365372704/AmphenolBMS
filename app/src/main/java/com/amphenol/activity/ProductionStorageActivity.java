@@ -428,7 +428,7 @@ public class ProductionStorageActivity extends BaseActivity {
     private void handleScanWorkOrder(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        code = CommonTools.decodeScanString("W", code);
+        code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER,""), code);
         mWorkOrderEditText.setText(code);
         if (TextUtils.isEmpty(code)) {
             Toast.makeText(getApplicationContext(), "无效查询", Toast.LENGTH_SHORT).show();
@@ -445,8 +445,7 @@ public class ProductionStorageActivity extends BaseActivity {
     private void handleScanBranchOrEachBoxQuantity(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        String branch = "";
-        branch = CommonTools.decodeScanString("B", code);
+        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
         mBranchEditText.setText(branch);
 
         handleScanEachBoxQuantity(code);
@@ -455,7 +454,7 @@ public class ProductionStorageActivity extends BaseActivity {
     private void handleScanEachBoxQuantity(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        String eachBoxQuantity = CommonTools.decodeScanString("Q", code);
+        String eachBoxQuantity =CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_QUANTITY,""), code);
         try {
             if (TextUtils.isEmpty(eachBoxQuantity)) {
                 mEachBoxQuantityEditText.getText().clear();

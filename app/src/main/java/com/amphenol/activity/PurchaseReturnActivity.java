@@ -10,7 +10,7 @@ import com.amphenol.fragment.PurchaseReturnMainFragment;
 import com.amphenol.fragment.PurchaseReturnSecondFragment;
 
 /**
- * 采购收货
+ * 采购退货
  */
 public class PurchaseReturnActivity extends BaseActivity {
     private PurchaseReturnMainFragment mPurchaseReturnMainFragment;
