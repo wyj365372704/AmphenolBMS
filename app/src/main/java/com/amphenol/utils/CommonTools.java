@@ -24,6 +24,8 @@ public class CommonTools {
      * @return
      */
     public static String decodeScanString(String prefix, String code) {
+        if(TextUtils.isEmpty(prefix))
+            return "";
         if(TextUtils.isEmpty(code))
             return "";
         int startIndex = code.indexOf("*" + prefix);

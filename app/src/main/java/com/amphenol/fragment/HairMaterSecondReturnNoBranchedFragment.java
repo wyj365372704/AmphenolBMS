@@ -47,7 +47,7 @@ import java.util.Map;
 
 /**
  */
-public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
+public class HairMaterSecondReturnNoBranchedFragment extends BaseFragment {
     private static final int REQUEST_CODE_SUBMIT = 0X11;
     private static final int REQUEST_CODE_CANCEL = 0x12;
     private static final int REQUEST_CODE_FOR_SCAN_LOCATION = 0X14;
@@ -347,6 +347,16 @@ public class HairMaterSecondReturnNoBranchedFragment extends Fragment {
         }
         code = CommonTools.decodeScanString("L", code);
         v.setText(code);
+    }
+
+    @Override
+    protected void handleScanCode(String message) {
+        String code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), message);
+        if(TextUtils.isEmpty(code)){
+            ((BaseActivity)getActivity()).ShowToast("扫描失败,无效库位标签");
+        }else{
+            mLocationEditText.setText(code);
+        }
     }
 
     public interface SecondFragmentCallBack extends Serializable {

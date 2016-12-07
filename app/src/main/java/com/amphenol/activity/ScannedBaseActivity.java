@@ -1,31 +1,33 @@
-package com.amphenol.fragment;
+package com.amphenol.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.amphenol.utils.PropertiesUtil;
 
 /**
- * Created by Carl on 2016/7/15/015.
+ * Created by Carl on 2016-12-07 007.
  */
-public abstract class BaseFragment extends Fragment {
+
+public abstract class ScannedBaseActivity extends BaseActivity {
     ScannerReceiver mScannerReceiver = new ScannerReceiver();
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        IntentFilter intentFilter = new IntentFilter(PropertiesUtil.getInstance(context).getValue(PropertiesUtil.SCANNER_BROADCAST_INTENT_ACTION, ""));
-        context.registerReceiver(mScannerReceiver, intentFilter);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        IntentFilter intentFilter = new IntentFilter(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.SCANNER_BROADCAST_INTENT_ACTION, ""));
+        registerReceiver(mScannerReceiver, intentFilter);
     }
 
+
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(mScannerReceiver);
+        unregisterReceiver(mScannerReceiver);
     }
 
     /**

@@ -14,6 +14,7 @@ import com.amphenol.entity.Mater;
 import com.amphenol.entity.Pick;
 import com.amphenol.entity.Purchase;
 import com.amphenol.entity.Requisition;
+import com.amphenol.entity.Returns;
 import com.amphenol.entity.WorkOrder;
 import com.amphenol.fragment.ProductionReportJobListFragment;
 
@@ -169,37 +170,38 @@ public class DecodeManager {
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            Purchase purchase = new Purchase();
-            String firm = jsonObject.optString("firm");//送货厂商
-            String receipt_number = jsonObject.optString("receipt_number");//送货单号
-            int status_code = jsonObject.optInt("status_code");//送货单状态
-            purchase.setFirm(firm.trim());
-            purchase.setNumber(receipt_number.trim());
-            purchase.setStatus(status_code);
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+            Returns returns = new Returns();
+            String firm = jsonObject.optString("firm");//退货厂商
+            String receipt_number = params.get("return_number").trim();
+            int status_code = jsonObject.optInt("status_code");//退货单状态
+            returns.setFirm(firm.trim());
+            returns.setNumber(receipt_number.trim());
+            returns.setStatus(status_code);
             JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
-            ArrayList<Purchase.PurchaseItem> purchaseItems = new ArrayList<>();
+            ArrayList<Returns.ReturnsItem> returnsItems = new ArrayList<>();
             if (materJsonArray != null) {
                 for (int i = 0; i < materJsonArray.length(); i++) {
                     JSONObject materJsonObject1 = materJsonArray.optJSONObject(i);
-                    String materPO = materJsonObject1.optString("mater_po");//采购单项次
-                    String number = materJsonObject1.optString("number");//采购单行号
-                    String mate = materJsonObject1.optString("mate");//物料编号
+                    String materPO = materJsonObject1.optString("mater_po");//退货单项次
+                    String number = materJsonObject1.optString("number");//退货单行号
+                    String mater_number = materJsonObject1.optString("mater");//物料编号
                     String unit = materJsonObject1.optString("unit");//单位
                     double quantity = materJsonObject1.optDouble("quantity", 0);//数量
-                    Purchase.PurchaseItem purchaseItem = new Purchase.PurchaseItem();
-                    purchaseItem.setPurchase(purchase);
-                    purchaseItem.setPo(materPO.trim());
-                    purchaseItem.setNumber(number.trim());
+                    Returns.ReturnsItem returnsItem = new Returns.ReturnsItem();
+                    returnsItem.setReturns(returns);
+                    returnsItem.setPo(materPO.trim());
+                    returnsItem.setNumber(number.trim());
                     Mater mater = new Mater();
-                    mater.setNumber(mate.trim());
+                    mater.setNumber(mater_number.trim());
                     mater.setUnit(unit.trim());
-                    mater.setQuantity(quantity);
-                    purchaseItem.setMater(mater);
-                    purchaseItems.add(purchaseItem);
+                    returnsItem.setQuantity(quantity);
+                    returnsItem.setMater(mater);
+                    returnsItems.add(returnsItem);
                 }
             }
-            purchase.setPurchaseItems(purchaseItems);
-            data.putParcelable("purchase", purchase);
+            returns.setReturnsItems(returnsItems);
+            data.putParcelable("returns", returns);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -293,60 +295,38 @@ public class DecodeManager {
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
         if (isRequestOK(jsonObject)) {
-            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
-
-            Purchase purchase = new Purchase();
-            purchase.setNumber(params.get("receipt_number").trim());
-
-            String mateNumber = jsonObject.optString("mate_number");//物料编号
-            String mateDesc = jsonObject.optString("mate_desc");//物料描述
-            String purchaseUnit = jsonObject.optString("purchase_unit");//采购单位
-            double planQuantity = jsonObject.optDouble("plan_quantity");//采购数量
-            int branchControl = jsonObject.optInt("branch_control", Mater.BRANCH_NO_CONTROL);//批次控制  默认为不控制
-            int status = jsonObject.optInt("status", Purchase.PurchaseItem.STATUS_CLOSED);//收货状态   默认为已关闭
-            double actualSingle = jsonObject.optDouble("actual_single");//实际单重
-            String actual_unit = jsonObject.optString("actual_unit");//实际单重单位
-            double actualQuantity = jsonObject.optDouble("actual_quantity");//实际总数
-            String shard = jsonObject.optString("shard");//收货子库
-            String location = jsonObject.optString("location");//收货库位
-
-            Purchase.PurchaseItem purchaseItem = new Purchase.PurchaseItem();
-            purchaseItem.setUnit(purchaseUnit.trim());
-            purchaseItem.setQuantity(planQuantity);
-            purchaseItem.setState(status);
-            purchaseItem.setNumber(params.get("receipt_line").trim());
-
+            Returns.ReturnsItem returnsItem = new Returns.ReturnsItem();
             Mater mater = new Mater();
-            mater.setNumber(mateNumber.trim());
-            mater.setDesc(mateDesc.trim());
-            mater.setBranchControl(branchControl);
-            mater.setUnit(actual_unit.trim());
-            mater.setSingle(actualSingle);
-            mater.setQuantity(actualQuantity);
-            mater.setShard(shard.trim());
-            mater.setLocation(location.trim());
+            returnsItem.setMater(mater);
 
-            JSONArray branchJsonArray = jsonObject.optJSONArray("branch_list");
-            ArrayList<Purchase.PurchaseItem.PurchaseItemBranchItem> purchaseItemBranchItems = new ArrayList<>();
-            if (branchJsonArray != null && branchJsonArray.length() > 0) {
-                for (int i = 0; i < branchJsonArray.length(); i++) {
-                    JSONObject branchJsonObject = branchJsonArray.optJSONObject(i);
-                    String branch_number = branchJsonObject.optString("branch_number");//批次行号
-                    String branch_desc = branchJsonObject.optString("branch_desc");//批次号
-                    double plan_quantity = branchJsonObject.optDouble("plan_quantity");//数量
-                    Mater.Branch branch = new Mater.Branch();
-                    branch.setNumber(branch_number);
-                    branch.setPo(branch_desc);
-                    branch.setQuantity(plan_quantity);
-                    Purchase.PurchaseItem.PurchaseItemBranchItem purchaseItemBranchItem = new Purchase.PurchaseItem.PurchaseItemBranchItem(branch, plan_quantity);
-                    purchaseItemBranchItems.add(purchaseItemBranchItem);
+            HashMap<String, String> params = (HashMap<String, String>) jsonObject.get("params");
+            data.putInt("position", Integer.parseInt(params.get("position")));
+            String mater_desc = jsonObject.optString("mate_desc");//物料描述
+            mater.setDesc(mater_desc);
+
+            ArrayList<Returns.ReturnsItemSource> returnsItemSources = new ArrayList<>();
+            returnsItem.setReturnsItemSources(returnsItemSources);
+
+            JSONArray locationJsonArray = jsonObject.optJSONArray("location_list");
+            if (locationJsonArray != null && locationJsonArray.length() > 0) {
+                for (int i = 0; i < locationJsonArray.length(); i++) {
+                    JSONObject branchJsonObject = locationJsonArray.optJSONObject(i);
+                    String shard = branchJsonObject.optString("shard");//子库
+                    String location = branchJsonObject.optString("location");//库位
+                    String branch_number = branchJsonObject.optString("branch");//批次号
+                    double quantity = branchJsonObject.optDouble("quantity");//数量
+                    Returns.ReturnsItemSource returnsItemSource = new Returns.ReturnsItemSource();
+                    returnsItemSource.setPo(branch_number);
+                    returnsItemSource.setQuantity(quantity);
+                    returnsItemSource.setEnableQuantity(quantity);
+                    Mater sourceMater = new Mater();
+                    sourceMater.setShard(shard);
+                    sourceMater.setLocation(location);
+                    returnsItemSource.setMater(sourceMater);
+                    returnsItemSources.add(returnsItemSource);
                 }
             }
-            purchaseItem.setMater(mater);
-            purchaseItem.setPurchase(purchase);
-            purchaseItem.setPurchaseItemBranchItems(purchaseItemBranchItems);
-            data.putParcelable("purchaseItem", purchaseItem);
-
+            data.putParcelable("returnsItem", returnsItem);
         }
         msg.setData(data);
         handler.sendMessage(msg);
@@ -362,6 +342,23 @@ public class DecodeManager {
     }
 
     public static void decodeReceiptClose(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+    public static void decodeReturnConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeReturnClose(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
         msg.what = messageWhat;
@@ -1492,16 +1489,16 @@ public class DecodeManager {
             String mater_desc = jsonObject.optString("mater_desc");
             String mater_format = jsonObject.optString("mater_format");
             String unit = jsonObject.optString("unit");
-            String branched= jsonObject.optString("branched");
+            String branched = jsonObject.optString("branched");
 
             Mater mater = new Mater();
             mater.setNumber(mater_number.trim());
             mater.setDesc(mater_desc.trim());
             mater.setFormat(mater_format.trim());
             mater.setUnit(unit.trim());
-            mater.setBranchControl(TextUtils.equals(branched,"1")?Mater.BRANCH_CONTROL:TextUtils.equals(branched,"0")?Mater.BRANCH_NO_CONTROL:Mater.BRANCH_NORMAL);
+            mater.setBranchControl(TextUtils.equals(branched, "1") ? Mater.BRANCH_CONTROL : TextUtils.equals(branched, "0") ? Mater.BRANCH_NO_CONTROL : Mater.BRANCH_NORMAL);
 
-            data.putParcelable("mater",mater);
+            data.putParcelable("mater", mater);
         }
         msg.setData(data);
         handler.sendMessage(msg);

@@ -31,6 +31,7 @@ import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.Purchase;
 import com.amphenol.ui.LoadingDialog;
+import com.amphenol.utils.Char2BigUtil;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
@@ -49,7 +50,7 @@ import static com.amphenol.amphenol.R.id.fragment_purchase_receipt_second_sjdz_i
 /**
  * 采购收货_物料明细
  */
-public class PurchaseReceiptSecondBranchedFragment extends Fragment {
+public class PurchaseReceiptSecondBranchedFragment extends BaseFragment {
     private static final int REQUEST_CODE_RECEIPT_CONFIRM = 0X10;
     private static final int REQUEST_CODE_RECEIPT_CLOSE = 0x11;
     private View rootView = null;
@@ -257,6 +258,8 @@ public class PurchaseReceiptSecondBranchedFragment extends Fragment {
                     case 1://新增批次
                         AlertDialog.Builder builder3 = new AlertDialog.Builder(getContext());
                         final View view = LayoutInflater.from(getContext()).inflate(R.layout.purchase_receipt_add_branch_layout, null);
+                        EditText pchEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_pch_et);
+                        pchEditText.setTransformationMethod(new Char2BigUtil());
                         builder3.setTitle("新增批次").setView(view);
                         builder3.setNegativeButton("取消", null);
                         builder3.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -470,6 +473,17 @@ public class PurchaseReceiptSecondBranchedFragment extends Fragment {
         param.put("location", location);
         param.put("branch_list", branchListJson);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_RECEIPT_CONFIRM, getContext()), param, REQUEST_CODE_RECEIPT_CONFIRM, mRequestTaskListener);
+    }
+
+    @Override
+    protected void handleScanCode(String message) {
+        String code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), message);
+        if(TextUtils.isEmpty(code)){
+            ((BaseActivity)getActivity()).ShowToast("扫描失败,无效库位标签");
+        }else{
+            mLocationEditText.setText(code);
+            ((BaseActivity)getActivity()).ShowToast("收货库位调整为:"+code);
+        }
     }
 
     public interface SecondFragmentCallBack extends Serializable {

@@ -17,6 +17,10 @@ public class PropertiesUtil {
     public static final String NETWORK_TIMEOUT_MS = "NETWORK_TIMEOUT_MS";//网络访问超时时间
     public static final String EXIST_TIME_INTERVAL_MILL = "EXIST_TIME_INTERVAL_MILL";//menuActivity 退出时间间隔
 
+    public static final String SCANNER_BROADCAST_INTENT_ACTION = "SCANNER_BROADCAST_INTENT_ACTION";//扫描头广播动作
+    public static final String SCANNER_BROADCAST_INTENT_TAG = "SCANNER_BROADCAST_INTENT_TAG";//扫描头广播数据标签
+
+
     public static final String NETWORK_RETRY_COUNT = "NETWORK_RETRY_COUNT";//网络访问超时时间
 
 
@@ -52,6 +56,8 @@ public class PropertiesUtil {
 
     public static final String ACTION_RECEIPT_CONFIRM = "ACTION_RECEIPT_CONFIRM";//action 后缀，确认物料收货
     public static final String ACTION_RECEIPT_CLOSE = "ACTION_RECEIPT_CLOSE";//action 后缀，关闭物料收货
+    public static final String ACTION_MATER_RETURN_CLOSE = "ACTION_MATER_RETURN_CLOSE";//action 后缀，关闭物料退货
+    public static final String ACTION_MATER_RETURN_CONFIRM = "ACTION_MATER_RETURN_CONFIRM";//action 后缀，确认物料退货
 
     public static final String ACTION_CREATE_REQUISITION_GET_MATER_LIST = "ACTION_CREATE_REQUISITION_GET_MATER_LIST";//action 后缀,创建调拨单,查询物料列表
     public static final String ACTION_CREATE_REQUISITION_GET_MATER = "ACTION_CREATE_REQUISITION_GET_MATER";//action 后缀,创建调拨单/库存查询/生产订单-材料明细,查询物料明细

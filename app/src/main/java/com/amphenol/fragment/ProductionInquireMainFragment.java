@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * Created by Carl on 2016-09-01 001.
  */
-public class ProductionInquireMainFragment extends Fragment {
+public class ProductionInquireMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_FOR_SCAN = 0x10;
     private static final int REQUEST_CODE_INQUIRE = 0x10;
     private ProductionInquireMainExecutionFragment mProductionInquireExecutionFragment;
@@ -66,7 +66,6 @@ public class ProductionInquireMainFragment extends Fragment {
     private WorkOrder mWorkOrder = new WorkOrder();
 
     private View.OnClickListener mOnClickListener;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
     private MyHandler myHandler = new MyHandler();
@@ -116,7 +115,6 @@ public class ProductionInquireMainFragment extends Fragment {
 
         mScanImageView.setOnClickListener(mOnClickListener);
         mInquireButton.setOnClickListener(mOnClickListener);
-        mWorkOrderEditText.setOnEditorActionListener(mOnEditorActionListener);
     }
 
     public void initListeners() {
@@ -133,24 +131,10 @@ public class ProductionInquireMainFragment extends Fragment {
                             mWorkOrder = new WorkOrder();
                             refreshShow();
                         } else {
-                            handleScanWorkOrder(mWorkOrderEditText.getText().toString());
+                            handleScanCode(mWorkOrderEditText.getText().toString());
                         }
                         break;
                 }
-            }
-        };
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    handleScanWorkOrder(mWorkOrderEditText.getText().toString().trim());
-                    return true;
-                }
-                return false;
             }
         };
 
@@ -269,11 +253,11 @@ public class ProductionInquireMainFragment extends Fragment {
         if (requestCode == REQUEST_CODE_FOR_SCAN && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
             mWorkOrderEditText.setText(code);
-            handleScanWorkOrder(code);
+            handleScanCode(code);
         }
     }
-
-    private void handleScanWorkOrder(String code) {
+    @Override
+    protected void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
         code = CommonTools.decodeScanString("W", code);

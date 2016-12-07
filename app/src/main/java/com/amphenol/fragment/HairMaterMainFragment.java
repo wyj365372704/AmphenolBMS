@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HairMaterMainFragment extends Fragment {
+public class HairMaterMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_GET_PICK_LIST = 0x10;
     private static final int REQUEST_CODE_GET_PICK = 0x11;
     private static final int REQUEST_CODE_FOR_SCAN = 0x12;
@@ -55,7 +55,6 @@ public class HairMaterMainFragment extends Fragment {
     private TextView mPickNumberTextView, mWorkOrderTextView, mFounderTextView, mDepartmentTextView, mCreateDateTextView, mTypeTextView;
     private Button mInquireButton;
     private EditText mPickNumberEditText;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
     private View.OnClickListener mOnClickListener;
     private LoadingDialog mLoadingDialog;
     private HairMaterMainAdapter mHairMaterMainAdapter;
@@ -114,7 +113,6 @@ public class HairMaterMainFragment extends Fragment {
         mScanImageView = (ImageView) rootView.findViewById(R.id.fragment_scan_iv);
         mScanImageView.setOnClickListener(mOnClickListener);
         mPickNumberEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
-        mPickNumberEditText.setOnEditorActionListener(mOnEditorActionListener);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_purchase_receipt_inquire_bt);
         mInquireButton.setOnClickListener(mOnClickListener);
         mPickNumberTextView = (TextView) rootView.findViewById(R.id.fragment_check_requisition_main_requisition_tv);
@@ -156,21 +154,6 @@ public class HairMaterMainFragment extends Fragment {
                         startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN);
                         break;
                 }
-            }
-        };
-
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    handleScanCode(mPickNumberEditText.getText().toString().trim());
-                    return true;
-                }
-                return false;
             }
         };
 
@@ -291,16 +274,15 @@ public class HairMaterMainFragment extends Fragment {
         }
     }
 
-    /**
-     * 处理扫描得到的二维码,执行联网查询操作
-     */
-    private void handleScanCode(String code) {
+    @Override
+    protected void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
         if (!HairMaterMainFragment.this.isVisible())
             return;
+
         if (TextUtils.isEmpty(pick.getNumber())) {//查询物料列表
-            code = CommonTools.decodeScanString("I", code);
+            code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_HAIR_ORDER,""), code);
             mPickNumberEditText.setText(code);
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
@@ -309,7 +291,7 @@ public class HairMaterMainFragment extends Fragment {
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_GET_PICK_LIST, getContext()), param, REQUEST_CODE_GET_PICK_LIST, mRequestTaskListener);
         } else {//扫描定位物料项
             mPickNumberEditText.setText("");
-            code = CommonTools.decodeScanString("M", code);
+            code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
             if (TextUtils.isEmpty(code)) {
                 Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;
@@ -340,10 +322,8 @@ public class HairMaterMainFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_FOR_SCAN && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
-            mPickNumberEditText.setText(code);
-            handleScanCode(mPickNumberEditText.getText().toString().trim());
+            handleScanCode(code);
         }
-
     }
 
     public interface MainFragmentCallBack extends Serializable {

@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class PurchaseReceiptMainFragment extends Fragment {
+public class PurchaseReceiptMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_FOR_SCAN = 0X11;
     private static final int REQUEST_CODE_QUERY_RECEIPT = 0X12;
     private static final int REQUEST_CODE_QUERY_RECEIPT_ITEM = 0x13;
@@ -53,7 +53,6 @@ public class PurchaseReceiptMainFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private PurchaseAdapter mFirstReceiptAdapter;
     private PurchaseAdapter.OnItemClickListener mOnItemClickListener;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
     private View.OnClickListener mOnClickListener;
     private MainFragmentCallBack mainFragmentCallBack;
     private EditText mCodeEditText;
@@ -122,20 +121,20 @@ public class PurchaseReceiptMainFragment extends Fragment {
                 handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(position).getNumber());
             }
         };
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    handleScanCode(mCodeEditText.getText().toString().trim());
-                    return true;
-                }
-                return false;
-            }
-        };
+//        mOnEditorActionListener = new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                if (actionId == EditorInfo.IME_ACTION_DONE) {
+//                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    if (imm.isActive()) {
+//                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+//                    }
+//                    handleScanCode(mCodeEditText.getText().toString().trim());
+//                    return true;
+//                }
+//                return false;
+//            }
+//        };
         mOnClickListener = new View.OnClickListener() {
 
 
@@ -222,8 +221,6 @@ public class PurchaseReceiptMainFragment extends Fragment {
         mRecyclerView.setAdapter(mFirstReceiptAdapter);
         mCodeEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
 
-        mCodeEditText.setOnEditorActionListener(mOnEditorActionListener);
-
         mScanImageView = (ImageView) rootView.findViewById(R.id.fragment_purchase_receipt_scan_iv);
         mScanImageView.setOnClickListener(mOnClickListener);
 
@@ -238,7 +235,8 @@ public class PurchaseReceiptMainFragment extends Fragment {
     /**
      * 处理扫描得到的二维码,执行联网查询操作
      */
-    private void handleScanCode(String code) {
+    @Override
+    protected void handleScanCode(String code) {
 
         if (TextUtils.isEmpty(code))
             return;

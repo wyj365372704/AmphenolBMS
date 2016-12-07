@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -51,7 +52,7 @@ import java.util.Map;
 
 /**
  */
-public class HairMaterSecondFragment extends Fragment {
+public class HairMaterSecondFragment extends BaseFragment {
     private static final int REQUEST_CODE_INQUIRE = 0X10;
     private static final int REQUEST_CODE_SUBMIT = 0X11;
     private static final int REQUEST_CODE_CANCEL = 0x12;
@@ -138,8 +139,8 @@ public class HairMaterSecondFragment extends Fragment {
         mLocationEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_from_location_et);
         mBranchEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_branch_et);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_inquire_bt);
-        mAddButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_submit_bt);
         mInquireButton.setOnClickListener(mOnClickListener);
+        mAddButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_submit_bt);
         mAddButton.setOnClickListener(mOnClickListener);
         mCancelButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_cancel_bt);
         mCancelButton.setOnClickListener(mOnClickListener);
@@ -170,8 +171,6 @@ public class HairMaterSecondFragment extends Fragment {
         hairMaterSecondOneAdapter.setDate(mPickItem.getPickItemBranchItems());
         hairMaterSecondOneAdapter.notifyDataSetChanged();
         functionCalculateHairQuantity();
-        mHairQuantityTextView.setText(mPickItem.getHairQuantity() + "");
-
         if (mPickItem.getPickItemBranchItems().size() == 0) {
             mInquireButton.setTag(false);
             mInquireButton.setText("查询");
@@ -296,24 +295,16 @@ public class HairMaterSecondFragment extends Fragment {
         mOnItemClickListener = new HairMaterSecondOneAdapter.OnItemClickListener() {
             @Override
             public void OnItemCheckedChanged(int position, boolean isChecked) {
-//                if(isChecked){
-//                    mPickItem.setHairQuantity(mPickItem.getHairQuantity()+mPickItem.getPickItemBranchItems().get(position).getQuantity());
-//                }else{
-//                    mPickItem.setHairQuantity((mPickItem.getHairQuantity()-mPickItem.getPickItemBranchItems().get(position).getQuantity())>0?(mPickItem.getHairQuantity()-mPickItem.getPickItemBranchItems().get(position).getQuantity()):0);
-//                }
                 mPickItem.getPickItemBranchItems().get(position).setChecked(isChecked);
                 functionCalculateHairQuantity();
-                mHairQuantityTextView.setText(mPickItem.getHairQuantity() + "");
             }
 
             @Override
             public void OnRequisitionQuantityChanged(int position, double quantity, double quantityBefore) {
                 if (quantity > mPickItem.getPickItemBranchItems().get(position).getBranch().getQuantity()) {
-                    Log.d("wyj", "quantity " + quantity + " " + mPickItem.getPickItemBranchItems().get(position).getBranch().getQuantity());
                     ((BaseActivity) getActivity()).ShowToast("发料数量不能大于库存数量");
                 }
                 functionCalculateHairQuantity();
-                mHairQuantityTextView.setText(mPickItem.getHairQuantity() + "");
             }
         };
 
@@ -426,6 +417,9 @@ public class HairMaterSecondFragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_HAIR_MATER_SUBMIT, getContext()), param, REQUEST_CODE_SUBMIT, mRequestTaskListener);
     }
 
+    /**
+     * 计算当前已勾选的物料发料数量之和,并反馈至"发料数量"显示
+     */
     private synchronized void functionCalculateHairQuantity() {
         mPickItem.setHairQuantity(0);
         for (Pick.PickItem.PickItemBranchItem pickItemBranchItem : mPickItem.getPickItemBranchItems()) {
@@ -433,6 +427,7 @@ public class HairMaterSecondFragment extends Fragment {
                 mPickItem.setHairQuantity(mPickItem.getHairQuantity() + pickItemBranchItem.getQuantity());
             }
         }
+        mHairQuantityTextView.setText(mPickItem.getHairQuantity() + "");
     }
 
     private void handleInquireMater(String warehouse, String unit, String mate, String pickNumber, String pickLine, String shard, String location, String branch, double quantity, String department, String workOrder, String sequence, String type, String branched) {
@@ -499,6 +494,39 @@ public class HairMaterSecondFragment extends Fragment {
         code = CommonTools.decodeScanString("L", code);
         v.setText(code);
         mBranchEditText.requestFocus();
+    }
+
+    @Override
+    protected void handleScanCode(String code) {
+        if (TextUtils.isEmpty(code))
+            return;
+        if (!HairMaterSecondFragment.this.isVisible())
+            return;
+
+        String materNumber = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER, ""), code);
+        String location = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION, ""), code);
+        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), code);
+
+        if (TextUtils.isEmpty(materNumber) || !TextUtils.equals(materNumber, mPickItem.getBranch().getMater().getNumber())) {
+            ((BaseActivity) getActivity()).ShowToast("扫描失败,不是正确的物料标签卡");
+            return;
+        }
+        for (int i = 0; i < mPickItem.getPickItemBranchItems().size(); i++) {
+            Pick.PickItem.PickItemBranchItem item = mPickItem.getPickItemBranchItems().get(i);
+            if (item.getBranch().getPo().equals(branch) && item.getBranch().getMater().getLocation().equals(location)) {
+                if (mPickItem.getHairQuantity() + item.getBranch().getQuantity() > mPickItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
+                    item.setQuantity(mPickItem.getQuantity() - mPickItem.getHairQuantity());
+                } else {
+                    item.setQuantity(item.getBranch().getQuantity());
+                }
+                item.setChecked(true);
+                hairMaterSecondOneAdapter.notifyDataSetChanged();
+                mRecyclerView.scrollToPosition(i);
+                functionCalculateHairQuantity();
+                return;
+            }
+        }
+        ((BaseActivity) getActivity()).ShowToast("扫描失败,该物料不在可选列表中");
     }
 
     public interface SecondFragmentCallBack extends Serializable {

@@ -27,12 +27,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
+import com.amphenol.Manager.SPManager;
 import com.amphenol.Manager.SessionManager;
 import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.PurchaseAdapter;
+import com.amphenol.adapter.ReturnsAdapter;
 import com.amphenol.amphenol.R;
+import com.amphenol.entity.Mater;
 import com.amphenol.entity.Purchase;
+import com.amphenol.entity.Returns;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
@@ -41,19 +45,19 @@ import com.amphenol.utils.PropertiesUtil;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class PurchaseReturnMainFragment extends Fragment {
+public class PurchaseReturnMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_FOR_SCAN = 0X11;
     private static final int REQUEST_CODE_QUERY_RETURN = 0X12;
     private static final int REQUEST_CODE_QUERY_RETURN_ITEM = 0x13;
     private View rootView = null;
     private RecyclerView mRecyclerView;
-    private PurchaseAdapter mFirstReceiptAdapter;
-    private PurchaseAdapter.OnItemClickListener mOnItemClickListener;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
+    private ReturnsAdapter mFirstReturnAdapter;
+    private ReturnsAdapter.OnItemClickListener mOnItemClickListener;
     private View.OnClickListener mOnClickListener;
     private MainFragmentCallBack mainFragmentCallBack;
     private EditText mCodeEditText;
@@ -62,14 +66,14 @@ public class PurchaseReturnMainFragment extends Fragment {
     private TextView mFirmTextView, mPurchaseNumberTextView, mStatusTextView;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
-    private Purchase purchase = new Purchase();
+    private Returns returns = new Returns();
     private MyHandler myHandler = new MyHandler();
 
     public static PurchaseReturnMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
 
         Bundle args = new Bundle();
         PurchaseReturnMainFragment fragment = new PurchaseReturnMainFragment();
-        fragment.mainFragmentCallBack = mainFragmentCallBack ;
+        fragment.mainFragmentCallBack = mainFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
     }
@@ -116,29 +120,13 @@ public class PurchaseReturnMainFragment extends Fragment {
     }
 
     private void initListeners() {
-        mOnItemClickListener = new PurchaseAdapter.OnItemClickListener() {
+        mOnItemClickListener = new ReturnsAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(position).getNumber());
-            }
-        };
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    handleScanCode(mCodeEditText.getText().toString().trim());
-                    return true;
-                }
-                return false;
+                handleInquireMater(returns.getNumber(), position, returns.getReturnsItems().get(position).getMater().getNumber());
             }
         };
         mOnClickListener = new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -148,8 +136,8 @@ public class PurchaseReturnMainFragment extends Fragment {
                     case R.id.fragment_purchase_receipt_inquire_bt://查询按钮
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
                         if (state) {//当前按钮状态为“清除”
-                            purchase = new Purchase();
-                            refreshShow(purchase);
+                            returns = new Returns();
+                            refreshShow(returns);
                         } else {
                             handleScanCode(mCodeEditText.getText().toString().trim());
                         }
@@ -219,10 +207,8 @@ public class PurchaseReturnMainFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_purchase_receipt_content_rl);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(mFirstReceiptAdapter);
+        mRecyclerView.setAdapter(mFirstReturnAdapter);
         mCodeEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
-
-        mCodeEditText.setOnEditorActionListener(mOnEditorActionListener);
 
         mScanImageView = (ImageView) rootView.findViewById(R.id.fragment_purchase_receipt_scan_iv);
         mScanImageView.setOnClickListener(mOnClickListener);
@@ -232,20 +218,20 @@ public class PurchaseReturnMainFragment extends Fragment {
     }
 
     private void initData() {
-        mFirstReceiptAdapter = new PurchaseAdapter(getContext(), purchase.getPurchaseItems(), mOnItemClickListener);
+        mFirstReturnAdapter = new ReturnsAdapter(getContext(), returns.getReturnsItems(), mOnItemClickListener);
     }
 
     /**
      * 处理扫描得到的二维码,执行联网查询操作
      */
-    private void handleScanCode(String code) {
+    protected void handleScanCode(String code) {
 
         if (TextUtils.isEmpty(code))
             return;
         if (!PurchaseReturnMainFragment.this.isVisible())
             return;
-        if (TextUtils.isEmpty(purchase.getNumber())) {//当前收货单为空，扫码查询收货单
-            code = CommonTools.decodeScanString("S", code);
+        if (TextUtils.isEmpty(returns.getNumber())) {//当前收货单为空，扫码查询收货单
+            code = CommonTools.decodeScanString("V", code);
             mCodeEditText.setText(code);
             if (TextUtils.isEmpty(code)) {
                 Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
@@ -254,8 +240,8 @@ public class PurchaseReturnMainFragment extends Fragment {
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
             param.put("env", SessionManager.getEnv(getContext()));
-            param.put("delive_code", code);
-            NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT, getContext()), param, REQUEST_CODE_QUERY_RETURN, mRequestTaskListener);
+            param.put("return_number", code);
+            NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RETURN, getContext()), param, REQUEST_CODE_QUERY_RETURN, mRequestTaskListener);
         } else {//当前收货单不为空，扫码查询物料
             code = CommonTools.decodeScanString("M", code);
             if (TextUtils.isEmpty(code)) {
@@ -264,9 +250,10 @@ public class PurchaseReturnMainFragment extends Fragment {
             }
             mCodeEditText.setText("");
 
-            for (int i = 0; i < purchase.getPurchaseItems().size(); i++) {
-                if (TextUtils.equals(purchase.getPurchaseItems().get(i).getMater().getNumber(), code)) {
-                    handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(i).getNumber());
+            for (int i = 0; i < returns.getReturnsItems().size(); i++) {
+                if (TextUtils.equals(returns.getReturnsItems().get(i).getMater().getNumber(), code)) {
+                    handleInquireMater(returns.getNumber(),i,  returns.getReturnsItems().get(i).getMater().getNumber());
+
                     return;
                 }
             }
@@ -276,35 +263,37 @@ public class PurchaseReturnMainFragment extends Fragment {
 
     /**
      * 查询物料详细信息
-     *
-     * @param purchaseNumber     送货单号码
-     * @param purchaseItemNumber 送货单行号
      */
-    private void handleInquireMater(final String purchaseNumber, final String purchaseItemNumber) {
+    private void handleInquireMater(final String purchaseNumber, int position, final String mater) {
         if (!PurchaseReturnMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("receipt_number", purchaseNumber);
-        param.put("receipt_line", purchaseItemNumber);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT_ITEM, getContext()), param, REQUEST_CODE_QUERY_RETURN_ITEM, mRequestTaskListener);
-
+        param.put("mater", mater);
+        param.put("position", position + "");
+        param.put("warehouse", SessionManager.getWarehouse(getContext()));
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RETURN_ITEM, getContext()), param, REQUEST_CODE_QUERY_RETURN_ITEM, mRequestTaskListener);
     }
 
     /**
      * 刷新显示
      */
-    private void refreshShow(Purchase receipt) {
-        this.purchase = receipt;
+    private void refreshShow(Returns returns) {
+        this.returns = returns;
         //开始更新界面
-        mFirmTextView.setText(receipt.getFirm().trim());
-        mPurchaseNumberTextView.setText(receipt.getNumber().trim());
-        mStatusTextView.setText(receipt.getStatus() == Purchase.STATUS_FINISHED ? "退货完成" : receipt.getStatus() == Purchase.STATUS_NO_RECEIPT ? "活动" : receipt.getStatus() == Purchase.STATUS_PART_RECEIPT ? "部分退货" : "");
+        mFirmTextView.setText(returns.getFirm().trim());
+        mPurchaseNumberTextView.setText(returns.getNumber().trim());
+        mStatusTextView.setText(returns.getStatus() == Returns.STATUS_CREATING ? "创建中"
+                : returns.getStatus() == Returns.STATUS_FINISHED ? "退货完成"
+                : returns.getStatus() == Returns.STATUS_NO_RETURN ? "未退货"
+                : returns.getStatus() == Returns.STATUS_PART_RETURN ? "部分退货"
+                : "");
         mCodeEditText.requestFocus();
-        mFirstReceiptAdapter.setDate(receipt.getPurchaseItems());
-        mFirstReceiptAdapter.notifyDataSetChanged();
-        if (TextUtils.isEmpty(receipt.getNumber())) {
+        mFirstReturnAdapter.setDate(returns.getReturnsItems());
+        mFirstReturnAdapter.notifyDataSetChanged();
+        if (TextUtils.isEmpty(returns.getNumber())) {
             mInquireButton.setTag(false);
             mInquireButton.setText("查询");
             mCodeEditText.getText().clear();
@@ -323,10 +312,10 @@ public class PurchaseReturnMainFragment extends Fragment {
      * @param purchaseItemNumber 送货单行号
      */
     public void refreshShow(String purchaseItemNumber) {
-        for (int i = 0; i < purchase.getPurchaseItems().size(); i++) {
-            if (TextUtils.equals(purchase.getPurchaseItems().get(i).getNumber(), purchaseItemNumber)) {
-                purchase.getPurchaseItems().remove(i);
-                mFirstReceiptAdapter.notifyDataSetChanged();
+        for (int i = 0; i < returns.getReturnsItems().size(); i++) {
+            if (TextUtils.equals(returns.getReturnsItems().get(i).getNumber(), purchaseItemNumber)) {
+                returns.getReturnsItems().remove(i);
+                mFirstReturnAdapter.notifyDataSetChanged();
                 break;
             }
         }
@@ -344,7 +333,7 @@ public class PurchaseReturnMainFragment extends Fragment {
     }
 
     public interface MainFragmentCallBack extends Serializable {
-        void gotoSecondFragment(Purchase.PurchaseItem purchaseItem);
+        void gotoSecondFragment(Returns.ReturnsItem returnsItem);
     }
 
     private class MyHandler extends Handler {
@@ -354,19 +343,29 @@ public class PurchaseReturnMainFragment extends Fragment {
             switch (msg.what) {
                 case REQUEST_CODE_QUERY_RETURN:
                     if (bundle.getInt("code") == 1) {
-                        purchase = bundle.getParcelable("purchase");
-                        refreshShow(purchase);
+                        returns = bundle.getParcelable("returns");
+                        refreshShow(returns);
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("无效收货单");
                     }
                     break;
                 case REQUEST_CODE_QUERY_RETURN_ITEM:
                     if (bundle.getInt("code") == 1) {
-                        Purchase.PurchaseItem purchaseItem = bundle.getParcelable("purchaseItem");
+                        Returns.ReturnsItem returnsItemTemp = returns.getReturnsItems().get(bundle.getInt("position"));
+                        Returns.ReturnsItem returnsItem = bundle.getParcelable("returnsItem");
+                        returnsItem.setNumber(returnsItemTemp.getNumber());
+                        returnsItem.getMater().setNumber(returnsItemTemp.getMater().getNumber());
+                        returnsItem.setQuantity(returnsItemTemp.getQuantity());
+
+                        Returns returns = new Returns();
+                        returns.setNumber(returnsItemTemp.getReturns().getNumber());
+                        returnsItem.setReturns(returns);
                         if (mainFragmentCallBack != null) {
-                            mainFragmentCallBack.gotoSecondFragment(purchaseItem);
+                            mainFragmentCallBack.gotoSecondFragment(returnsItem);
                         }
-                    } else {
+                    } else if(bundle.getInt("code") == 5){
+                        ((BaseActivity) getActivity()).ShowToast("未查询到此物料");
+                    }else {
                         ((BaseActivity) getActivity()).ShowToast("获取物料明细失败");
                     }
 

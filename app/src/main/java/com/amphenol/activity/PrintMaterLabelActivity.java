@@ -3,7 +3,6 @@ package com.amphenol.activity;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,14 +19,11 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -62,7 +58,7 @@ import org.json.JSONObject;
 /**
  * Created by Carl on 2016-09-05 005.
  */
-public class PrintMaterLabelActivity extends BaseActivity {
+public class PrintMaterLabelActivity extends ScannedBaseActivity {
     private static final int REQUEST_CODE_FOR_SCAN = 0x10;
     private static final int REQUEST_CODE_INQUIRE_MATER = 0X11;
     private static final int REQUEST_ENABLE_BT = 0x12;
@@ -70,10 +66,9 @@ public class PrintMaterLabelActivity extends BaseActivity {
     private ImageView mScanImageView;
     private Button mInquireButton, mPrintButton;
     private TextView actionBarRight;
-    private TextView materNumberTextView, materFormatTextView, materDescTextView, branchedTextView, unitTextView, singleUnitTextView, totalWeightTextView, mDateEditText;
+    private TextView materNumberTextView, materFormatTextView, materDescTextView, mBranchedTextView, unitTextView, singleUnitTextView, totalWeightTextView, mDateEditText;
     private View.OnClickListener mOnClickListener;
-    private EditText materEditText, branchEditText, amountEditText, singleEditText, firmEditText;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
+    private EditText materEditText, mBranchEditText, amountEditText, singleEditText, firmEditText;
 
     private Mater.Branch branch;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
@@ -141,12 +136,12 @@ public class PrintMaterLabelActivity extends BaseActivity {
         materNumberTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_mater_number_tv);
         materFormatTextView = (TextView) findViewById(R.id.activity_print_mater_label_mater_format);
         materDescTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_mater_desc_tv);
-        branchedTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_branched_tv);
+        mBranchedTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_branched_tv);
         unitTextView = (TextView) findViewById(R.id.activity_print_mater_label_mater_unit);
         singleUnitTextView = (TextView) findViewById(R.id.activity_print_mater_label_mater_single_unit);
         totalWeightTextView = (TextView) findViewById(R.id.activity_print_mater_label_weight);
 
-        branchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
+        mBranchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
         amountEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_xiangshu_et);
         amountEditText.addTextChangedListener(mAmountTextWatcher);
         singleEditText = (EditText) findViewById(R.id.activity_print_mater_label_single);
@@ -155,7 +150,6 @@ public class PrintMaterLabelActivity extends BaseActivity {
 
 
         materEditText = (EditText) findViewById(R.id.purchase_receipt_main_code_et);
-        materEditText.setOnEditorActionListener(mOnEditorActionListener);
 
         mDateEditText = (TextView) findViewById(R.id.activity_print_mater_label_date);
         mDateEditText.setOnClickListener(mOnClickListener);
@@ -175,7 +169,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
                 switch (v.getId()) {
                     case R.id.activity_print_mater_label_date:
                         Calendar calendar = Calendar.getInstance();
-                        showSetDatePicker(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE));
+                        showSetDatePicker(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
                         break;
                     case R.id.fragment_purchase_receipt_inquire_bt:
                         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
@@ -211,7 +205,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
                             ShowToast("未查询物料标签");
                             break;
                         }
-                        if (branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(branchEditText.getText().toString())) {
+                        if (branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString())) {
                             ShowToast("该物料批次控制,请输入批号");
                             break;
                         }
@@ -235,7 +229,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
                                             singleEditText.getText().toString().trim(), branch.getMater().getSingleUnit(),
                                             totalWeightTextView.getText().toString().trim().replace("KG", ""), "KG",
                                             mDateEditText.getText().toString(), firmEditText.getText().toString().trim(),
-                                            branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? true : false, branchEditText.getText().toString().trim());
+                                            branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? true : false, mBranchEditText.getText().toString().trim());
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();
                                 }
@@ -244,21 +238,6 @@ public class PrintMaterLabelActivity extends BaseActivity {
                         builder.create().show();
                         break;
                 }
-            }
-        };
-
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    handleScanCode(materEditText.getText().toString().trim());
-                    return true;
-                }
-                return false;
             }
         };
 
@@ -465,17 +444,34 @@ public class PrintMaterLabelActivity extends BaseActivity {
         totalWeightTextView.setText("0KG");
     }
 
-    private void handleScanCode(String code) {
+    @Override
+    protected void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        String mater =  CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
+        boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
+        if (state) {//当前按钮状态为“清除”
+            handleScanBranch(code);
+        } else {
+            handleScanMater(code);
+        }
+    }
+
+    private void handleScanMater(String code) {
+        String mater = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER, ""), code);
         if (TextUtils.isEmpty(mater)) {
             ShowToast("无效物料标签");
             return;
         }
-        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
-        materEditText.setText("");
-        handleInquireMater(mater, branch);
+        materEditText.setText(mater);
+        handleScanBranch(code);
+        handleInquireMater(mater, mBranchEditText.getText().toString());
+    }
+
+    private void handleScanBranch(String code) {
+        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), code);
+        if (!branch.isEmpty()) {
+            mBranchEditText.setText(branch);
+        }
     }
 
     /**
@@ -497,17 +493,17 @@ public class PrintMaterLabelActivity extends BaseActivity {
         materNumberTextView.setText(branch.getMater().getNumber());
         materFormatTextView.setText(branch.getMater().getFormat());
         materDescTextView.setText(branch.getMater().getDesc());
-        branchEditText.setText(branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? "是" :
+        mBranchedTextView.setText(branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? "是" :
                 branch.getMater().getBranchControl() == Mater.BRANCH_NO_CONTROL ? "否" : "");
         unitTextView.setText(branch.getMater().getUnit());
         singleUnitTextView.setText(branch.getMater().getSingleUnit());
 
         if (branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL) {
-            branchEditText.setEnabled(true);
-            branchEditText.setText(branch.getPo());
+            mBranchEditText.setEnabled(true);
+            mBranchEditText.setText(branch.getPo());
         } else {
-            branchEditText.setEnabled(false);
-            branchEditText.setText("");
+            mBranchEditText.setEnabled(false);
+            mBranchEditText.setText("");
         }
 
         amountEditText.setText(branch.getMater().getQuantity() + "");
@@ -526,8 +522,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
         } else {
             mInquireButton.setText("清除");
             mInquireButton.setTag(true);
-            materEditText.getText().clear();
-            materEditText.setHint("在此扫描物料标签快速选中");
+            materEditText.setText(branch.getMater().getNumber());
             popUpButton();
         }
     }
@@ -599,7 +594,7 @@ public class PrintMaterLabelActivity extends BaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mInquireButton.setVisibility(View.GONE);
+                mPrintButton.setVisibility(View.GONE);
             }
 
             @Override
@@ -619,16 +614,16 @@ public class PrintMaterLabelActivity extends BaseActivity {
         mPrintButton.startAnimation(animation);
     }
 
-    private void showSetDatePicker(int year, int month, int day,int hour,int minute) {
+    private void showSetDatePicker(int year, int month, int day, int hour, int minute) {
 
         final WheelMain wheelMain;
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View timepickerview = inflater.inflate(R.layout.timepicker, null);
         ScreenInfo screenInfo = new ScreenInfo(this);
-        wheelMain = new WheelMain(timepickerview,true);
+        wheelMain = new WheelMain(timepickerview, true);
         wheelMain.screenheight = screenInfo.getHeight();
-        wheelMain.initDateTimePicker(year, month, day,hour,minute);
+        wheelMain.initDateTimePicker(year, month, day, hour, minute);
         new AlertDialog.Builder(this)
                 .setTitle("选择日期")
                 .setView(timepickerview)

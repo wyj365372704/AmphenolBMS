@@ -4,10 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.amphenol.amphenol.R;
+import com.amphenol.entity.Mater;
 import com.amphenol.entity.Purchase;
+import com.amphenol.entity.Returns;
 import com.amphenol.fragment.PurchaseReceiptSecondBranchedFragment;
 import com.amphenol.fragment.PurchaseReturnMainFragment;
 import com.amphenol.fragment.PurchaseReturnSecondFragment;
+
+import java.util.ArrayList;
 
 /**
  * 采购退货
@@ -32,12 +36,29 @@ public class PurchaseReturnActivity extends BaseActivity {
     public void initListeners() {
         mainFragmentCallBack = new PurchaseReturnMainFragment.MainFragmentCallBack() {
             @Override
-            public void gotoSecondFragment(Purchase.PurchaseItem purchaseItem) {
+            public void gotoSecondFragment(Returns.ReturnsItem returnsItem) {
+                mPurchaseReturnSecondFragment = PurchaseReturnSecondFragment.newInstance(mSecondFragmentCallBack, returnsItem, mSecondFragmentCallBack);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReturnSecondFragment);
+                transaction.addToBackStack(null);
+                transaction.commitAllowingStateLoss();
+            }
+        };
+        mSecondFragmentCallBack = new PurchaseReturnSecondFragment.SecondFragmentCallBack() {
+            @Override
+            public void itemBeenClosed(String sequence) {
+                getSupportFragmentManager().popBackStack();//当前fragment退栈
+                if (mPurchaseReturnMainFragment != null) {
+                    mPurchaseReturnMainFragment.refreshShow(sequence);
+                }
+            }
 
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.activity_purchase_receipt_fl, mPurchaseReturnSecondFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commitAllowingStateLoss();
+            @Override
+            public void itemBeenSured(String sequence) {
+                getSupportFragmentManager().popBackStack();//当前fragment退栈
+                if (mPurchaseReturnMainFragment != null) {
+                    mPurchaseReturnMainFragment.refreshShow(sequence);
+                }
             }
         };
     }

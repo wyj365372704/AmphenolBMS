@@ -1,7 +1,6 @@
 package com.amphenol.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,14 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -35,6 +31,7 @@ import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.WorkOrder;
 import com.amphenol.ui.LoadingDialog;
+import com.amphenol.utils.Char2BigUtil;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
@@ -48,7 +45,7 @@ import java.util.Map;
 /**
  * 生产入库
  */
-public class ProductionStorageActivity extends BaseActivity {
+public class ProductionStorageActivity extends ScannedBaseActivity {
 
     private static final int REQUEST_CODE_INQUIRE = 0X10;
     private static final int REQUEST_CODE_FOR_SCAN_WORK_ORDER = 0X11;
@@ -61,7 +58,6 @@ public class ProductionStorageActivity extends BaseActivity {
     private Button mInquireButton, mStorButton;
     private View.OnClickListener mOnClickListener;
     private ArrayAdapter<String> mStringArrayAdapter;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
     private TextWatcher mEachBoxQuantityTextWatcher, mBoxQuantityTextWatcher, mMantissaTextWatcher;
     private MyHandler myHandler = new MyHandler();
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
@@ -77,12 +73,19 @@ public class ProductionStorageActivity extends BaseActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        refreshShow();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        refreshShow();
+    protected void handleScanCode(String message) {
+        boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
+        if (state) {//当前按钮状态为“清除”
+            handleScanBranch(message);
+            handleScanEachBoxQuantity(message);
+            handleScanLocation(message);
+        } else {
+            handleScanWorkOrder(message);
+        }
     }
 
     @Override
@@ -96,14 +99,12 @@ public class ProductionStorageActivity extends BaseActivity {
         mScanImageView = (ImageView) findViewById(R.id.fragment_purchase_receipt_scan_iv);
         mScanImageView.setOnClickListener(mOnClickListener);
         mWorkOrderEditText = (EditText) findViewById(R.id.purchase_receipt_main_code_et);
-        mWorkOrderEditText.setOnEditorActionListener(mOnEditorActionListener);
         mBranchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
-        mBranchEditText.setOnEditorActionListener(mOnEditorActionListener);
         mEachBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_meixiangshuliang_et);
-        mEachBoxQuantityEditText.setOnEditorActionListener(mOnEditorActionListener);
         mBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_xiangshu_et);
         mantissaEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_weishu_et);
         mLocationEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_shard_et);
+        mLocationEditText.setTransformationMethod(new Char2BigUtil());
         mProductOrderNumberTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_mater_number_tv);
         mProductDescTextView = (TextView) findViewById(R.id.fragment_create_requisition_second_mater_desc_tv);
         mProductTextView = (TextView) findViewById(R.id.activity_production_storage_product);
@@ -264,45 +265,6 @@ public class ProductionStorageActivity extends BaseActivity {
 
             }
         };
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                switch (v.getId()) {
-                    case R.id.purchase_receipt_main_code_et:
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if (imm.isActive()) {
-                                imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                            }
-                            handleScanWorkOrder(mWorkOrderEditText.getText().toString().trim());
-                            return true;
-                        }
-                        break;
-                    case R.id.fragment_fast_requisition_main_from_branch_et:
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if (imm.isActive()) {
-                                imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                            }
-                            handleScanBranchOrEachBoxQuantity(mBranchEditText.getText().toString().trim());
-                            return true;
-                        }
-                        break;
-                    case R.id.fragment_fast_requisition_main_from_meixiangshuliang_et:
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if (imm.isActive()) {
-                                imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                            }
-                            handleScanEachBoxQuantity(mEachBoxQuantityEditText.getText().toString().trim());
-                            return true;
-                        }
-                        break;
-                }
-
-                return false;
-            }
-        };
         mRequestTaskListener = new NetWorkAccessTools.RequestTaskListener() {
             @Override
             public void onRequestStart(int requestCode) {
@@ -428,7 +390,7 @@ public class ProductionStorageActivity extends BaseActivity {
     private void handleScanWorkOrder(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER,""), code);
+        code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER, ""), code);
         mWorkOrderEditText.setText(code);
         if (TextUtils.isEmpty(code)) {
             Toast.makeText(getApplicationContext(), "无效查询", Toast.LENGTH_SHORT).show();
@@ -442,28 +404,35 @@ public class ProductionStorageActivity extends BaseActivity {
         NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_STORAGE_INQUIRE, getApplicationContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
 
-    private void handleScanBranchOrEachBoxQuantity(String code) {
-        if (TextUtils.isEmpty(code))
+    private void handleScanBranch(String code) {
+        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), code);
+        if (branch.isEmpty())
             return;
-        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
         mBranchEditText.setText(branch);
-
-        handleScanEachBoxQuantity(code);
+        ShowToast("批次号调整为:" + branch);
     }
 
     private void handleScanEachBoxQuantity(String code) {
-        if (TextUtils.isEmpty(code))
+        String eachBoxQuantity = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_QUANTITY, ""), code);
+        if (eachBoxQuantity.isEmpty())
             return;
-        String eachBoxQuantity =CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_QUANTITY,""), code);
         try {
-            if (TextUtils.isEmpty(eachBoxQuantity)) {
-                mEachBoxQuantityEditText.getText().clear();
-            } else {
+            if (!TextUtils.isEmpty(eachBoxQuantity)) {
                 double temp = Double.parseDouble(eachBoxQuantity);
                 mEachBoxQuantityEditText.setText(Double.toString(temp));
+                ShowToast("每箱数量调整为:" + Double.toString(temp));
             }
         } catch (Throwable e) {
         }
+    }
+
+
+    private void handleScanLocation(String code) {
+        String location = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION, ""), code).toUpperCase();
+        if (location.isEmpty())
+            return;
+        mLocationEditText.setText(location);
+        ShowToast("库位调整为:" + location);
     }
 
     @Override

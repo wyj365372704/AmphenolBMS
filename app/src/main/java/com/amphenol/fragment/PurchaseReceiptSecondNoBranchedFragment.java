@@ -44,7 +44,7 @@ import static com.amphenol.amphenol.R.id.fragment_purchase_receipt_second_sjdz_i
 /**
  * 采购收货_物料明细
  */
-public class PurchaseReceiptSecondNoBranchedFragment extends Fragment {
+public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
     private static final int REQUEST_CODE_RECEIPT_CONFIRM = 0X10;
     private static final int REQUEST_CODE_RECEIPT_CLOSE = 0x11;
     private View rootView = null;
@@ -369,6 +369,17 @@ public class PurchaseReceiptSecondNoBranchedFragment extends Fragment {
         param.put("location", location);
         param.put("branch_list", branchListJson);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_RECEIPT_CONFIRM, getContext()), param, REQUEST_CODE_RECEIPT_CONFIRM, mRequestTaskListener);
+    }
+
+    @Override
+    protected void handleScanCode(String message) {
+        String code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), message);
+        if(TextUtils.isEmpty(code)){
+            ((BaseActivity)getActivity()).ShowToast("扫描失败,无效库位标签");
+        }else{
+            mLocationEditText.setText(code);
+            ((BaseActivity)getActivity()).ShowToast("收货库位调整为:"+code);
+        }
     }
 
     public interface SecondFragmentCallBack extends Serializable {

@@ -166,32 +166,13 @@ public class Mater implements Parcelable {
         private String po = "";//批次号
         private double quantity = 0;//数量 ,
 
-        public Branch() {
+        public void setMater(Mater mater) {
+            this.mater = mater;
         }
 
-        public Branch(String number, String po, double quantity) {
-            this.number = number;
-            this.po = po;
-            this.quantity = quantity;
+        public Mater getMater() {
+            return mater;
         }
-
-        protected Branch(Parcel in) {
-            number = in.readString();
-            po = in.readString();
-            quantity = in.readDouble();
-        }
-
-        public static final Creator<Branch> CREATOR = new Creator<Branch>() {
-            @Override
-            public Branch createFromParcel(Parcel in) {
-                return new Branch(in);
-            }
-
-            @Override
-            public Branch[] newArray(int size) {
-                return new Branch[size];
-            }
-        };
 
         public String getNumber() {
             return number;
@@ -217,13 +198,6 @@ public class Mater implements Parcelable {
             this.quantity = quantity;
         }
 
-        public Mater getMater() {
-            return mater;
-        }
-
-        public void setMater(Mater mater) {
-            this.mater = mater;
-        }
 
         @Override
         public int describeContents() {
@@ -232,9 +206,39 @@ public class Mater implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(number);
-            dest.writeString(po);
-            dest.writeDouble(quantity);
+            dest.writeParcelable(this.mater, flags);
+            dest.writeString(this.number);
+            dest.writeString(this.po);
+            dest.writeDouble(this.quantity);
         }
+
+        public Branch() {
+        }
+
+
+        public Branch(String number, String po, double quantity) {
+            this.number = number;
+            this.po = po;
+            this.quantity = quantity;
+        }
+
+        protected Branch(Parcel in) {
+            this.mater = in.readParcelable(Mater.class.getClassLoader());
+            this.number = in.readString();
+            this.po = in.readString();
+            this.quantity = in.readDouble();
+        }
+
+        public static final Creator<Branch> CREATOR = new Creator<Branch>() {
+            @Override
+            public Branch createFromParcel(Parcel source) {
+                return new Branch(source);
+            }
+
+            @Override
+            public Branch[] newArray(int size) {
+                return new Branch[size];
+            }
+        };
     }
 }

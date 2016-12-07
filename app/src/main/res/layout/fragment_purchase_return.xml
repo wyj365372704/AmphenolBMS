@@ -152,7 +152,7 @@
             android:background="@color/colorDevideLine"/>
 
         <include
-            layout="@layout/pruchase_receipt_main_item_head"
+            layout="@layout/pruchase_return_main_item_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"/>

@@ -37,6 +37,7 @@ import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.Pick;
 import com.amphenol.ui.LoadingDialog;
+import com.amphenol.utils.Char2BigUtil;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
@@ -52,7 +53,7 @@ import java.util.Map;
 
 /**
  */
-public class HairMaterSecondReturnBranchedFragment extends Fragment {
+public class HairMaterSecondReturnBranchedFragment extends BaseFragment {
     private static final int REQUEST_CODE_SUBMIT = 0X11;
     private static final int REQUEST_CODE_CANCEL = 0x12;
     private static final int REQUEST_CODE_FOR_SCAN_LOCATION = 0X14;
@@ -262,6 +263,8 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
                     case R.id.fragment_fast_requisition_main_add_branch_bt:
                         AlertDialog.Builder builder3 = new AlertDialog.Builder(getContext());
                         final View view = LayoutInflater.from(getContext()).inflate(R.layout.purchase_receipt_add_branch_layout, null);
+                        EditText pchEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_pch_et);
+                        pchEditText.setTransformationMethod(new Char2BigUtil());
                         builder3.setTitle("新增批次").setView(view);
                         builder3.setNegativeButton("取消", null);
                         builder3.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -413,7 +416,7 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
-        code = CommonTools.decodeScanString("L", code);
+        code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), code);
         v.setText(code);
     }
 
@@ -453,6 +456,16 @@ public class HairMaterSecondReturnBranchedFragment extends Fragment {
         }
         mPickItem.setHairQuantity(count);
         mActualQuantityTextView.setText(mPickItem.getHairQuantity() + "");
+    }
+
+    @Override
+    protected void handleScanCode(String message) {
+        String code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), message);
+        if(TextUtils.isEmpty(code)){
+            ((BaseActivity)getActivity()).ShowToast("扫描失败,无效库位标签");
+        }else{
+            mLocationEditText.setText(code);
+        }
     }
 
     public interface SecondFragmentCallBack extends Serializable {
