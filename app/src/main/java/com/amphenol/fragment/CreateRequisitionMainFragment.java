@@ -53,7 +53,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateRequisitionMainFragment extends Fragment {
+public class CreateRequisitionMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_CREATE_REQUISITION = 0X13;
     private static final int REQUEST_CODE_FOR_SCAN = 0x14;
     private View rootView = null;
@@ -63,7 +63,6 @@ public class CreateRequisitionMainFragment extends Fragment {
     private TextView warehouseTextView;
     private Button mInquireButton, mCreateButton;
     private EditText mLocationEditText;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
     private View.OnClickListener mOnClickListener;
     private LoadingDialog mLoadingDialog;
     private ArrayAdapter<String> mStringArrayAdapter;
@@ -126,7 +125,6 @@ public class CreateRequisitionMainFragment extends Fragment {
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_purchase_receipt_inquire_bt);
         mInquireButton.setOnClickListener(mOnClickListener);
         mLocationEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
-        mLocationEditText.setOnEditorActionListener(mOnEditorActionListener);
         warehouseTextView = (TextView) rootView.findViewById(R.id.fragment_create_requisition_main_warehouse_show_tv);
         warehouseTextView.setText(SessionManager.getWarehouse(getContext()));
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_purchase_receipt_content_rl);
@@ -225,21 +223,6 @@ public class CreateRequisitionMainFragment extends Fragment {
                         handlerCreateRequisition(materListString);
                         break;
                 }
-            }
-        };
-
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    handleScanCode(mLocationEditText.getText().toString().trim());
-                    return true;
-                }
-                return false;
             }
         };
 
@@ -374,7 +357,7 @@ public class CreateRequisitionMainFragment extends Fragment {
     /**
      * 处理扫描得到的二维码,执行联网查询操作
      */
-    private void handleScanCode(String code) {
+    public void handleScanCode(String code) {
 
         if (!CreateRequisitionMainFragment.this.isVisible())
             return;

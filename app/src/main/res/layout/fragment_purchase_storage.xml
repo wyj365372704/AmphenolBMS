@@ -1,0 +1,165 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxLines="1"
+            android:text="采购入库"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/fragment_purchase_receipt_scan_iv"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/scan"/>
+
+
+            <Button
+                android:id="@+id/fragment_purchase_receipt_inquire_bt"
+                android:layout_width="64dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/positive_button_background"
+                android:text="查询"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <EditText
+                android:id="@+id/purchase_receipt_main_code_et"
+                style="@style/NormalTheme.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@id/fragment_purchase_receipt_inquire_bt"
+                android:layout_toRightOf="@id/fragment_purchase_receipt_scan_iv"
+                android:hint="输入送货单号"
+                android:imeOptions="actionDone"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorDevideLine"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:id="@+id/fragment_purchase_receipt_shcs_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="供应商:"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <TextView
+                android:id="@+id/fragment_purchase_receipt_shcs_in_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/fragment_purchase_receipt_shcs_tv"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@id/fragment_purchase_receipt_shcs_tv"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <TextView
+                android:id="@+id/fragment_purchase_receipt_shdh_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fragment_purchase_receipt_shcs_tv"
+                android:layout_marginTop="16dp"
+                android:text="送货单号:"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <TextView
+                android:id="@+id/fragment_purchase_receipt_zj_in_tv"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/fragment_purchase_receipt_shdh_tv"
+                android:layout_marginLeft="4dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <TextView
+                android:id="@+id/fragment_purchase_receipt_zj_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/fragment_purchase_receipt_shdh_tv"
+                android:layout_marginLeft="16dp"
+                android:layout_toLeftOf="@id/fragment_purchase_receipt_zj_in_tv"
+                android:text="到货状态:"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font_size"/>
+
+            <TextView
+                android:id="@+id/fragment_purchase_receipt_shdh_in_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/fragment_purchase_receipt_shdh_tv"
+                android:layout_marginLeft="4dp"
+                android:layout_toLeftOf="@id/fragment_purchase_receipt_zj_tv"
+                android:layout_toRightOf="@id/fragment_purchase_receipt_shdh_tv"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_font_size"/>
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorDevideLine"/>
+
+        <include
+            layout="@layout/pruchase_receipt_main_item_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_purchase_receipt_content_rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</LinearLayout>

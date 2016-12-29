@@ -1,4 +1,4 @@
-#Amphenol_android开发接口文档 version 2.2
+#Amphenol_android开发接口文档 version 2.3
 
 ##书写说明
 - api采用json数据格式返回
@@ -113,7 +113,7 @@
 		Map<String,Object> 子库
 			name:String 子库名
 
-##查询送货单
+##采购收货-查询送货单
 	请求方式：get
 	参数：delive_code	供应商送货单号码
 	action=query_receipt
@@ -124,14 +124,14 @@
 	receipt_number:String 送货单号码
 	status_code:int	收货单状态
 		10：未收货
-		40：部分收货
-		50：收货完成
+		40：已接收,未入库
+		50：已入库
 	mater_list:List<Map<String,Object>> 物料集合
 		Map<String,Object>
 			mater_po: String 采购单-项次
 			number: String 收货单行号
 			mate: String 物料编号
-			quantity： Double 数量
+			quantity： Double 计划数量
 			unit： String 单位
 	示例：
 	{
@@ -154,7 +154,7 @@
 	    "status_code": 1
 	}
 
-##收货-查询物料明细
+##采购收货-查询物料明细
 	请求方式：get
 	参数：
 		receipt_number	送货单号码
@@ -170,14 +170,8 @@
 	branch_control:	int 批次管控
 		1：控制
 		0：不控制
-	status：int 状态
-		10：未收货
-		50：已收货
-		60：已关闭
 	actual_single:double 实际单重
 	actual_unit:String 实际单重单位
-	actual_quantity:double 实际总数
-	shard:String 收货子库
 	location:String 收货库位
 	branch_list:List<Map<String,Object>> 批次集合 ，若没有不返回
 		Map<String,Object>
@@ -196,7 +190,7 @@
 
 	code = 1 成功
 
-##确认物料收货
+##确认采购收货
 	请求方式：get
 	参数：
 		receipt_number	送货单号码
@@ -215,6 +209,83 @@
 					plan_quantity:double 计划数量
 					actual_quantity:double 实际数量	若实际数量为0，则表示删除此批次
 	action=mate_receipt_confirm
+
+返回
+
+	code = 1 成功
+	code = 2 新增加的生产批次已存在
+	code = 3 收货库位不存在
+	code = 4 实际单重更新失败
+	code = other 确认收货失败
+
+
+##采购入库-查询送货单
+	请求方式：get
+	参数：delive_code	供应商送货单号码
+	action=query_receipt_storage
+
+返回
+
+	firm:String	送货厂商
+	receipt_number:String 送货单号码
+	status_code:int	到货单状态
+		10 已创建, 未收货
+		40 部分完成收货 或 关闭
+		50 全部完成收货 或 关闭
+	mater_list:List<Map<String,Object>> 物料集合
+		Map<String,Object>
+			mater_po: String 采购单-项次
+			number: String 收货单行号
+			mate: String 物料编号
+			quantity： Double 实际接收数量
+			unit： String 单位
+
+
+##采购入库-查询物料明细
+	请求方式：get
+	参数：
+		receipt_number	送货单号码
+		receipt_line	收货单行号
+	action=query_receipt_storage_item
+
+返回
+
+	mate_number:String	物料编号
+	mate_desc:String 物料描述
+	purchase_unit:String 采购单位
+	plan_quantity:double 计划总数
+	actual_quantity:double 实际接收数量
+	branch_control:	int 批次管控
+		1：控制
+		0：不控制
+	actual_single:double 实际单重
+	actual_unit:String 实际单重单位
+	location:String 入库库位
+	branch_list:List<Map<String,Object>> 批次集合 ，若没有不返回
+		Map<String,Object>
+			branch_number: String 到货单批明细行
+			branch_desc:String 生产批次
+			plan_quantity:double 实际接收数量
+
+##确认采购入库
+	请求方式：get
+	参数：
+		receipt_number	送货单号码
+		receipt_line	收货单行号
+		actual_single 实际单重
+		actual_single_update 是否更新实际单重
+			1：更新
+			other：不更新
+		actual_quantity 实际总数
+		location 收货库位
+		branch_list	批次信息集合的json字符串，如不受批次控制不附带，服务器端进行json解析。说明如下
+			branch_list:List<Map<String,Object>> 按此生成json字符串
+				Map<String,Object>
+					branch_number: String 到货单批明细行	（如果是新增批次，置为“-1”）
+					branch_desc:String 生产批次
+					plan_quantity:double 计划数量
+					actual_quantity:double 实际数量	若实际数量为0，则表示删除此批次
+	action=mate_receipt_storage_confirm
 
 返回
 

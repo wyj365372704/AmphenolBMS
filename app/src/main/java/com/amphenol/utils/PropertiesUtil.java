@@ -51,11 +51,15 @@ public class PropertiesUtil {
 
     public static final String ACTION_QUERY_RECEIPT = "ACTION_QUERY_RECEIPT";//action 后缀，查询收货单
     public static final String ACTION_QUERY_RECEIPT_ITEM = "ACTION_QUERY_RECEIPT_ITEM";//action 后缀，查询收货单物料明细
-    public static final String ACTION_QUERY_RETURN = "ACTION_QUERY_RETURN";//action 后缀，查询退货单
-    public static final String ACTION_QUERY_RETURN_ITEM = "ACTION_QUERY_RETURN_ITEM";//action 后缀，查询退货单物料明细
-
     public static final String ACTION_RECEIPT_CONFIRM = "ACTION_RECEIPT_CONFIRM";//action 后缀，确认物料收货
     public static final String ACTION_RECEIPT_CLOSE = "ACTION_RECEIPT_CLOSE";//action 后缀，关闭物料收货
+
+    public static final String ACTION_QUERY_RECEIPT_STORAGE = "ACTION_QUERY_RECEIPT_STORAGE";//action 后缀，查询收货单
+    public static final String ACTION_QUERY_RECEIPT_STORAGE_ITEM = "ACTION_QUERY_RECEIPT_STORAGE_ITEM";//action 后缀，查询收货单物料明细
+    public static final String ACTION_RECEIPT_STORAGE_CONFIRM = "ACTION_RECEIPT_STORAGE_CONFIRM";//action 后缀，确认物料收货
+
+    public static final String ACTION_QUERY_RETURN = "ACTION_QUERY_RETURN";//action 后缀，查询退货单
+    public static final String ACTION_QUERY_RETURN_ITEM = "ACTION_QUERY_RETURN_ITEM";//action 后缀，查询退货单物料明细
     public static final String ACTION_MATER_RETURN_CLOSE = "ACTION_MATER_RETURN_CLOSE";//action 后缀，关闭物料退货
     public static final String ACTION_MATER_RETURN_CONFIRM = "ACTION_MATER_RETURN_CONFIRM";//action 后缀，确认物料退货
 

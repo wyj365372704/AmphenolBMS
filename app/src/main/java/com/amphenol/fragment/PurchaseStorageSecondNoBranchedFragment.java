@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +31,7 @@ import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
+
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -44,7 +44,7 @@ import static com.amphenol.amphenol.R.id.fragment_purchase_receipt_second_sjdz_i
 /**
  * 采购收货_物料明细
  */
-public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
+public class PurchaseStorageSecondNoBranchedFragment extends BaseFragment {
     private static final int REQUEST_CODE_RECEIPT_CONFIRM = 0X10;
     private static final int REQUEST_CODE_RECEIPT_CLOSE = 0x11;
     private View rootView = null;
@@ -53,7 +53,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
     private Button mCloseReceiptButton, mSureReceiptButton, mCameraButton;
     private TextView mMaterNumberTextView, mIsBranchTextView,
             mMaterDescTextView, mPurchaseUnitTextView,
-            mPlainQuantityTextView, mActualSingleUnitTextView, mTotalWeightTextView;
+            mPlainQuantityTextView, mActualPurchaseQuantityTextView, mActualSingleUnitTextView, mTotalWeightTextView;
     private EditText mLocationEditText, mActualSingleEditText, mActualQuantityEditText;
     private View dialogView;//弹窗dialog视图
     private Purchase.PurchaseItem mPurchaseItem;
@@ -62,11 +62,11 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
     private LoadingDialog mLoadingDialog;
     private MyHandler myHandler = new MyHandler();
 
-    public static PurchaseReceiptSecondNoBranchedFragment newInstance(SecondFragmentCallBack mSecondFragmentCallBack, Purchase.PurchaseItem mPurchaseItem) {
+    public static PurchaseStorageSecondNoBranchedFragment newInstance(SecondFragmentCallBack mSecondFragmentCallBack, Purchase.PurchaseItem mPurchaseItem) {
 
         Bundle args = new Bundle();
         args.putParcelable("mPurchaseItem", mPurchaseItem);
-        PurchaseReceiptSecondNoBranchedFragment fragment = new PurchaseReceiptSecondNoBranchedFragment();
+        PurchaseStorageSecondNoBranchedFragment fragment = new PurchaseStorageSecondNoBranchedFragment();
         fragment.mSecondFragmentCallBack = mSecondFragmentCallBack;
         fragment.setArguments(args);
         return fragment;
@@ -78,7 +78,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
         Bundle args = getArguments();
         if (args != null) {
             mPurchaseItem = args.getParcelable("mPurchaseItem");
-            mPurchaseItem.getMater().setQuantity(mPurchaseItem.getQuantity());
+//            mPurchaseItem.getMater().setQuantity(mPurchaseItem.getQuantity());
         }
     }
 
@@ -87,7 +87,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         if (rootView != null)
             return rootView;
-        rootView = inflater.inflate(R.layout.fragment_purchase_receipt_second_no_branched, container, false);
+        rootView = inflater.inflate(R.layout.fragment_purchase_storage_second_no_branched, container, false);
         initListeners();
         initViews();
         initData();
@@ -299,6 +299,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
         mIsBranchTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_pcgk_in_tv);
         mPurchaseUnitTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_cgdw_in_tv);
         mPlainQuantityTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_jhsl_in_tv);
+        mActualPurchaseQuantityTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_sszs_in_tv);
         mActualSingleEditText = (EditText) rootView.findViewById(fragment_purchase_receipt_second_sjdz_in_et);
         mActualSingleUnitTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_sjdzdw_tv);
         mActualQuantityEditText = (EditText) rootView.findViewById(R.id.fragment_purchase_receipt_second_sszs_in_et);
@@ -314,6 +315,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
         mMaterDescTextView.setText(mPurchaseItem.getMater().getDesc().trim());
         mPurchaseUnitTextView.setText(mPurchaseItem.getUnit());
         mPlainQuantityTextView.setText(mPurchaseItem.getQuantity() + "");
+        mActualPurchaseQuantityTextView.setText(mPurchaseItem.getMater().getQuantity() + "");
         mIsBranchTextView.setText(mPurchaseItem.getMater().getBranchControl() == Mater.BRANCH_CONTROL ? "是" : mPurchaseItem.getMater().getBranchControl() == Mater.BRANCH_NO_CONTROL ? "否" : "--");
         mActualSingleEditText.setText(mPurchaseItem.getMater().getSingle() + "");
         mActualSingleEditText.addTextChangedListener(mSingleTextWatcher);
@@ -341,7 +343,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
      * @param shdhh
      */
     private void handlerCloseMater(String shdhm, String shdhh) {
-        if (!PurchaseReceiptSecondNoBranchedFragment.this.isVisible())
+        if (!PurchaseStorageSecondNoBranchedFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
@@ -352,7 +354,7 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
     }
 
     private void handlerSureMater(String shdhm, String shdhh, double actualSingle, double actualQuantity, String location, String branchListJson, boolean update) {
-        if (!PurchaseReceiptSecondNoBranchedFragment.this.isVisible())
+        if (!PurchaseStorageSecondNoBranchedFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
@@ -364,17 +366,17 @@ public class PurchaseReceiptSecondNoBranchedFragment extends BaseFragment {
         param.put("actual_quantity", actualQuantity + "");
         param.put("location", location);
         param.put("branch_list", branchListJson);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_RECEIPT_CONFIRM, getContext()), param, REQUEST_CODE_RECEIPT_CONFIRM, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_RECEIPT_STORAGE_CONFIRM, getContext()), param, REQUEST_CODE_RECEIPT_CONFIRM, mRequestTaskListener);
     }
 
     @Override
     protected void handleScanCode(String message) {
-        String code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), message);
-        if(TextUtils.isEmpty(code)){
-            ((BaseActivity)getActivity()).ShowToast("扫描失败,无效库位标签");
-        }else{
+        String code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION, ""), message);
+        if (TextUtils.isEmpty(code)) {
+            ((BaseActivity) getActivity()).ShowToast("扫描失败,无效库位标签");
+        } else {
             mLocationEditText.setText(code);
-            ((BaseActivity)getActivity()).ShowToast("收货库位调整为:"+code);
+            ((BaseActivity) getActivity()).ShowToast("收货库位调整为:" + code);
         }
     }
 

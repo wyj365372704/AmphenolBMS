@@ -1,25 +1,20 @@
 package com.amphenol.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class PurchaseReceiptMainFragment extends BaseFragment {
+public class PurchaseStorageMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_FOR_SCAN = 0X11;
     private static final int REQUEST_CODE_QUERY_RECEIPT = 0X12;
     private static final int REQUEST_CODE_QUERY_RECEIPT_ITEM = 0x13;
@@ -64,10 +59,10 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
     private Purchase purchase = new Purchase();
     private MyHandler myHandler = new MyHandler();
 
-    public static PurchaseReceiptMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
+    public static PurchaseStorageMainFragment newInstance(MainFragmentCallBack mainFragmentCallBack) {
 
         Bundle args = new Bundle();
-        PurchaseReceiptMainFragment fragment = new PurchaseReceiptMainFragment();
+        PurchaseStorageMainFragment fragment = new PurchaseStorageMainFragment();
         fragment.mainFragmentCallBack = mainFragmentCallBack ;
         fragment.setArguments(args);
         return fragment;
@@ -79,7 +74,6 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
         Bundle args = getArguments();
         if (args != null) {
         }
-
     }
 
     @Override
@@ -87,7 +81,7 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         if (rootView != null)
             return rootView;
-        rootView = inflater.inflate(R.layout.fragment_purchase_receipt, container, false);
+        rootView = inflater.inflate(R.layout.fragment_purchase_storage, container, false);
         initListeners();
         initData();
         initViews();
@@ -121,20 +115,6 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
                 handleInquireMater(purchase.getNumber(), purchase.getPurchaseItems().get(position).getNumber());
             }
         };
-//        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    if (imm.isActive()) {
-//                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-//                    }
-//                    handleScanCode(mCodeEditText.getText().toString().trim());
-//                    return true;
-//                }
-//                return false;
-//            }
-//        };
         mOnClickListener = new View.OnClickListener() {
 
 
@@ -240,7 +220,7 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
 
         if (TextUtils.isEmpty(code))
             return;
-        if (!PurchaseReceiptMainFragment.this.isVisible())
+        if (!PurchaseStorageMainFragment.this.isVisible())
             return;
         if (TextUtils.isEmpty(purchase.getNumber())) {//当前收货单为空，扫码查询收货单
             code = CommonTools.decodeScanString("S", code);
@@ -253,7 +233,7 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
             param.put("username", SessionManager.getUserName(getContext()));
             param.put("env", SessionManager.getEnv(getContext()));
             param.put("delive_code", code);
-            NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT, getContext()), param, REQUEST_CODE_QUERY_RECEIPT, mRequestTaskListener);
+            NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT_STORAGE, getContext()), param, REQUEST_CODE_QUERY_RECEIPT, mRequestTaskListener);
         } else {//当前收货单不为空，扫码查询物料
             code = CommonTools.decodeScanString("M", code);
             if (TextUtils.isEmpty(code)) {
@@ -279,14 +259,14 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
      * @param purchaseItemNumber 送货单行号
      */
     private void handleInquireMater(final String purchaseNumber, final String purchaseItemNumber) {
-        if (!PurchaseReceiptMainFragment.this.isVisible())
+        if (!PurchaseStorageMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getContext()));
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("receipt_number", purchaseNumber);
         param.put("receipt_line", purchaseItemNumber);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT_ITEM, getContext()), param, REQUEST_CODE_QUERY_RECEIPT_ITEM, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_QUERY_RECEIPT_STORAGE_ITEM, getContext()), param, REQUEST_CODE_QUERY_RECEIPT_ITEM, mRequestTaskListener);
 
     }
 
@@ -298,7 +278,7 @@ public class PurchaseReceiptMainFragment extends BaseFragment {
         //开始更新界面
         mFirmTextView.setText(receipt.getFirm().trim());
         mPurchaseNumberTextView.setText(receipt.getNumber().trim());
-        mStatusTextView.setText(receipt.getStatus() == Purchase.STATUS_FINISHED ? "收货完成" : receipt.getStatus() == Purchase.STATUS_NO_RECEIPT ? "未收货" : receipt.getStatus() == Purchase.STATUS_PART_RECEIPT ? "部分收货" : "");
+        mStatusTextView.setText(receipt.getStatus() == Purchase.STATUS_FINISHED ? "入库完成" : receipt.getStatus() == Purchase.STATUS_NO_RECEIPT ? "未入库" : receipt.getStatus() == Purchase.STATUS_PART_RECEIPT ? "部分入库" : "");
         mCodeEditText.requestFocus();
         mFirstReceiptAdapter.setDate(receipt.getPurchaseItems());
         mFirstReceiptAdapter.notifyDataSetChanged();

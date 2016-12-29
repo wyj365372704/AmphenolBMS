@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:padding="16dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/fragment_fast_requisition_main_target_shard_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="right"
+        android:text="到库位:"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/normal_font_size"/>
+
+    <EditText
+        android:id="@+id/fragment_fast_requisition_main_target_shard_et"
+        style="@style/NormalTheme.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="4dp"
+        android:hint="输入到库位编号"
+        android:imeOptions="actionDone"/>
+</LinearLayout>

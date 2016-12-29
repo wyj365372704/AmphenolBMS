@@ -155,7 +155,7 @@ public class InventorySecondFragment extends Fragment {
                             ((BaseActivity) getActivity()).ShowToast("无需更新");
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setTitle("终止过账").setMessage("将要对此物料终止过账?");
+                            builder.setTitle("确认盘点").setMessage("将要对此物料进行盘点?");
                             builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -241,7 +241,6 @@ public class InventorySecondFragment extends Fragment {
                         }
                     }
                     break;
-
             }
         }
     }

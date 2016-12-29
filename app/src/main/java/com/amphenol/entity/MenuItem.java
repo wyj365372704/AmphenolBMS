@@ -8,6 +8,7 @@ package com.amphenol.entity;
 public class MenuItem{
     public static final int MENU_CODE_PURCHASE_RECEIPT = 11;//收货
     public static final int MENU_CODE_PURCHASE_RETURN = 12;//退货
+    public static final int MENU_CODE_PURCHASE_STORAGE = 13;//采购入库
     public static final int MENU_CODE_HAIR_MATER = 23;//生产发料
     public static final int MENU_CODE_STOR_MATER = 24;//生产入库
     public static final int MENU_CODE_PRODUCT_REPORT = 25;//生产报工

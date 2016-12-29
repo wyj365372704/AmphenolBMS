@@ -71,6 +71,9 @@ public class MenuActivity extends BaseActivity {
                     case MenuItem.MENU_CODE_PURCHASE_RETURN:
                         componentName = new ComponentName(MenuActivity.this, PurchaseReturnActivity.class);
                         break;
+                    case MenuItem.MENU_CODE_PURCHASE_STORAGE:
+                        componentName = new ComponentName(MenuActivity.this, PurchaseStorageActivity.class);
+                        break;
                     case MenuItem.MENU_CODE_SET_UP_WAREHOUSE:
                         componentName = new ComponentName(MenuActivity.this, WareHouseSetUpActivity.class);
                         break;
@@ -189,6 +192,8 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.menu_icon_shouhuo;
             case MenuItem.MENU_CODE_PURCHASE_RETURN:
                 return R.mipmap.menu_icon_tuihuo;
+            case MenuItem.MENU_CODE_PURCHASE_STORAGE:
+                return R.mipmap.menu_icon_purchase_storage;
             case MenuItem.MENU_CODE_CHECK_REQUISITION:
                 return R.mipmap.check_requisition;
             case MenuItem.MENU_CODE_CREATE_REQUISITION:

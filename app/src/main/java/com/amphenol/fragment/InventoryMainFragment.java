@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InventoryMainFragment extends Fragment {
+public class InventoryMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_GET_MATER_LIST = 0x10;
     private static final int REQUEST_CODE_GET_MATER = 0x12;
     private static final int REQUEST_CODE_FOR_SCAN_MATER = 0x13;
@@ -272,6 +272,36 @@ public class InventoryMainFragment extends Fragment {
                 }
             }
         };
+    }
+
+
+    @Override
+    protected void handleScanCode(String code) {
+        String location = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), code);
+        String mater = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
+        String branchPo = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
+        boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
+        if (state) {//当前按钮状态为“清除” ,扫码选中物料
+            int position = 0;
+            for (Mater.Branch branch : branches) {
+                if((TextUtils.isEmpty(branchPo)?true:TextUtils.equals(branch.getPo(), branchPo))
+                        && TextUtils.equals(branch.getMater().getNumber(), mater)
+                        && TextUtils.isEmpty(location)?true:TextUtils.equals(branch.getMater().getLocation(), location) ){
+                    handleInquireMater(branch.getMater().getWarehouse(), branch.getMater().getShard(),
+                            branch.getMater().getLocation(), branch.getMater().getNumber(),
+                            branch.getPo(), branch.getQuantity(), branch.getMater().getUnit());
+                    break;
+                }
+                position++;
+            }
+            if (position == branches.size()) {
+                ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
+            }
+            materEditText.getText().clear();
+        } else {
+            materEditText.setText(mater);
+            locationEditText.setText(location);
+        }
     }
 
 

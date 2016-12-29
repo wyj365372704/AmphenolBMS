@@ -48,7 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StockSearchMainFragment extends Fragment {
+public class StockSearchMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_GET_MATER_LIST = 0x10;
     private static final int REQUEST_CODE_GET_MATER = 0x12;
     private static final int REQUEST_CODE_FOR_SCAN_MATER = 0x13;
@@ -65,7 +65,6 @@ public class StockSearchMainFragment extends Fragment {
     private ArrayList<Mater.Branch> branches = new ArrayList<>();
     private StockSearchAdapter mStockSearchAdapter;
     private StockSearchAdapter.OnItemClickListener mOnItemClickListener;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
     private MyHandler myHandler = new MyHandler();
@@ -126,9 +125,7 @@ public class StockSearchMainFragment extends Fragment {
         wareHouseTextView = (TextView) rootView.findViewById(R.id.fragment_fast_requisition_main_warehouse_in_tv);
         wareHouseTextView.setText(SessionManager.getWarehouse(getContext()));
         materEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_mater_in_et);
-        materEditText.setOnEditorActionListener(mOnEditorActionListener);
         locationEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_from_shard_et);
-        locationEditText.setOnEditorActionListener(mOnEditorActionListener);
         shardSpinner = (Spinner) rootView.findViewById(R.id.fragment_fast_requisition_main_shard_spinner);
         shardSpinner.setAdapter(mStringArrayAdapter);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_inquire_bt);
@@ -140,26 +137,6 @@ public class StockSearchMainFragment extends Fragment {
 
     private void initListeners() {
 
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                switch (v.getId()) {
-                    case R.id.fragment_fast_requisition_main_mater_in_et:
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            handleScanMater(v, materEditText.getText().toString());
-                            return true;
-                        }
-                        break;
-                    case R.id.fragment_fast_requisition_main_from_shard_et:
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            handleScanFromLocation(v, locationEditText.getText().toString());
-                            return true;
-                        }
-                        break;
-                }
-                return false;
-            }
-        };
         mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,31 +240,21 @@ public class StockSearchMainFragment extends Fragment {
         };
     }
 
-
-    private void handleScanFromLocation(TextView v, String code) {
-        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
-            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-        }
-        code = CommonTools.decodeScanString("L", code);
-        locationEditText.setText(code);
-        materEditText.requestFocus();
-    }
-
-    private void handleScanMater(TextView v, String code) {
-        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
-            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-        }
-        String mater = CommonTools.decodeScanString("M", code);
-        String branchPo = CommonTools.decodeScanString("B", code);
+    @Override
+    protected void handleScanCode(String code) {
+        String location = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), code);
+        String mater = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
+        String branchPo = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
         if (state) {//当前按钮状态为“清除” ,扫码选中物料
             int position = 0;
             for (Mater.Branch branch : branches) {
-                if (TextUtils.equals(branch.getPo(), branchPo) && TextUtils.equals(branch.getMater().getNumber(), mater)) {
-                    handleInquireMater(branches.get(position).getMater().getWarehouse(), branches.get(position).getMater().getShard(), branches.get(position).getMater().getLocation(), branches.get(position).getMater().getNumber(), branches.get(position).getPo(), branches.get(position).getQuantity(), branches.get(position).getMater().getUnit());
-                    mStockSearchAdapter.notifyItemChanged(position);
+                if((TextUtils.isEmpty(branchPo)?true:TextUtils.equals(branch.getPo(), branchPo))
+                        && TextUtils.equals(branch.getMater().getNumber(), mater)
+                        && TextUtils.isEmpty(location)?true:TextUtils.equals(branch.getMater().getLocation(), location) ){
+                    handleInquireMater(branch.getMater().getWarehouse(), branch.getMater().getShard(),
+                            branch.getMater().getLocation(), branch.getMater().getNumber(),
+                            branch.getPo(), branch.getQuantity(), branch.getMater().getUnit());
                     break;
                 }
                 position++;
@@ -298,9 +265,11 @@ public class StockSearchMainFragment extends Fragment {
             materEditText.getText().clear();
         } else {
             materEditText.setText(mater);
-            locationEditText.requestFocus();
+            locationEditText.setText(location);
         }
+
     }
+
 
     private void refreshShow() {
         materEditText.requestFocus();
@@ -375,13 +344,14 @@ public class StockSearchMainFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_FOR_SCAN_MATER && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
-            handleScanMater(materEditText, code);
+            handleScanCode(code);
         }
         if (requestCode == REQUEST_CODE_FOR_SCAN_FROM_LOCATION && resultCode == Activity.RESULT_OK) {
             String code = data.getStringExtra("data").trim();
-            handleScanFromLocation(locationEditText, code);
+            handleScanCode(code);
         }
     }
+
 
     private class MyHandler extends Handler {
         @Override

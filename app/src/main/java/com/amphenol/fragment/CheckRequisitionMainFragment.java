@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CheckRequisitionMainFragment extends Fragment {
+public class CheckRequisitionMainFragment extends BaseFragment {
     private static final int REQUEST_CODE_GET_MATER_LIST = 0x10;
     private static final int REQUEST_CODE_GET_MATER = 0x11;
     private static final int REQUEST_CODE_FOR_SCAN = 0x12;
@@ -56,7 +56,6 @@ public class CheckRequisitionMainFragment extends Fragment {
     private TextView mRequisitionTextView, mStateTextView, mCreaterTextView, mDepartmentTextView, mCreateDateTextView;
     private Button mInquireButton;
     private EditText mRequisitionEditText;
-    private TextView.OnEditorActionListener mOnEditorActionListener;
     private View.OnClickListener mOnClickListener;
     private LoadingDialog mLoadingDialog;
     private CheckRequisitionAdapter mCheckRequisitionAdapter;
@@ -117,7 +116,6 @@ public class CheckRequisitionMainFragment extends Fragment {
         mScanImageView = (ImageView) rootView.findViewById(R.id.fragment_scan_iv);
         mScanImageView.setOnClickListener(mOnClickListener);
         mRequisitionEditText = (EditText) rootView.findViewById(R.id.purchase_receipt_main_code_et);
-        mRequisitionEditText.setOnEditorActionListener(mOnEditorActionListener);
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_purchase_receipt_inquire_bt);
         mInquireButton.setOnClickListener(mOnClickListener);
         mRequisitionTextView = (TextView) rootView.findViewById(R.id.fragment_check_requisition_main_requisition_tv);
@@ -157,20 +155,6 @@ public class CheckRequisitionMainFragment extends Fragment {
             }
         };
 
-        mOnEditorActionListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm.isActive()) {
-                        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-                    }
-                    handleScanCode(mRequisitionEditText.getText().toString().trim());
-                    return true;
-                }
-                return false;
-            }
-        };
 
         mRequestTaskListener = new NetWorkAccessTools.RequestTaskListener() {
             @Override
@@ -283,7 +267,7 @@ public class CheckRequisitionMainFragment extends Fragment {
     /**
      * 处理扫描得到的二维码,执行联网查询操作
      */
-    private void handleScanCode(String code) {
+    public void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
         if (!CheckRequisitionMainFragment.this.isVisible())
