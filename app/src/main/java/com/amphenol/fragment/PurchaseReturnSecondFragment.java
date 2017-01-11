@@ -477,10 +477,10 @@ public class PurchaseReturnSecondFragment extends BaseFragment {
                 case REQUEST_CODE_RETURN_CONFIRM:
                     if (mSecondFragmentCallBack != null) {
                         if (bundle.getInt("code") == 1) {
-                            Toast.makeText(getContext(), "收货成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "退货成功", Toast.LENGTH_SHORT).show();
                             mSecondFragmentCallBack.itemBeenSured(returnsItem.getNumber());
                         } else {
-                            Toast.makeText(getContext(), "收货失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "退货失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;

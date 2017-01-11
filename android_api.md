@@ -708,6 +708,8 @@
 返回
 
 	default
+	code = 7 入库数量超过上限
+	max_remain : double 尚可入库的数量
 
 
 ##生产订单查询
@@ -1089,6 +1091,7 @@
 	action=inventory_update_submit
 
 返回
+
     code : int
         5 库位不存在
 	default
@@ -1102,6 +1105,7 @@
 	action=inventory_add_query
 
 返回
+
     code : int
         6 未找到该物料
 	mater_desc:String 物料描述
@@ -1110,3 +1114,57 @@
     	0 不需要
  		1 需要
     unit： String 库存单位
+
+
+##销售出货-扫描出货通知单
+	请求方式:get
+	参数:
+	    warehouse 仓库
+		pldno 出货通知单号
+	action=sale_shipment_query_header
+
+返回
+
+	code : int
+		5 出货通知单不存在
+		400 其他异常
+	client_number : String 客户编码
+	client_name : String 客户名称
+	department : String 创建部门
+	expected_data : String 预计出货日期  ，注意返回格式为：(yyyy-MM-dd)
+	zpldtl_list : List<Map<String,Object>> 出货通知单明细集合的json字符串。注意:所列项目的状态为出货未完成
+		Map<String,Object>
+			pldln : String 出货通知单明细
+			c6cvnb : String 客户订单号
+			cdfcnb : String 客户订单行号
+			mater : String 物料
+			plan_quantity : double 计划数量
+			plan_quantity_unit : String 计划数量单位
+			
+
+##销售出货-查看明细
+	请求方式:get
+	参数:
+	    warehouse 仓库
+		pldno 出货通知单号
+		pldln 出货通知单明细
+		
+	action=sale_shipment_query_item
+
+返回
+
+	code : int
+		5 出货通知单不存在
+		400 其他异常
+	shipment_quantity : double 出货总数
+	client_name : String 客户名称
+	department : String 创建部门
+	expected_data : String 预计出货日期  ，注意返回格式为：(yyyy-MM-dd)
+	zpldtl_list : List<Map<String,Object>> 出货通知单明细集合的json字符串。注意:所列项目的状态为出货未完成
+		Map<String,Object>
+			pldln : String 出货通知单明细
+			c6cvnb : String 客户订单号
+			cdfcnb : String 客户订单行号
+			mater : String 物料
+			plan_quantity : double 计划数量
+			plan_quantity_unit : String 计划数量单位

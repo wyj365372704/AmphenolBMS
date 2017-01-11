@@ -253,7 +253,6 @@ public class PurchaseReturnMainFragment extends BaseFragment {
             for (int i = 0; i < returns.getReturnsItems().size(); i++) {
                 if (TextUtils.equals(returns.getReturnsItems().get(i).getMater().getNumber(), code)) {
                     handleInquireMater(returns.getNumber(),i,  returns.getReturnsItems().get(i).getMater().getNumber());
-
                     return;
                 }
             }
@@ -346,7 +345,7 @@ public class PurchaseReturnMainFragment extends BaseFragment {
                         returns = bundle.getParcelable("returns");
                         refreshShow(returns);
                     } else {
-                        ((BaseActivity) getActivity()).ShowToast("无效收货单");
+                        ((BaseActivity) getActivity()).ShowToast("无效退货单");
                     }
                     break;
                 case REQUEST_CODE_QUERY_RETURN_ITEM:
