@@ -1,4 +1,4 @@
-#Amphenol_android开发接口文档 version 2.3
+#Amphenol_android开发接口文档 version 2.5
 
 ##书写说明
 - api采用json数据格式返回
@@ -580,7 +580,7 @@
 		pick_line 领料单行号
 		mater 物料编号
 		shard	子库,允许为空
-		位location	库，允许为空
+		location	库位，允许为空
 		branch	批号,允许为空
 	action=hair_mater_get_mater_list
 
@@ -1109,10 +1109,10 @@
     code : int
         6 未找到该物料
 	mater_desc:String 物料描述
-   	mater_format:String	物料规格
+	mater_format:String	物料规格
     branched:int 是否需要批次控制
     	0 不需要
- 		1 需要
+		1 需要
     unit： String 库存单位
 
 
@@ -1138,6 +1138,10 @@
 			c6cvnb : String 客户订单号
 			cdfcnb : String 客户订单行号
 			mater : String 物料
+			mater_dese:String 物料描述
+			mater_format:String 物料规格
+			shard:String 计划子库
+			location:String 计划库位
 			plan_quantity : double 计划数量
 			plan_quantity_unit : String 计划数量单位
 			
@@ -1148,7 +1152,9 @@
 	    warehouse 仓库
 		pldno 出货通知单号
 		pldln 出货通知单明细
-		
+		mater 物料编号
+		shard	子库,允许为空
+		location	库位，允许为空
 	action=sale_shipment_query_item
 
 返回
@@ -1156,15 +1162,69 @@
 	code : int
 		5 出货通知单不存在
 		400 其他异常
-	shipment_quantity : double 出货总数
-	client_name : String 客户名称
-	department : String 创建部门
-	expected_data : String 预计出货日期  ，注意返回格式为：(yyyy-MM-dd)
-	zpldtl_list : List<Map<String,Object>> 出货通知单明细集合的json字符串。注意:所列项目的状态为出货未完成
+	boxln : int 箱明细行号
+	boxnm : String 箱号
+	boxes : int 箱数
+	shard_list:List<Map<String,Object>> 仓库下属的子库集合
+		Map<String,Object> 子库
+			shard:String 子库名
+	mater_list:List<Map<String,Object>> 物料批次集合。注意，区分精度控制到批次层面。例如：物料P-1234有三个批次BP-1、BP-2、BP-3，则将三条记录分开返回。此外，mater_list需要按照fifo_date的升序规则进行排列。
 		Map<String,Object>
-			pldln : String 出货通知单明细
-			c6cvnb : String 客户订单号
-			cdfcnb : String 客户订单行号
-			mater : String 物料
-			plan_quantity : double 计划数量
-			plan_quantity_unit : String 计划数量单位
+			branch:批次号
+			shard:String 当前子库
+			location:String 当前库位
+			quantity： Double 库存数量
+			unit： String 库存单位
+			fifo_date : Long 先进先出日期 FIFO Date
+
+
+##销售出货 - 确认出货
+	请求方式:get
+	参数:
+		warehouse	仓库	
+		pldno 出货通知单号
+		pldln 出货通知单明细
+		actual_quantity 出货总数量
+		boxln : int 箱明细行号
+		boxnm : String 箱号
+		boxes : int 箱数
+		mater_list 出货物料批次集合的json字符串，服务器进行json解析，说明如下
+			mater_list：List<Map<String,Object>> 出货物料批次集合，按此生成json字符串
+				Map<String,Object>:物料
+					mater:String	物料编码
+					branch:String	批次,如果为空或者不存在,表示该物料不受批次管控
+					shard : String 子库
+					location:String	库位
+					quantity:double	数量
+	action=sale_shipment_ensure
+
+返回
+
+	default
+
+
+	
+##销售出货 - 终止出货
+	请求方式:get
+	参数:
+		warehouse	仓库	
+		pldno 出货通知单号
+		pldln 出货通知单明细
+	action=sale_shipment_cancel
+
+返回
+	
+	default
+
+
+	
+##销售出货 - 出货过账
+	请求方式:get
+	参数:
+		warehouse	仓库	
+		pldno 出货通知单号
+	action=sale_shipment_commit
+
+返回
+	
+	default

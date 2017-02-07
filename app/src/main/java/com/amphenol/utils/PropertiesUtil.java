@@ -37,6 +37,7 @@ public class PropertiesUtil {
     public static final String BARCODE_PREFIX_PURCHASE_ORDER = "BARCODE_PREFIX_PURCHASE_ORDER";//
     public static final String BARCODE_PREFIX_MANUFACTURING_HAIR_ORDER = "BARCODE_PREFIX_MANUFACTURING_HAIR_ORDER";//
     public static final String BARCODE_PREFIX_TRANSFER_ORDER = "BARCODE_PREFIX_TRANSFER_ORDER";//
+    public static final String BARCODE_PREFIX_SALE_SHIPMENT = "BARCODE_PREFIX_SALE_SHIPMENT";//
 
 
 
@@ -107,6 +108,12 @@ public class PropertiesUtil {
 
     public static final String ACTION_INVENTORY_UPDATE_SUBMIT = "ACTION_INVENTORY_UPDATE_SUBMIT";//action 后缀, 物料盘点-确认
     public static final String ACTION_INVENTORY_ADD_QUERY = "ACTION_INVENTORY_ADD_QUERY";//action 后缀, 盘点-新增库存-查询物料
+
+    public static final String ACTION_SALE_SHIPMENT_QUERY_HEADER = "ACTION_SALE_SHIPMENT_QUERY_HEADER";//action 后缀, 销售出货-扫描出货通知单
+    public static final String ACTION_SALE_SHIPMENT_QUERY_ITEM = "ACTION_SALE_SHIPMENT_QUERY_ITEM";//action 后缀, 销售出货-查看明细
+    public static final String ACTION_SALE_SHIPMENT_ENSURE = "ACTION_SALE_SHIPMENT_ENSURE";//action 后缀, 销售出货 - 确认出货
+    public static final String ACTION_SALE_SHIPMENT_CANCEL = "ACTION_SALE_SHIPMENT_CANCEL";//action 后缀, 销售出货 - 终止出货
+    public static final String ACTION_SALE_SHIPMENT_COMMIT = "ACTION_SALE_SHIPMENT_COMMIT";//action 后缀, 销售出货 - 出货过账
 
     private static PropertiesUtil mPropertiesUtil;
     private  Properties mProperties;

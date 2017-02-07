@@ -41,9 +41,7 @@ import java.util.Map;
 
 import static com.amphenol.amphenol.R.id.fragment_purchase_receipt_second_sjdz_in_et;
 
-/**
- * 采购收货_物料明细
- */
+
 public class PurchaseStorageSecondNoBranchedFragment extends BaseFragment {
     private static final int REQUEST_CODE_RECEIPT_CONFIRM = 0X10;
     private static final int REQUEST_CODE_RECEIPT_CLOSE = 0x11;
@@ -105,7 +103,7 @@ public class PurchaseStorageSecondNoBranchedFragment extends BaseFragment {
                 switch (v.getId()) {
                     case R.id.fragment_fast_requisition_main_cancel_bt:
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("关闭收货").setMessage("将要对此物料进行关闭收货?");
+                        builder.setTitle("关闭入库").setMessage("将要对此物料进行关闭入库?");
                         builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -116,7 +114,7 @@ public class PurchaseStorageSecondNoBranchedFragment extends BaseFragment {
                         break;
                     case R.id.fragment_fast_requisition_main_submit_bt:
                         if (TextUtils.isEmpty(mLocationEditText.getText().toString())) {
-                            Toast.makeText(getContext(), "收货库位无效", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "入库库位无效", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         final double singleBefore = mPurchaseItem.getMater().getSingle();
@@ -139,7 +137,7 @@ public class PurchaseStorageSecondNoBranchedFragment extends BaseFragment {
 
 
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(getContext());
-                        builder2.setTitle("确认收货").setMessage("将要对此物料进行确认收货?");
+                        builder2.setTitle("确认入库").setMessage("将要对此物料进行确认入库?");
                         if (singleAfter != singleBefore) {
                             dialogView = LayoutInflater.from(getContext()).inflate(R.layout.purchase_receipt_sure_with_actual_single_dialog, null, false);
                             builder2.setView(dialogView);
@@ -376,7 +374,7 @@ public class PurchaseStorageSecondNoBranchedFragment extends BaseFragment {
             ((BaseActivity) getActivity()).ShowToast("扫描失败,无效库位标签");
         } else {
             mLocationEditText.setText(code);
-            ((BaseActivity) getActivity()).ShowToast("收货库位调整为:" + code);
+            ((BaseActivity) getActivity()).ShowToast("入库库位调整为:" + code);
         }
     }
 
@@ -404,10 +402,10 @@ public class PurchaseStorageSecondNoBranchedFragment extends BaseFragment {
                 case REQUEST_CODE_RECEIPT_CONFIRM:
                     if (mSecondFragmentCallBack != null) {
                         if (bundle.getInt("code") == 1) {
-                            Toast.makeText(getContext(), "收货成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "入库成功", Toast.LENGTH_SHORT).show();
                             mSecondFragmentCallBack.itemBeenSured(mPurchaseItem.getNumber());
                         } else {
-                            Toast.makeText(getContext(), "收货失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "入库失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;

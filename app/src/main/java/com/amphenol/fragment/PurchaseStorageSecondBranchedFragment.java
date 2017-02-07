@@ -47,7 +47,7 @@ import java.util.Map;
 import static com.amphenol.amphenol.R.id.fragment_purchase_receipt_second_sjdz_in_et;
 
 /**
- * 采购收货_物料明细
+ * 采购入库_物料明细
  */
 public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
     private static final int REQUEST_CODE_RECEIPT_CONFIRM = 0X10;
@@ -113,7 +113,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
                     case R.id.toolbar_menu:
                         ActionSheet.createBuilder(getContext(), getFragmentManager())
                                 .setCancelButtonTitle("取消")
-                                .setOtherButtonTitles("确认入库", "新增批次", "拍照上传", "关闭收货")
+                                .setOtherButtonTitles("确认入库", "新增批次", "拍照上传", "关闭入库")
                                 .setCancelableOnTouchOutside(true)
                                 .setListener(mActionSheetListener).show();
                         break;
@@ -182,7 +182,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
             @Override
             public void onOtherButtonClick(ActionSheet actionSheet, int index) {
                 switch (index) {
-                    case 0://确认收货
+                    case 0://确认入库
 
                         if (TextUtils.isEmpty(mLocationEditText.getText().toString())) {
                             Toast.makeText(getContext(), "入库库位无效", Toast.LENGTH_SHORT).show();
@@ -201,7 +201,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
                         try {
                             actualQuantity = Double.parseDouble(mActualquantityTextView.getText().toString().trim());
                             if (actualQuantity == 0) {
-                                Toast.makeText(getContext(), "未勾选任何批次,请新增并勾选需要收货的批次", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "未勾选任何批次,请新增并勾选需要入库的批次", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         } catch (Exception e) {
@@ -275,9 +275,9 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
 
                         break;
 
-                    case 3://关闭收货
+                    case 3://关闭入库
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("关闭收货").setMessage("将要对此物料进行关闭收货?");
+                        builder.setTitle("关闭入库").setMessage("将要对此物料进行关闭入库?");
                         builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -344,7 +344,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
     }
 
     /**
-     * 更新收货总重量
+     * 更新入库总重量
      */
     private void updateReceiptTotalWeight() {
         double single = 0;
@@ -413,7 +413,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
     }
 
     /**
-     * 增加批次， 在本地的item集合中追加branch ，不进行联网操作，确认收货时完成提交新增的branch
+     * 增加批次， 在本地的item集合中追加branch ，不进行联网操作，确认入库时完成提交新增的branch
      *
      * @param branchPO       批次号
      * @param actualQuantity 实收数量
@@ -440,7 +440,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
 
 
     /**
-     * 处理关闭物料收货操作，进行联网
+     * 处理关闭物料入库操作，进行联网
      *
      * @param shdhm
      * @param shdhh
@@ -479,22 +479,22 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
             ((BaseActivity) getActivity()).ShowToast("扫描失败,无效库位标签");
         } else {
             mLocationEditText.setText(code);
-            ((BaseActivity) getActivity()).ShowToast("收货库位调整为:" + code);
+            ((BaseActivity) getActivity()).ShowToast("入库库位调整为:" + code);
         }
     }
 
     public interface SecondFragmentCallBack extends Serializable {
         /**
-         * 通知物料收货被关闭
+         * 通知物料入库被关闭
          *
-         * @param shdhh 收货单行号
+         * @param shdhh 入库单行号
          */
         void itemBeenClosed(String shdhh);
 
         /**
-         * 通知物料收货被关闭
+         * 通知物料入库被关闭
          *
-         * @param shdhh 收货单行号
+         * @param shdhh 入库单行号
          */
         void itemBeenSured(String shdhh);
     }
@@ -507,10 +507,10 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
                 case REQUEST_CODE_RECEIPT_CONFIRM:
                     if (mSecondFragmentCallBack != null) {
                         if (bundle.getInt("code") == 1) {
-                            Toast.makeText(getContext(), "收货成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "入库成功", Toast.LENGTH_SHORT).show();
                             mSecondFragmentCallBack.itemBeenSured(mPurchaseItem.getNumber());
                         } else {
-                            Toast.makeText(getContext(), "收货失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "入库失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;

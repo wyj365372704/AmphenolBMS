@@ -211,7 +211,7 @@ public class FastRequisitionMainFragment extends BaseFragment {
                             @Override
                             public void onDismiss(DialogInterface dialog) {
                                 targetLocationEditText = null;
-                           }
+                            }
                         });
                         builder3.create().show();
                         targetLocationEditText = (EditText) view.findViewById(R.id.fragment_fast_requisition_main_target_shard_et);
@@ -349,16 +349,18 @@ public class FastRequisitionMainFragment extends BaseFragment {
         }
         if (state) {//当前按钮状态为“清除” ,扫码选中物料
             int count = 0;
-            for (Requisition.RequisitionItem requisitionItem : requisition.getRequisitionItems()) {
+            for (int i = 0; i < requisition.getRequisitionItems().size(); i++) {
 
-                if((TextUtils.isEmpty(branch)?true:TextUtils.equals(requisitionItem.getBranch().getPo(), branch))
+                Requisition.RequisitionItem requisitionItem = requisition.getRequisitionItems().get(i);
+                if ((TextUtils.isEmpty(branch) ? true : TextUtils.equals(requisitionItem.getBranch().getPo(), branch))
                         && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)
-                        && TextUtils.isEmpty(location)?true:TextUtils.equals(requisitionItem.getBranch().getMater().getLocation(), location) ){
-                    if(!requisitionItem.isChecked()){
+                        && TextUtils.isEmpty(location) ? true : TextUtils.equals(requisitionItem.getBranch().getMater().getLocation(), location)) {
+                    if (!requisitionItem.isChecked()) {
                         currentCheckedItemCount++;
                         requisitionItem.setChecked(true);
                         firstRequisitionForMaterListAdapter.notifyDataSetChanged();
                     }
+                    mRecyclerView.scrollToPosition(i);
                     break;
                 }
                 count++;

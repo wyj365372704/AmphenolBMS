@@ -44,7 +44,7 @@
             android:layout_marginRight="16dp"
             android:layout_weight="1"
             android:background="@drawable/negative_button_background"
-            android:text="确认收货"
+            android:text="确认入库"
             android:textColor="@android:color/white"
             android:textStyle="bold"/>
 
@@ -65,7 +65,7 @@
             android:layout_marginLeft="16dp"
             android:layout_weight="1"
             android:background="@drawable/negative_button_background"
-            android:text="关闭收货"
+            android:text="关闭入库"
             android:textColor="@android:color/white"
             android:textStyle="bold"/>
 
@@ -104,7 +104,7 @@
 
                 <TextView
                     android:id="@+id/fragment_purchase_receipt_second_wlbh_in_tv"
-                    android:layout_width="100dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
@@ -340,7 +340,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="180dp"
                     android:gravity="center"
-                    android:text="收货总重量:"
+                    android:text="入库总重量:"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/normal_font_size"/>
 

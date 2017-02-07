@@ -19,6 +19,7 @@ public class MenuItem{
     public static final int MENU_CODE_STOCK_SEARCH = 34;//库存查询
     public static final int MENU_CODE_PRINT_MATER_LABEL = 36;//打印物料标签
     public static final int MENU_CODE_INVENTORY = 37;//盘点
+    public static final int MENU_CODE_SALES_SHIPMENTS = 43;//销售出货
     public static final int MENU_CODE_SET_UP_SYSTEM = 91;//系统设置
     public static final int MENU_CODE_SET_UP_WAREHOUSE = 92;//仓库设置
     private String title;

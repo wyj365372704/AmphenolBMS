@@ -107,6 +107,9 @@ public class MenuActivity extends BaseActivity {
                     case MenuItem.MENU_CODE_INVENTORY:
                         componentName = new ComponentName(MenuActivity.this, InventoryActivity.class);
                         break;
+                    case MenuItem.MENU_CODE_SALES_SHIPMENTS:
+                        componentName = new ComponentName(MenuActivity.this, SaleShipmentActivity.class);
+                        break;
                 }
                 if (componentName != null) {
                     intent.setComponent(componentName);
@@ -217,6 +220,8 @@ public class MenuActivity extends BaseActivity {
                 return R.mipmap.menu_icon_production_report;
             case MenuItem.MENU_CODE_INVENTORY:
                 return R.mipmap.menu_icon_inventory;
+            case MenuItem.MENU_CODE_SALES_SHIPMENTS:
+                return R.mipmap.menu_icon_sale_shipment;
         }
         return R.mipmap.ic_launcher;
     }

@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,48 +14,48 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.amphenol.amphenol.R;
-import com.amphenol.entity.Mater;
-import com.amphenol.entity.Requisition;
+import com.amphenol.entity.Pick;
+import com.amphenol.entity.Shipment;
 
 import java.util.List;
 
 /**
  * Created by Carl on 2016/7/12/012.
- * 创建调拨单页面，列表适配器
  */
-public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<FirstRequisitionForMaterListAdapter.ViewHolderBody> {
-    private List<Requisition.RequisitionItem> date;
+public class SaleShipmentSecondAdapter extends RecyclerView.Adapter<SaleShipmentSecondAdapter.ViewHolderBody> {
+    private List<Shipment.ShipmentItem.ShipmentItemBranchItem> date;
     private OnItemClickListener onItemClickListener;
     private Context mContext;
 
-    public FirstRequisitionForMaterListAdapter(Context mContext, List<Requisition.RequisitionItem> requisitionItems, OnItemClickListener onItemClickListener) {
-        this.date = requisitionItems;
+    public SaleShipmentSecondAdapter(Context mContext, List<Shipment.ShipmentItem.ShipmentItemBranchItem> shipmentItemBranchItems, OnItemClickListener onItemClickListener) {
+        this.date = shipmentItemBranchItems;
         this.mContext = mContext;
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setDate(List<Requisition.RequisitionItem> date) {
+    public void setDate(List<Shipment.ShipmentItem.ShipmentItemBranchItem> date) {
         this.date = date;
     }
 
+
     @Override
-    public FirstRequisitionForMaterListAdapter.ViewHolderBody onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolderBody(LayoutInflater.from(mContext).inflate(R.layout.create_requisition_main_item_body, parent, false));
+    public SaleShipmentSecondAdapter.ViewHolderBody onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolderBody(LayoutInflater.from(mContext).inflate(R.layout.sale_shipment_mater_list_body, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(FirstRequisitionForMaterListAdapter.ViewHolderBody holder, final int position) {
+    public void onBindViewHolder(SaleShipmentSecondAdapter.ViewHolderBody holder, final int position) {
         holder.position = position;
+        holder.shardTextView.setText(date.get(position).getBranch().getMater().getShard());
         holder.locationTextView.setText(date.get(position).getBranch().getMater().getLocation());
-        holder.materTextView.setText(date.get(position).getBranch().getMater().getNumber());
         holder.branchTextView.setText(date.get(position).getBranch().getPo());
-        holder.unitTextView.setText(date.get(position).getBranch().getMater().getUnit());
+        holder.storageQuantityTextView.setText(date.get(position).getBranch().getQuantity()+"");
         holder.quantityEditText.setText(date.get(position).getQuantity() + "");
         holder.checkBox.setChecked(date.get(position).isChecked());
         if (position % 2 == 0)
-            holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_o));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_o));
         else
-            holder.itemView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.table_body_background_e));
+            holder.itemView.setBackground(ContextCompat.getDrawable(mContext,R.drawable.table_body_background_e));
     }
 
     @Override
@@ -66,29 +65,16 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
 
     class ViewHolderBody extends RecyclerView.ViewHolder {
         int position;
-        TextView locationTextView, materTextView, branchTextView, unitTextView;
+        TextView shardTextView,locationTextView, branchTextView, storageQuantityTextView;
         EditText quantityEditText;
         CheckBox checkBox;
 
-        View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.OnItemClick(position);
-                }
-            }
-        };
         CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.e("wyj","onCheckedChanged:"+date.get(position).isChecked()+"->"+isChecked);
-                if (date.get(position).isChecked() == isChecked)
-                    return;
-                else {
+                if (onItemClickListener != null) {
                     date.get(position).setChecked(isChecked);
-                    if (onItemClickListener != null) {
-                        onItemClickListener.OnItemCheckedChanged(position, isChecked);
-                    }
+                    onItemClickListener.OnItemCheckedChanged(position, isChecked);
                 }
             }
         };
@@ -103,12 +89,14 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
                 double quantity = 0;
                 try {
                     quantity = Double.parseDouble(s.toString());
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                double quantityBefore = date.get(position).getQuantity();
                 date.get(position).setQuantity(quantity);
                 if (onItemClickListener != null)
-                    onItemClickListener.OnRequisitionQuantityChanged(position, quantity);
+                    onItemClickListener.OnRequisitionQuantityChanged(position,quantity,quantityBefore);
             }
 
             @Override
@@ -119,24 +107,20 @@ public class FirstRequisitionForMaterListAdapter extends RecyclerView.Adapter<Fi
 
         public ViewHolderBody(View itemView) {
             super(itemView);
+            shardTextView = (TextView) itemView.findViewById(R.id.hair_mater_shard_tv);
             locationTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_location_tv);
-            materTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_mater_tv);
             branchTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_branch_tv);
-            unitTextView = (TextView) itemView.findViewById(R.id.create_requisition_main_item_body_unit_tv);
+            storageQuantityTextView = (TextView) itemView.findViewById(R.id.hair_mater_storage_quantity_show_tv);
             quantityEditText = (EditText) itemView.findViewById(R.id.create_requisition_main_item_body_quantity_et);
             quantityEditText.addTextChangedListener(mTextWatcher);
             checkBox = (CheckBox) itemView.findViewById(R.id.create_requisition_main_item_body_cb);
             checkBox.setOnCheckedChangeListener(mOnCheckedChangeListener);
-            itemView.setOnClickListener(mOnClickListener);
-            itemView.setTag(position);
         }
     }
 
     public interface OnItemClickListener {
-        void OnItemClick(int position);
-
         void OnItemCheckedChanged(int position, boolean isChecked);
 
-        void OnRequisitionQuantityChanged(int position, double quantity);
+        void OnRequisitionQuantityChanged(int position, double quantityAfter, double quantityBefore);
     }
 }

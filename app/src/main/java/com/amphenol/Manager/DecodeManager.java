@@ -15,6 +15,7 @@ import com.amphenol.entity.Pick;
 import com.amphenol.entity.Purchase;
 import com.amphenol.entity.Requisition;
 import com.amphenol.entity.Returns;
+import com.amphenol.entity.Shipment;
 import com.amphenol.entity.WorkOrder;
 import com.amphenol.fragment.ProductionReportJobListFragment;
 
@@ -349,6 +350,7 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
     public static void decodeReturnConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
         Message msg = new Message();
         Bundle data = new Bundle();
@@ -934,6 +936,7 @@ public class DecodeManager {
         Bundle data = new Bundle();
         msg.what = messageWhat;
         insertRecInformation(data, jsonObject);
+        data.putDouble("max_remain", jsonObject.optDouble("max_remain"));
         msg.setData(data);
         handler.sendMessage(msg);
     }
@@ -1503,11 +1506,171 @@ public class DecodeManager {
         msg.setData(data);
         handler.sendMessage(msg);
     }
+
+    public static void decodeGetShipmentList(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Shipment shipment = new Shipment();
+            shipment.setNumber(params.get("pldno"));
+            shipment.setWarehouse(params.get("warehouse"));
+            shipment.setClientNumber(jsonObject.optString("client_number").trim());
+            shipment.setClientName(jsonObject.optString("client_name").trim());
+            shipment.setDepartment(jsonObject.optString("department").trim());
+            shipment.setExpectedDate(jsonObject.optString("expected_data").trim());
+            ArrayList<Shipment.ShipmentItem> shipmentItems = new ArrayList<>();
+            shipment.setShipmentItems(shipmentItems);
+
+            JSONArray zpldtlJsonArray = jsonObject.optJSONArray("zpldtl_list");
+
+            if (zpldtlJsonArray != null) {
+                for (int i = 0; i < zpldtlJsonArray.length(); i++) {
+                    JSONObject zpldtlObject = zpldtlJsonArray.optJSONObject(i);
+                    if (zpldtlObject != null) {
+                        Shipment.ShipmentItem shipmentItem = new Shipment.ShipmentItem();
+                        shipmentItems.add(shipmentItem);
+                        shipmentItem.setPldln(zpldtlObject.optString("pldln").trim());
+                        shipmentItem.setC6cvnb(zpldtlObject.optString("c6cvnb").trim());
+                        shipmentItem.setCdfcnb(zpldtlObject.optString("cdfcnb").trim());
+                        shipmentItem.setQuantity(zpldtlObject.optDouble("plan_quantity"));
+                        shipmentItem.setUnit(zpldtlObject.optString("plan_quantity_unit").trim());
+                        Mater mater = new Mater();
+                        shipmentItem.setMater(mater);
+                        mater.setNumber(zpldtlObject.optString("mater").trim());
+                        mater.setDesc(zpldtlObject.optString("mater_dese").trim());
+                        mater.setFormat(zpldtlObject.optString("mater_format").trim());
+                        mater.setShard(zpldtlObject.optString("shard").trim());
+                        mater.setLocation(zpldtlObject.optString("location").trim());
+                    }
+                }
+            }
+            data.putParcelable("shipment", shipment);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeSaleShipmentGetDetail(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        Map<String, String> params = (Map<String, String>) jsonObject.get("params");
+        insertRecInformation(data, jsonObject);
+        if (isRequestOK(jsonObject)) {
+            Shipment.ShipmentItem shipmentItem = new Shipment.ShipmentItem();
+            shipmentItem.setQuantity(Double.parseDouble(params.get("plan_quantity")));
+            shipmentItem.setC6cvnb(params.get("c6cvnb"));
+            shipmentItem.setCdfcnb(params.get("cdfcnb"));
+            Shipment shipment = new Shipment();
+            shipment.setNumber(params.get("pldno"));
+            shipment.setWarehouse(params.get("warehouse"));
+            shipmentItem.setPldln(params.get("pldln"));
+            shipmentItem.setShipment(shipment);
+            Mater mater = new Mater();
+            shipmentItem.setMater(mater);
+            mater.setNumber(params.get("mater"));
+            mater.setShard(params.get("shard"));
+            mater.setLocation(params.get("location"));
+
+            shipmentItem.setBoxNumber(jsonObject.optString("boxnm").trim());
+            shipmentItem.setBoxQuantity(jsonObject.optDouble("boxes"));
+            shipmentItem.setBoxln(jsonObject.optString("boxln").trim());
+
+            ArrayList<String> shards = new ArrayList<>();
+            JSONArray shardJsonArray = jsonObject.optJSONArray("shard_list");
+            if (shardJsonArray != null && shardJsonArray.length() > 0) {
+                for (int position = 0; position < shardJsonArray.length(); position++) {
+                    JSONObject shardObject = shardJsonArray.getJSONObject(position);
+                    String shardName = shardObject.optString("shard");
+                    shards.add(shardName.trim());
+                }
+            }
+
+            JSONArray materJsonArray = jsonObject.optJSONArray("mater_list");
+            if (materJsonArray != null && materJsonArray.length() > 0) {
+                ArrayList<Shipment.ShipmentItem.ShipmentItemBranchItem> shipmentItemBranchItems = new ArrayList<>();
+                shipmentItem.setShipmentItemBranchItems(shipmentItemBranchItems);
+                for (int i = 0; i < materJsonArray.length(); i++) {
+                    Shipment.ShipmentItem.ShipmentItemBranchItem shipmentItemBranchItem = new Shipment.ShipmentItem.ShipmentItemBranchItem();
+                    Mater.Branch branchSecond = new Mater.Branch();
+                    Mater materSecond = new Mater();
+                    JSONObject branchObject = materJsonArray.getJSONObject(i);
+                    String branchPoSecond = branchObject.optString("branch");
+                    String shardSecond = branchObject.optString("shard");
+                    String locationSecond = branchObject.optString("location");
+                    double quantity = branchObject.optDouble("quantity");
+                    String mater_unit = branchObject.optString("unit");
+                    materSecond.setNumber(params.get("mater"));
+                    materSecond.setWarehouse(params.get("warehouse"));
+                    materSecond.setShard(shardSecond.trim());
+                    materSecond.setLocation(locationSecond.trim());
+                    materSecond.setUnit(mater_unit.trim());
+                    branchSecond.setPo(branchPoSecond.trim());
+                    branchSecond.setQuantity(quantity);
+                    branchSecond.setMater(materSecond);
+                    shipmentItemBranchItem.setBranch(branchSecond);
+                    shipmentItemBranchItems.add(shipmentItemBranchItem);
+                }
+
+            }
+
+            data.putInt("code", 1);
+            data.putStringArrayList("shards", shards);
+            data.putParcelable("shipmentItem", shipmentItem);
+        }
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    /**
+     * 确认出货
+     * @param jsonObject
+     * @param messageWhat
+     * @param handler
+     * @throws Exception
+     */
+    public static void decodeSaleShipmentEnsure(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    /**
+     * 出货过账
+     * @param jsonObject
+     * @param messageWhat
+     * @param handler
+     * @throws Exception
+     */
+    public static void decodeSaleShipmentCommit(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
+
+    public static void decodeSaleShipmentCancel(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        msg.what = messageWhat;
+        insertRecInformation(data, jsonObject);
+        msg.setData(data);
+        handler.sendMessage(msg);
+    }
 //通用模板
 //    public static void decodeReceiptConfirm(JSONObject jsonObject, int messageWhat, Handler handler) throws Exception {
 //        Message msg = new Message();
 //        Bundle data = new Bundle();
 //        msg.what = messageWhat;
+//Map<String, String> params = (Map<String, String>) jsonObject.get("params");
 //        insertRecInformation(data, jsonObject);
 //        if (isRequestOK(jsonObject)) {
 //

@@ -190,7 +190,13 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
                         final double finalQuantity = quantity;
 
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(ProductionStorageActivity.this);
-                        builder2.setTitle("确认入库").setMessage("将要进行入库操作?");
+
+                        builder2.setTitle("确认入库");
+                        if(finalQuantity>mWorkOrder.getQuantityOrderProduct()-mWorkOrder.getQuantityFinishedProduct()){
+                            builder2.setMessage("本次入库数量大于预期剩余数量，将要进行入库操作?");
+                        }else{
+                            builder2.setMessage("将要进行入库操作?");
+                        }
                         if (!TextUtils.equals(beforeShard, afterShard) || !TextUtils.equals(beforeLocation, afterLocation)) {
                             dialogView = LayoutInflater.from(ProductionStorageActivity.this).inflate(R.layout.check_requisition_sure_with_shard_or_location_changed_dialog, null, false);
                             builder2.setView(dialogView);
@@ -387,19 +393,25 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
         }
     }
 
-    private void handleScanWorkOrder(String code) {
-        if (TextUtils.isEmpty(code))
+    private void handleScanWorkOrder(String message) {
+        if (TextUtils.isEmpty(message))
             return;
-        code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER, ""), code);
-        mWorkOrderEditText.setText(code);
-        if (TextUtils.isEmpty(code)) {
+
+        String work_order = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER, ""), message);
+
+        if (TextUtils.isEmpty(work_order))
+            return;
+
+        mWorkOrderEditText.setText(work_order);
+        if (TextUtils.isEmpty(work_order)) {
             Toast.makeText(getApplicationContext(), "无效查询", Toast.LENGTH_SHORT).show();
             return;
         }
         Map<String, String> param = new HashMap<>();
         param.put("username", SessionManager.getUserName(getApplicationContext()));
         param.put("env", SessionManager.getEnv(getApplicationContext()));
-        param.put("work_order", code);
+        param.put("work_order", work_order);
+        param.put("scan_message", message);
         param.put("warehouse", SessionManager.getWarehouse(getApplicationContext()));
         NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_STORAGE_INQUIRE, getApplicationContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
@@ -419,8 +431,8 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
         try {
             if (!TextUtils.isEmpty(eachBoxQuantity)) {
                 double temp = Double.parseDouble(eachBoxQuantity);
-                mEachBoxQuantityEditText.setText(Double.toString(temp));
-                ShowToast("每箱数量调整为:" + Double.toString(temp));
+                mantissaEditText.setText(Double.toString(temp));
+                ShowToast("尾数调整为:" + Double.toString(temp));
             }
         } catch (Throwable e) {
         }
@@ -527,6 +539,9 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
                     if (bundle.getInt("code") == 1) {
                         mWorkOrder = bundle.getParcelable("workOrder");
                         refreshShow();
+                        handleScanBranch(((Map<String, String>) bundle.getSerializable("params")).get("scan_message"));
+                        handleScanEachBoxQuantity(((Map<String, String>) bundle.getSerializable("params")).get("scan_message"));
+                        updateTotalQuantity();
                     } else if (bundle.getInt("code") == 5) {
                         ShowToast("该生产工单不存在");
                     } else {
@@ -540,6 +555,8 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
                         refreshShow();
                     } else if (bundle.getInt("code") == 5) {
                         ShowToast("目标子库和库位不匹配");
+                    } else if (bundle.getInt("code") == 7) {
+                        ShowToast("入库数量超过上限:"+bundle.getDouble("max_remain"));
                     } else {
                         ShowToast("入库失败");
                     }

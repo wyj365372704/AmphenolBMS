@@ -362,7 +362,7 @@ public class CreateRequisitionMainFragment extends BaseFragment {
         if (!CreateRequisitionMainFragment.this.isVisible())
             return;
         if (requisition.getRequisitionItems().size() == 0) {//当前物料列表为空,查询物料列表
-            code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION,""), code);
+            code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION, ""), code);
             mLocationEditText.setText(code);
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
@@ -376,8 +376,8 @@ public class CreateRequisitionMainFragment extends BaseFragment {
             param.put("location", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_CREATE_REQUISITION_GET_MATER_LIST, getContext()), param, REQUEST_CODE_GET_MATER_LIST, mRequestTaskListener);
         } else {//当前物料列表不为空,扫描定位物料项
-            String mater = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
-            String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH,""), code);
+            String mater = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER, ""), code);
+            String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), code);
             if (TextUtils.isEmpty(mater)) {
                 Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;
@@ -386,8 +386,14 @@ public class CreateRequisitionMainFragment extends BaseFragment {
             int count = 0;
             for (int i = 0; i < requisition.getRequisitionItems().size(); i++) {
                 if (TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getMater().getNumber(), mater) && TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getPo(), branch)) {
+                    //取巧写法******
+                    if (!requisition.getRequisitionItems().get(i).isChecked()) {
+                        mOnItemClickListener.OnItemCheckedChanged(i, true);
+                    }
+                    //取巧写法******
                     requisition.getRequisitionItems().get(i).setChecked(true);
                     count++;
+                    mRecyclerView.scrollToPosition(i);
                 }
             }
             if (count == 0) {
@@ -463,7 +469,7 @@ public class CreateRequisitionMainFragment extends BaseFragment {
                         String number = bundle.getString("number");
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle("调拨单创建成功");
-                        builder.setMessage("新创建调拨单号:"+number);
+                        builder.setMessage("新创建调拨单号:" + number);
                         builder.setCancelable(true);
                         builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
