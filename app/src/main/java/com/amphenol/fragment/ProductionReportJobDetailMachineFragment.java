@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -38,7 +39,7 @@ import java.util.Map;
 /**
  * Created by Carl on 2016-09-19 019.
  */
-public class ProductionReportJobDetailMachineFragment extends Fragment {
+public class ProductionReportJobDetailMachineFragment extends BaseFragment {
     private static final int REQUEST_CODE_INQUIRE = 0x10;
     private static final int REQUEST_CODE_FOR_SCAN = 0x11;
     private static final int REQUEST_CODE_GET_JOB_DETAIL = 0x12;
@@ -233,15 +234,21 @@ public class ProductionReportJobDetailMachineFragment extends Fragment {
         mProductionReportJobDetailMachineListAdapter = new ProductionReportJobDetailMachineListAdapter(getContext(), mJob.getMachines(), mOnItemClickListener);
     }
 
-    private void handleInquireMachine(String jobNumber, String machineNumber) {
-        if (!this.isVisible())
+
+    @Override
+    protected void handleScanCode(String message) {
+        if (TextUtils.isEmpty(message))
             return;
-        Map<String, String> param = new HashMap<>();
-        param.put("username", SessionManager.getUserName(getContext()));
-        param.put("env", SessionManager.getEnv(getContext()));
-        param.put("job_number", jobNumber);
-        param.put("machine_number", machineNumber);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_MACHINE_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
+        if (!this.isVisible() || !this.getUserVisibleHint())
+            return;
+
+        String machine_number = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MACHINE, ""), message);
+        if (TextUtils.isEmpty(machine_number)) {
+            Toast.makeText(getContext(), "无效设备标签", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mEditText.setText(machine_number);
+        handleInquireMachine(mJob.getWorkOrder().getNumber(), mJob.getStepNumber(), mJob.getProprNumber(), mJob.getJobNumber(), machine_number);
     }
 
     private class MyHandler extends Handler {
@@ -252,10 +259,10 @@ public class ProductionReportJobDetailMachineFragment extends Fragment {
                 case REQUEST_CODE_INQUIRE:
                     if (bundle.getInt("code") == 1) {
                         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportInquireMachineFragment.newInstance(mJob,(Machine) bundle.getParcelable("machine"),mOptionCallBack));
+                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportInquireMachineFragment.newInstance(mJob, (Machine) bundle.getParcelable("machine"), mOptionCallBack));
                         transaction.addToBackStack(null);
                         transaction.commitAllowingStateLoss();
-                    }else if (bundle.getInt("code") == 5) {
+                    } else if (bundle.getInt("code") == 5) {
                         ((BaseActivity) getActivity()).ShowToast("无该设备信息");
                     } else {
                         ((BaseActivity) getActivity()).ShowToast("查询失败");

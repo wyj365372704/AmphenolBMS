@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -39,7 +40,7 @@ import java.util.Map;
 /**
  * Created by Carl on 2016-09-19 019.
  */
-public class ProductionReportJobDetailEmployeeFragment extends Fragment {
+public class ProductionReportJobDetailEmployeeFragment extends BaseFragment {
     private static final int REQUEST_CODE_INQUIRE = 0X10;
     private static final int REQUEST_CODE_FOR_SCAN = 0x11;
     private static final int REQUEST_CODE_GET_JOB_DETAIL = 0x12;
@@ -137,7 +138,6 @@ public class ProductionReportJobDetailEmployeeFragment extends Fragment {
                             DecodeManager.decodeProductionReportGetJobDetail(jsonObject, requestCode, myHandler);
                             break;
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     ((BaseActivity) getActivity()).ShowToast("服务器返回错误");
@@ -227,6 +227,21 @@ public class ProductionReportJobDetailEmployeeFragment extends Fragment {
     private void initDate() {
         myHandler = new MyHandler();
         mProductionReportJobDetailEmployeeListAdapter = new ProductionReportJobDetailEmployeeListAdapter(getContext(), mJob.getEmployees(), mOnItemClickListener);
+    }
+
+    @Override
+    protected void handleScanCode(String message) {
+        if (TextUtils.isEmpty(message))
+            return;
+        if (!this.isVisible() || !this.getUserVisibleHint())
+            return;
+        String employee_number = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_EMPLOYEE, ""), message);
+        if (TextUtils.isEmpty(employee_number)) {
+            Toast.makeText(getContext(), "无效员工标签", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mEditText.setText(employee_number);
+        handleInquireEmployee(mJob.getWorkOrder().getNumber(), mJob.getStepNumber(), mJob.getProprNumber(), mJob.getJobNumber(), employee_number);
     }
 
     private class MyHandler extends Handler {

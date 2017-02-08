@@ -438,15 +438,22 @@ public class PurchaseReturnSecondFragment extends BaseFragment {
         for (int i = 0; i < mShowList.size(); i++) {
             Returns.ReturnsItemSource item =mShowList.get(i);
             if (TextUtils.equals(item.getPo().trim(),branch.trim()) && TextUtils.equals(item.getMater().getLocation().trim(),location.trim())) {
-                if (returnsItem.getActualQuantity() + item.getQuantity() > returnsItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
-                    item.setEnableQuantity(returnsItem.getQuantity() - returnsItem.getActualQuantity());
-                } else {
-                    item.setEnableQuantity(item.getQuantity());
+                if(!item.isChecked()){
+                    if (returnsItem.getActualQuantity() + item.getQuantity() > returnsItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
+                        item.setEnableQuantity(returnsItem.getQuantity() - returnsItem.getActualQuantity());
+                    } else {
+                        item.setEnableQuantity(item.getQuantity());
+                    }
+                    item.setChecked(true);
+                    mShowList.add(0,mShowList.remove(i));
+                    mSecondReceiptAdapter.notifyDataSetChanged();
+                    mRecyclerView.scrollToPosition(0);
+                    functionCalculateHairQuantity();
+                }else{
+                    mRecyclerView.scrollToPosition(i);
                 }
-                item.setChecked(true);
-                mSecondReceiptAdapter.notifyDataSetChanged();
-                mRecyclerView.scrollToPosition(i);
-                functionCalculateHairQuantity();
+
+                ((BaseActivity)getActivity()).ShowToast("扫描成功并勾选");
                 return;
             }
         }

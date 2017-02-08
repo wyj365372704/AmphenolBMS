@@ -17,6 +17,8 @@ import com.amphenol.amphenol.R;
 import com.amphenol.entity.Mater;
 import com.amphenol.entity.Returns;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**

@@ -388,12 +388,18 @@ public class CreateRequisitionMainFragment extends BaseFragment {
                 if (TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getMater().getNumber(), mater) && TextUtils.equals(requisition.getRequisitionItems().get(i).getBranch().getPo(), branch)) {
                     //取巧写法******
                     if (!requisition.getRequisitionItems().get(i).isChecked()) {
+                        requisition.getRequisitionItems().get(i).setChecked(true);
                         mOnItemClickListener.OnItemCheckedChanged(i, true);
+                        requisition.getRequisitionItems().add(0,requisition.getRequisitionItems().remove(i));
+                        mFirstRequisitionForMaterListAdapter.notifyDataSetChanged();
+                        mRecyclerView.scrollToPosition(0);
+                    }else{
+                        mRecyclerView.scrollToPosition(i);
                     }
                     //取巧写法******
-                    requisition.getRequisitionItems().get(i).setChecked(true);
+
                     count++;
-                    mRecyclerView.scrollToPosition(i);
+
                 }
             }
             if (count == 0) {

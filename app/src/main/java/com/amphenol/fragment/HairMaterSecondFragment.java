@@ -514,15 +514,22 @@ public class HairMaterSecondFragment extends BaseFragment {
         for (int i = 0; i < mPickItem.getPickItemBranchItems().size(); i++) {
             Pick.PickItem.PickItemBranchItem item = mPickItem.getPickItemBranchItems().get(i);
             if (item.getBranch().getPo().equals(branch) && item.getBranch().getMater().getLocation().equals(location)) {
-                if (mPickItem.getHairQuantity() + item.getBranch().getQuantity() > mPickItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
-                    item.setQuantity(mPickItem.getQuantity() - mPickItem.getHairQuantity());
-                } else {
-                    item.setQuantity(item.getBranch().getQuantity());
+                if(!item.isChecked()){
+                    if (mPickItem.getHairQuantity() + item.getBranch().getQuantity() > mPickItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
+                        item.setQuantity(mPickItem.getQuantity() - mPickItem.getHairQuantity());
+                    } else {
+                        item.setQuantity(item.getBranch().getQuantity());
+                    }
+                    item.setChecked(true);
+                    mPickItem.getPickItemBranchItems().add(0,mPickItem.getPickItemBranchItems().remove(i));
+                    hairMaterSecondOneAdapter.notifyDataSetChanged();
+                    mRecyclerView.scrollToPosition(0);
+                    functionCalculateHairQuantity();
+                }else{
+                    mRecyclerView.scrollToPosition(i);
                 }
-                item.setChecked(true);
-                hairMaterSecondOneAdapter.notifyDataSetChanged();
-                mRecyclerView.scrollToPosition(i);
-                functionCalculateHairQuantity();
+
+                ((BaseActivity)getActivity()).ShowToast("扫描成功并勾选");
                 return;
             }
         }

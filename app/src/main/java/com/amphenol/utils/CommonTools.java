@@ -40,10 +40,9 @@ public class CommonTools {
             endIndex = endIndex == -1 ? code.length() : endIndex;
             startIndex += (1 + prefix.length());
             if (startIndex == endIndex) {
-//                Toast.makeText(getContext(), "无效查询", Toast.LENGTH_SHORT).show();
                 return "";
             }
-            code = code.substring(startIndex, endIndex);
+            code = code.substring(startIndex, endIndex).trim();
         }
         return code;
     }

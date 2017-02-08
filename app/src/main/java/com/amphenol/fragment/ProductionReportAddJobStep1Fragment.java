@@ -48,7 +48,7 @@ import java.util.Map;
  * Created by Carl on 2016-09-20 020.
  */
 
-public class ProductionReportAddJobStep1Fragment extends Fragment {
+public class ProductionReportAddJobStep1Fragment extends BaseFragment {
     private static final int REQUEST_CODE_INQUIRE = 0x10;
     private static final int REQUEST_CODE_NEXT = 0X11;
     private View rootView;
@@ -175,7 +175,7 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
                             proprDictList.clear();
                             refreshShow();
                         } else {
-                            handleScanWorkOrder(mWorkOrderEditText.getText().toString());
+                            handleScanCode(mWorkOrderEditText.getText().toString());
                         }
                         break;
                 }
@@ -247,21 +247,6 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_EMPLOYEE_INQUIRE, getContext()), param, REQUEST_CODE_NEXT, mRequestTaskListener);
     }
 
-    private void handleScanWorkOrder(String code) {
-        if (TextUtils.isEmpty(code))
-            return;
-        code = CommonTools.decodeScanString("W", code);
-        mWorkOrderEditText.setText(code);
-        if (TextUtils.isEmpty(code)) {
-            ((BaseActivity) getActivity()).ShowToast("无效查询");
-            return;
-        }
-        Map<String, String> param = new HashMap<>();
-        param.put("username", SessionManager.getUserName(getContext()));
-        param.put("env", SessionManager.getEnv(getContext()));
-        param.put("work_order", code);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
-    }
 
     private void refreshShow() {
         mWorkOrderTextView.setText(workOrder);
@@ -346,6 +331,26 @@ public class ProductionReportAddJobStep1Fragment extends Fragment {
                 .setNegativeButton("取消", null)
                 .show();
     }
+
+    @Override
+    protected void handleScanCode(String code) {
+        if (!this.isVisible())
+            return;
+        if (TextUtils.isEmpty(code))
+            return;
+        code = CommonTools.decodeScanString("W", code);
+        mWorkOrderEditText.setText(code);
+        if (TextUtils.isEmpty(code)) {
+            ((BaseActivity) getActivity()).ShowToast("无效查询");
+            return;
+        }
+        Map<String, String> param = new HashMap<>();
+        param.put("username", SessionManager.getUserName(getContext()));
+        param.put("env", SessionManager.getEnv(getContext()));
+        param.put("work_order", code);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_REPORT_ADD_NEW_JOB_WORK_ORDER_INQUIRE, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
+    }
+
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {

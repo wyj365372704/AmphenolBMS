@@ -52,7 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProductionReportAddJobStep3Fragment extends Fragment {
+public class ProductionReportAddJobStep3Fragment extends BaseFragment {
     private static final int REQUEST_CODE_GET_MATER_LIST = 0x10;
     private static final int REQUEST_CODE_GET_MATER = 0x11;
     private static final int REQUEST_CODE_FOR_SCAN = 0x12;
@@ -293,32 +293,40 @@ public class ProductionReportAddJobStep3Fragment extends Fragment {
     /**
      * 处理扫描得到的二维码,执行联网查询操作
      */
-    private void handleScanCode(String code) {
+    @Override
+    protected void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        if (!this.isVisible())
+        if (!this.isVisible() || !this.getUserVisibleHint())
             return;
-        {//扫描定位物料项
-            mRequisitionEditText.setText("");
-            String mater = CommonTools.decodeScanString("M", code);
-            String branch = CommonTools.decodeScanString("B", code);
-            if (TextUtils.isEmpty(mater)) {
-                Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        //扫描定位设备项
+        mRequisitionEditText.setText("");
+        String machine_number = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MACHINE, ""), code);
+        if (TextUtils.isEmpty(machine_number)) {
+            Toast.makeText(getContext(), "无效设备标签", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            int position = 0;
-         /*   for (Requisition.RequisitionItem requisitionItem : requisition.getRequisitionItems()) {
-                if (TextUtils.equals(requisitionItem.getBranch().getPo(), branch) && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)) {
-                    handleInquireMater(requisition.getNumber(), requisition.getRequisitionItems().get(position).getNumber(), requisition.getRequisitionItems().get(position).getBranch().getMater().getNumber(), requisition.getRequisitionItems().get(position).getBranch().getPo(), requisition.getRequisitionItems().get(position).getQuantity(), requisition.getRequisitionItems().get(position).getBranch().getMater().getUnit());
-                    mCheckRequisitionAdapter.notifyItemChanged(position);
-                    break;
+        int position = 0;
+        for (int i = 0; i < machines.size(); i++) {
+            Machine machine = machines.get(i);
+            if (TextUtils.equals(machine_number, machine.getNumber())) {
+                if (!machine.isChecked()) {
+                    machine.setChecked(true);
+                    machines.add(0, machines.remove(i));
+                    mProductionReportAddJobMachineListAdapter.notifyDataSetChanged();
+                    mRecyclerView.scrollToPosition(0);
+                } else {
+                    mRecyclerView.scrollToPosition(i);
                 }
-                position++;
+                ((BaseActivity) getActivity()).ShowToast("扫描成功并勾选");
+
+                break;
             }
-            if (position == requisition.getRequisitionItems().size()) {
-                ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
-            }*/
+            position++;
+        }
+        if (position == machines.size()) {
+            ((BaseActivity) getActivity()).ShowToast("该设备不在列表中");
         }
     }
 

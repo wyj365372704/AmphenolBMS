@@ -67,7 +67,6 @@ public class FastRequisitionMainFragment extends BaseFragment {
     private ImageView mImageButton;
     private Requisition requisition = new Requisition();
     private FirstRequisitionForMaterListAdapter firstRequisitionForMaterListAdapter;
-    private List<Requisition.RequisitionItem> mRequisitionItems = new ArrayList<>();
     private FirstRequisitionForMaterListAdapter.OnItemClickListener mOnItemClickListener;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
     private LoadingDialog mLoadingDialog;
@@ -112,7 +111,7 @@ public class FastRequisitionMainFragment extends BaseFragment {
 
     private void initData() {
 
-        firstRequisitionForMaterListAdapter = new FirstRequisitionForMaterListAdapter(getContext(), mRequisitionItems, mOnItemClickListener);
+        firstRequisitionForMaterListAdapter = new FirstRequisitionForMaterListAdapter(getContext(), requisition.getRequisitionItems(), mOnItemClickListener);
     }
 
     private void initViews() {
@@ -354,13 +353,17 @@ public class FastRequisitionMainFragment extends BaseFragment {
                 Requisition.RequisitionItem requisitionItem = requisition.getRequisitionItems().get(i);
                 if ((TextUtils.isEmpty(branch) ? true : TextUtils.equals(requisitionItem.getBranch().getPo(), branch))
                         && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)
-                        && TextUtils.isEmpty(location) ? true : TextUtils.equals(requisitionItem.getBranch().getMater().getLocation(), location)) {
+                        && (TextUtils.isEmpty(location) ? true : TextUtils.equals(requisitionItem.getBranch().getMater().getLocation(), location))) {
                     if (!requisitionItem.isChecked()) {
                         currentCheckedItemCount++;
                         requisitionItem.setChecked(true);
+                        requisition.getRequisitionItems().add(0,requisition.getRequisitionItems().remove(i));
                         firstRequisitionForMaterListAdapter.notifyDataSetChanged();
+                        mRecyclerView.scrollToPosition(0);
+                    }else{
+                        mRecyclerView.scrollToPosition(i);
                     }
-                    mRecyclerView.scrollToPosition(i);
+                    ((BaseActivity)getActivity()).ShowToast("扫描成功并勾选");
                     break;
                 }
                 count++;

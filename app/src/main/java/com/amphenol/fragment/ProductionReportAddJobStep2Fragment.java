@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProductionReportAddJobStep2Fragment extends Fragment {
+public class ProductionReportAddJobStep2Fragment extends BaseFragment {
     private static final int REQUEST_CODE_FOR_SCAN = 0x12;
     private static final int REQUEST_CODE_NEXT = 0X13;
     private View rootView = null;
@@ -65,10 +65,10 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
     private MyHandler myHandler;
     private NetWorkAccessTools.RequestTaskListener mRequestTaskListener;
 
-    private String work_order = "", step_number = "", propr_number = "",begin_time = "";
+    private String work_order = "", step_number = "", propr_number = "", begin_time = "";
     private ArrayList<Employee> employees = new ArrayList<>();
 
-    public static ProductionReportAddJobStep2Fragment newInstance(String work_order, String step_number, String propr_number,String begin_time, ArrayList<Employee> employees) {
+    public static ProductionReportAddJobStep2Fragment newInstance(String work_order, String step_number, String propr_number, String begin_time, ArrayList<Employee> employees) {
         Bundle args = new Bundle();
         args.putString("work_order", work_order);
         args.putString("step_number", step_number);
@@ -88,7 +88,7 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
             work_order = args.getString("work_order");
             step_number = args.getString("step_number");
             propr_number = args.getString("propr_number");
-            begin_time  = args.getString("begin_time");
+            begin_time = args.getString("begin_time");
             employees = args.getParcelableArrayList("employees");
         }
     }
@@ -252,32 +252,40 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
     /**
      * 处理扫描得到的二维码,执行联网查询操作
      */
-    private void handleScanCode(String code) {
+    @Override
+    protected void handleScanCode(String code) {
         if (TextUtils.isEmpty(code))
             return;
-        if (!this.isVisible())
+        if (!this.isVisible() || !this.getUserVisibleHint())
             return;
-        {//扫描定位物料项
-            mRequisitionEditText.setText("");
-            String mater = CommonTools.decodeScanString("M", code);
-            String branch = CommonTools.decodeScanString("B", code);
-            if (TextUtils.isEmpty(mater)) {
-                Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        //扫描定位员工项
+        mRequisitionEditText.setText("");
+        String employee_number = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_EMPLOYEE, ""), code);
+        if (TextUtils.isEmpty(employee_number)) {
+            Toast.makeText(getContext(), "无效员工标签", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            int position = 0;
-         /*   for (Requisition.RequisitionItem requisitionItem : requisition.getRequisitionItems()) {
-                if (TextUtils.equals(requisitionItem.getBranch().getPo(), branch) && TextUtils.equals(requisitionItem.getBranch().getMater().getNumber(), mater)) {
-                    handleInquireMater(requisition.getNumber(), requisition.getRequisitionItems().get(position).getNumber(), requisition.getRequisitionItems().get(position).getBranch().getMater().getNumber(), requisition.getRequisitionItems().get(position).getBranch().getPo(), requisition.getRequisitionItems().get(position).getQuantity(), requisition.getRequisitionItems().get(position).getBranch().getMater().getUnit());
-                    mCheckRequisitionAdapter.notifyItemChanged(position);
-                    break;
+        int position = 0;
+        for (int i = 0; i < employees.size(); i++) {
+            Employee employee = employees.get(i);
+            if (TextUtils.equals(employee_number, employee.getNumber())) {
+                if (!employee.isChecked()) {
+                    employee.setChecked(true);
+                    employees.add(0, employees.remove(i));
+                    mProductionReportAddJobEmployeeListAdapter.notifyDataSetChanged();
+                    mRecyclerView.scrollToPosition(0);
+                } else {
+                    mRecyclerView.scrollToPosition(i);
                 }
-                position++;
+                ((BaseActivity) getActivity()).ShowToast("扫描成功并勾选");
+
+                break;
             }
-            if (position == requisition.getRequisitionItems().size()) {
-                ((BaseActivity) getActivity()).ShowToast("该物料不在列表中");
-            }*/
+            position++;
+        }
+        if (position == employees.size()) {
+            ((BaseActivity) getActivity()).ShowToast("该员工不在列表中");
         }
     }
 
@@ -318,7 +326,7 @@ public class ProductionReportAddJobStep2Fragment extends Fragment {
                         String step_number = bundle.getString("step_number");
                         String propr_number = bundle.getString("propr_number");
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportAddJobStep3Fragment.newInstance(work_order, step_number, propr_number,begin_time,employees, machines));
+                        transaction.replace(R.id.activity_purchase_receipt_fl, ProductionReportAddJobStep3Fragment.newInstance(work_order, step_number, propr_number, begin_time, employees, machines));
                         transaction.addToBackStack(null);
                         transaction.commitAllowingStateLoss();
 
