@@ -28,6 +28,7 @@ import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.SaleShipmentMainAdapter;
 import com.amphenol.amphenol.R;
+import com.amphenol.entity.Requisition;
 import com.amphenol.entity.Shipment;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -129,7 +130,7 @@ public class SaleShipmentMainFragment extends BaseFragment {
             public void OnItemClick(int position) {
                 Shipment.ShipmentItem shipmentItem = shipment.getShipmentItems().get(position);
                 handleInquireMater(shipment.getWarehouse(), shipment.getNumber(), shipmentItem.getPldln(),
-                        shipmentItem.getMater().getNumber(), shipmentItem.getMater().getShard(), shipmentItem.getMater().getLocation(),shipmentItem.getQuantity(),shipmentItem.getC6cvnb(),shipmentItem.getCdfcnb());
+                        shipmentItem.getMater().getNumber(), shipmentItem.getMater().getShard(), shipmentItem.getMater().getLocation(), shipmentItem.getQuantity(), shipmentItem.getC6cvnb(), shipmentItem.getCdfcnb());
             }
         };
         mOnClickListener = new View.OnClickListener() {
@@ -149,7 +150,7 @@ public class SaleShipmentMainFragment extends BaseFragment {
                         startActivityForResult(new Intent(getActivity(), ScanActivity.class), REQUEST_CODE_FOR_SCAN);
                         break;
                     case R.id.fragment_sale_shipment_commit_bt:
-                        if(shipment.getNumber().isEmpty()){
+                        if (shipment.getNumber().isEmpty()) {
                             break;
                         }
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -160,6 +161,7 @@ public class SaleShipmentMainFragment extends BaseFragment {
                                 handleCommit(shipment.getWarehouse(), shipment.getNumber());
                             }
                         });
+                        builder.create().show();
                         break;
                 }
             }
@@ -223,7 +225,7 @@ public class SaleShipmentMainFragment extends BaseFragment {
         };
     }
 
-    private void handleInquireMater(String warehouse, String pldno, String pldln, String mater, String shard, String location,double plan_quantity,String c6cvnb,String cdfcnb) {
+    private void handleInquireMater(String warehouse, String pldno, String pldln, String mater, String shard, String location, double plan_quantity, String c6cvnb, String cdfcnb) {
         if (!SaleShipmentMainFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -235,7 +237,7 @@ public class SaleShipmentMainFragment extends BaseFragment {
         param.put("mater", mater);
         param.put("shard", shard);
         param.put("location", location);
-        param.put("plan_quantity",String.valueOf(plan_quantity));
+        param.put("plan_quantity", String.valueOf(plan_quantity));
         param.put("c6cvnb", c6cvnb);
         param.put("cdfcnb", cdfcnb);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_SALE_SHIPMENT_QUERY_ITEM, getContext()), param, REQUEST_CODE_GET_DETAIL, mRequestTaskListener);
@@ -330,6 +332,7 @@ public class SaleShipmentMainFragment extends BaseFragment {
             handleScanCode(code);
         }
     }
+
     private void handleCommit(String warehouse, String pldno) {
         if (!SaleShipmentMainFragment.this.isVisible())
             return;
@@ -338,8 +341,9 @@ public class SaleShipmentMainFragment extends BaseFragment {
         param.put("env", SessionManager.getEnv(getContext()));
         param.put("warehouse", warehouse);
         param.put("pldno", pldno);
-        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_SALE_SHIPMENT_CANCEL, getContext()), param, REQUEST_CODE_COMMIT, mRequestTaskListener);
+        NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_SALE_SHIPMENT_COMMIT, getContext()), param, REQUEST_CODE_COMMIT, mRequestTaskListener);
     }
+
     public interface MainFragmentCallBack extends Serializable {
         void gotoSecondFragment(Shipment.ShipmentItem shipmentItem, ArrayList<String> shards);
     }
@@ -371,8 +375,15 @@ public class SaleShipmentMainFragment extends BaseFragment {
                     }
                     break;
                 case REQUEST_CODE_COMMIT:
-
+                    if (bundle.getInt("code") == 1) {
+                        ((BaseActivity) getActivity()).ShowToast("过账成功");
+                        shipment = new Shipment();
+                        refreshShow();
+                    }else {
+                        ((BaseActivity) getActivity()).ShowToast("过账失败");
+                    }
                     break;
+
             }
         }
     }

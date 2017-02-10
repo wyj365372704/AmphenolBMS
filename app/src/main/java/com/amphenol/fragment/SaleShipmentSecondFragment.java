@@ -33,6 +33,7 @@ import com.amphenol.activity.BaseActivity;
 import com.amphenol.activity.ScanActivity;
 import com.amphenol.adapter.SaleShipmentSecondAdapter;
 import com.amphenol.amphenol.R;
+import com.amphenol.entity.Pick;
 import com.amphenol.entity.Shipment;
 import com.amphenol.ui.LoadingDialog;
 import com.amphenol.utils.CommonTools;
@@ -57,7 +58,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
     private View rootView;
     private TextView materNumberTextView, mShipmentTextView, mPlanQuantityTextView, mClientTextView, mShipmentQuantityTextView;
     private Spinner mSpinner;
-    private EditText mLocationEditText, mBoxNumberEditText,mBoxQuantityEditText;
+    private EditText mLocationEditText, mBoxNumberEditText, mBoxQuantityEditText;
     private Button mInquireButton, mAddButton, mCancelButton;
     private ImageView mImageView;
     private View.OnClickListener mOnClickListener;
@@ -147,11 +148,11 @@ public class SaleShipmentSecondFragment extends BaseFragment {
 
     private void refreshShow() {
         mBoxNumberEditText.setText(mShipmentItem.getBoxNumber());
-        mBoxQuantityEditText.setText(mShipmentItem.getBoxQuantity()+"");
+        mBoxQuantityEditText.setText(mShipmentItem.getBoxQuantity() + "");
         materNumberTextView.setText(mShipmentItem.getMater().getNumber());
-        mShipmentTextView.setText(mShipmentItem.getShipment().getNumber()+"-"+mShipmentItem.getPldln());
+        mShipmentTextView.setText(mShipmentItem.getShipment().getNumber() + "-" + mShipmentItem.getPldln());
         mPlanQuantityTextView.setText(mShipmentItem.getQuantity() + "");
-        mClientTextView.setText(mShipmentItem.getC6cvnb()+"-"+mShipmentItem.getCdfcnb());
+        mClientTextView.setText(mShipmentItem.getC6cvnb() + "-" + mShipmentItem.getCdfcnb());
 
         try {
             int position = mStringArrayAdapter.getPosition(mShipmentItem.getMater().getShard());
@@ -160,7 +161,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
             e.printStackTrace();
         }
         mLocationEditText.setText(mShipmentItem.getMater().getLocation());
-        functionFIFO();
+//        functionFIFO();
         mSaleShipmentSecondAdapter.setDate(mShipmentItem.getShipmentItemBranchItems());
         mSaleShipmentSecondAdapter.notifyDataSetChanged();
         functionCalculateHairQuantity();
@@ -208,7 +209,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
                         } else {
                             handleInquireMater(mShipmentItem.getShipment().getWarehouse(), mShipmentItem.getShipment().getNumber(), mShipmentItem.getPldln(),
                                     mShipmentItem.getMater().getNumber(), mSpinner.getSelectedItemPosition() == 0 ? "" : mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition()),
-                                    mLocationEditText.getText().toString().trim(),mShipmentItem.getQuantity(),mShipmentItem.getC6cvnb(),mShipmentItem.getCdfcnb());
+                                    mLocationEditText.getText().toString().trim(), mShipmentItem.getQuantity(), mShipmentItem.getC6cvnb(), mShipmentItem.getCdfcnb());
                         }
                         break;
                     case R.id.fragment_fast_requisition_main_submit_bt:
@@ -237,7 +238,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
                                 String mater_list = "";
                                 try {
                                     JSONArray jsonArray = new JSONArray();
-                                    for (Shipment.ShipmentItem.ShipmentItemBranchItem shipmentItemBranchItem :mShipmentItem.getShipmentItemBranchItems()) {
+                                    for (Shipment.ShipmentItem.ShipmentItemBranchItem shipmentItemBranchItem : mShipmentItem.getShipmentItemBranchItems()) {
                                         if (shipmentItemBranchItem.isChecked()) {
                                             JSONObject jsonObject = new JSONObject();
                                             jsonObject.put("mater", shipmentItemBranchItem.getBranch().getMater().getNumber());
@@ -253,7 +254,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
                                     e.printStackTrace();
                                 }
                                 handleEnsure(mShipmentItem.getShipment().getWarehouse(), mShipmentItem.getShipment().getNumber(),
-                                        mShipmentItem.getPldln(),mShipmentItem.getShipmentQuantity() , mShipmentItem.getBoxln(),mShipmentItem.getBoxNumber(),mShipmentItem.getBoxQuantity(),
+                                        mShipmentItem.getPldln(), mShipmentItem.getShipmentQuantity(), mShipmentItem.getBoxln(), mShipmentItem.getBoxNumber(), mShipmentItem.getBoxQuantity(),
                                         mater_list);
                             }
                         });
@@ -386,7 +387,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_SALE_SHIPMENT_CANCEL, getContext()), param, REQUEST_CODE_CANCEL, mRequestTaskListener);
     }
 
-    private void handleEnsure(String warehouse, String pldno, String pldln , double actual_quantity,String boxln ,String boxnm  ,double boxes  ,  String materList) {
+    private void handleEnsure(String warehouse, String pldno, String pldln, double actual_quantity, String boxln, String boxnm, double boxes, String materList) {
         if (!SaleShipmentSecondFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -395,7 +396,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
         param.put("warehouse", warehouse);
         param.put("pldno", pldno);
         param.put("pldln", pldln);
-        param.put("actual_quantity", actual_quantity+"");
+        param.put("actual_quantity", actual_quantity + "");
         param.put("mater_list", materList);
         param.put("boxln", boxln);
         param.put("boxnm", boxnm);
@@ -409,7 +410,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
      */
     private synchronized void functionCalculateHairQuantity() {
         mShipmentItem.setShipmentQuantity(0);
-        for (Shipment.ShipmentItem.ShipmentItemBranchItem shipmentItemBranchItem:mShipmentItem.getShipmentItemBranchItems()) {
+        for (Shipment.ShipmentItem.ShipmentItemBranchItem shipmentItemBranchItem : mShipmentItem.getShipmentItemBranchItems()) {
             if (shipmentItemBranchItem.isChecked()) {
                 mShipmentItem.setShipmentQuantity(mShipmentItem.getShipmentQuantity() + shipmentItemBranchItem.getQuantity());
             }
@@ -417,7 +418,7 @@ public class SaleShipmentSecondFragment extends BaseFragment {
         mShipmentQuantityTextView.setText(mShipmentItem.getShipmentQuantity() + "");
     }
 
-    private void handleInquireMater(String warehouse, String pldno, String pldln, String mater, String shard, String location,double plan_quantity,String c6cvnb,String cdfcnb) {
+    private void handleInquireMater(String warehouse, String pldno, String pldln, String mater, String shard, String location, double plan_quantity, String c6cvnb, String cdfcnb) {
         if (!SaleShipmentSecondFragment.this.isVisible())
             return;
         Map<String, String> param = new HashMap<>();
@@ -429,11 +430,12 @@ public class SaleShipmentSecondFragment extends BaseFragment {
         param.put("mater", mater);
         param.put("shard", shard);
         param.put("location", location);
-        param.put("plan_quantity",String.valueOf(plan_quantity));
+        param.put("plan_quantity", String.valueOf(plan_quantity));
         param.put("c6cvnb", c6cvnb);
         param.put("cdfcnb", cdfcnb);
         NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_SALE_SHIPMENT_QUERY_ITEM, getContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -451,16 +453,6 @@ public class SaleShipmentSecondFragment extends BaseFragment {
             String code = data.getStringExtra("data").trim();
             handleScanLocation(mLocationEditText, code);
         }
-    }
-
-    private void handleScanBranch(EditText v, String code) {
-        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
-            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
-        }
-        code = CommonTools.decodeScanString("B", code);
-        v.setText(code);
-        v.requestFocus();
     }
 
     private void handleScanLocation(EditText v, String code) {
@@ -483,22 +475,37 @@ public class SaleShipmentSecondFragment extends BaseFragment {
         String location = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION, ""), code);
         String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), code);
 
+        if(mShipmentItem.getShipmentItemBranchItems().size()==0){
+            if(!TextUtils.isEmpty(location)){
+                mLocationEditText.setText(location);
+            }
+            return;
+        }
+
         if (TextUtils.isEmpty(materNumber) || !TextUtils.equals(materNumber, mShipmentItem.getMater().getNumber())) {
             ((BaseActivity) getActivity()).ShowToast("扫描失败,不是正确的物料标签卡");
             return;
         }
+
         for (int i = 0; i < mShipmentItem.getShipmentItemBranchItems().size(); i++) {
             Shipment.ShipmentItem.ShipmentItemBranchItem item = mShipmentItem.getShipmentItemBranchItems().get(i);
             if (item.getBranch().getPo().equals(branch) && item.getBranch().getMater().getLocation().equals(location)) {
-                if (mShipmentItem.getShipmentQuantity() + item.getBranch().getQuantity() > mShipmentItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
-                    item.setQuantity(mShipmentItem.getQuantity() - mShipmentItem.getShipmentQuantity());
+                if (!item.isChecked()) {
+                    if (mShipmentItem.getShipmentQuantity() + item.getBranch().getQuantity() > mShipmentItem.getQuantity()) {//加上这个物料后,发料数量大于计划数量
+                        item.setQuantity(mShipmentItem.getQuantity() - mShipmentItem.getShipmentQuantity());
+                    } else {
+                        item.setQuantity(item.getBranch().getQuantity());
+                    }
+                    item.setChecked(true);
+                    mShipmentItem.getShipmentItemBranchItems().add(0,mShipmentItem.getShipmentItemBranchItems().remove(i));
+                    mSaleShipmentSecondAdapter.notifyDataSetChanged();
+                    mRecyclerView.scrollToPosition(0);
+                    functionCalculateHairQuantity();
                 } else {
-                    item.setQuantity(item.getBranch().getQuantity());
+                    mRecyclerView.scrollToPosition(i);
                 }
-                item.setChecked(true);
-                mSaleShipmentSecondAdapter.notifyDataSetChanged();
-                mRecyclerView.scrollToPosition(i);
-                functionCalculateHairQuantity();
+
+                ((BaseActivity) getActivity()).ShowToast("扫描成功并勾选");
                 return;
             }
         }
@@ -538,14 +545,14 @@ public class SaleShipmentSecondFragment extends BaseFragment {
                 case REQUEST_CODE_SUBMIT:
                     if (mSecondFragmentCallBack != null) {
                         if (bundle.getInt("code") == 1) {
-                            Toast.makeText(getContext(), "操作成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "出货成功", Toast.LENGTH_SHORT).show();
                             mSecondFragmentCallBack.itemBeenSured(mShipmentItem.getPldln());
                         } else if (bundle.getInt("code") == 5) {
-                            Toast.makeText(getContext(), "操作失败,目标子库和库位不匹配", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "出货失败,目标子库和库位不匹配", Toast.LENGTH_SHORT).show();
                         } else if (bundle.getInt("code") == 6) {
-                            Toast.makeText(getContext(), "操作失败,库存数量不足", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "出货失败,库存数量不足", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getContext(), "操作失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "出货失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;
