@@ -37,6 +37,7 @@ import com.amphenol.adapter.HairMaterSecondOneAdapter;
 import com.amphenol.amphenol.R;
 import com.amphenol.entity.Pick;
 import com.amphenol.ui.LoadingDialog;
+import com.amphenol.utils.Char2BigUtil;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
@@ -138,6 +139,7 @@ public class HairMaterSecondFragment extends BaseFragment {
         mSpinner = (Spinner) rootView.findViewById(R.id.fragment_fast_requisition_main_mater_in_et);
         mLocationEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_from_location_et);
         mBranchEditText = (EditText) rootView.findViewById(R.id.fragment_fast_requisition_main_branch_et);
+        mBranchEditText.setTransformationMethod(new Char2BigUtil());
         mInquireButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_inquire_bt);
         mInquireButton.setOnClickListener(mOnClickListener);
         mAddButton = (Button) rootView.findViewById(R.id.fragment_fast_requisition_main_submit_bt);
@@ -216,7 +218,7 @@ public class HairMaterSecondFragment extends BaseFragment {
                             handleInquireMater(mPickItem.getBranch().getMater().getWarehouse(), mPickItem.getBranch().getMater().getUnit(),
                                     mPickItem.getBranch().getMater().getNumber(), mPickItem.getPick().getNumber(), mPickItem.getPickLine(),
                                     mSpinner.getSelectedItemPosition() == 0 ? "" : mStringArrayAdapter.getItem(mSpinner.getSelectedItemPosition()),
-                                    mLocationEditText.getText().toString().trim(), mBranchEditText.getText().toString(), mPickItem.getQuantity(),
+                                    mLocationEditText.getText().toString().trim(), mBranchEditText.getText().toString().toUpperCase(), mPickItem.getQuantity(),
                                     mPickItem.getPick().getDepartment(), mPickItem.getPick().getWorkOrder(), mPickItem.getSequence(),
                                     String.valueOf(mPickItem.getPick().getType()), mPickItem.getBranched() + "");
                         }

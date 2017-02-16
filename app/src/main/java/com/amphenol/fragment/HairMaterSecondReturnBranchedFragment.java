@@ -273,7 +273,8 @@ public class HairMaterSecondReturnBranchedFragment extends BaseFragment {
                                 if (mSecondFragmentCallBack != null) {
                                     EditText ssslEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_sssl_et);
                                     EditText pchEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_pch_et);
-                                    if (addBranch(pchEditText.getText().toString(), ssslEditText.getText().toString())) {
+                                    pchEditText.setTransformationMethod(new Char2BigUtil());
+                                    if (addBranch(pchEditText.getText().toString().toUpperCase(), ssslEditText.getText().toString())) {
                                         hairMaterSecondTwoAdapter.notifyDataSetChanged();
                                         UpdateActualQuantity();
                                     }

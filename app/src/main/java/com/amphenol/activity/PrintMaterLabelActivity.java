@@ -44,6 +44,7 @@ import java.util.Set;
 
 import com.amphenol.entity.Mater;
 import com.amphenol.ui.LoadingDialog;
+import com.amphenol.utils.Char2BigUtil;
 import com.amphenol.utils.CommonTools;
 import com.amphenol.utils.NetWorkAccessTools;
 import com.amphenol.utils.PropertiesUtil;
@@ -142,6 +143,7 @@ public class PrintMaterLabelActivity extends ScannedBaseActivity {
         totalWeightTextView = (TextView) findViewById(R.id.activity_print_mater_label_weight);
 
         mBranchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
+        mBranchEditText.setTransformationMethod(new Char2BigUtil());
         amountEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_xiangshu_et);
         amountEditText.addTextChangedListener(mAmountTextWatcher);
         singleEditText = (EditText) findViewById(R.id.activity_print_mater_label_single);
@@ -205,7 +207,7 @@ public class PrintMaterLabelActivity extends ScannedBaseActivity {
                             ShowToast("未查询物料标签");
                             break;
                         }
-                        if (branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString())) {
+                        if (branch.getMater().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString().toUpperCase())) {
                             ShowToast("该物料批次控制,请输入批号");
                             break;
                         }
@@ -464,7 +466,7 @@ public class PrintMaterLabelActivity extends ScannedBaseActivity {
         }
         materEditText.setText(mater);
         handleScanBranch(code);
-        handleInquireMater(mater, mBranchEditText.getText().toString());
+        handleInquireMater(mater, mBranchEditText.getText().toString().toUpperCase());
     }
 
     private void handleScanBranch(String code) {

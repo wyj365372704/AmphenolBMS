@@ -100,6 +100,7 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
         mScanImageView.setOnClickListener(mOnClickListener);
         mWorkOrderEditText = (EditText) findViewById(R.id.purchase_receipt_main_code_et);
         mBranchEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_branch_et);
+        mBranchEditText.setTransformationMethod(new Char2BigUtil());
         mEachBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_meixiangshuliang_et);
         mBoxQuantityEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_xiangshu_et);
         mantissaEditText = (EditText) findViewById(R.id.fragment_fast_requisition_main_from_weishu_et);
@@ -152,14 +153,14 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
                             ShowToast("该生产订单状态不允许入库");
                             break;
                         }
-                        if (mWorkOrder.getProduction().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString().trim())) {
+                        if (mWorkOrder.getProduction().getBranchControl() == Mater.BRANCH_CONTROL && TextUtils.isEmpty(mBranchEditText.getText().toString().trim().toUpperCase())) {
                             ShowToast("该产品为受批次控制,请输入批号");
                             mBranchEditText.requestFocus();
                             break;
                         }
                         String branch = "";
                         if (mWorkOrder.getProduction().getBranchControl() == Mater.BRANCH_CONTROL)
-                            branch = mBranchEditText.getText().toString().trim();
+                            branch = mBranchEditText.getText().toString().trim().toUpperCase();
                         double quantity = 0;
                         try {
                             quantity = Double.parseDouble(mTotalQuantityTextView.getText().toString());

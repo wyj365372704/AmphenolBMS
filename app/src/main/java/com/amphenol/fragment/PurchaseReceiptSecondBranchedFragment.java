@@ -268,7 +268,7 @@ public class PurchaseReceiptSecondBranchedFragment extends BaseFragment {
                                 if (mSecondFragmentCallBack != null) {
                                     EditText ssslEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_sssl_et);
                                     EditText pchEditText = (EditText) view.findViewById(R.id.purchase_receipt_add_branch_pch_et);
-                                    addBranch(pchEditText.getText().toString(), ssslEditText.getText().toString());
+                                    addBranch(pchEditText.getText().toString().toUpperCase(), ssslEditText.getText().toString());
                                 }
                             }
                         });
