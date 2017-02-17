@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amphenol.Manager.DecodeManager;
 import com.amphenol.Manager.SessionManager;
@@ -288,7 +289,7 @@ public class SaleShipmentMainFragment extends BaseFragment {
             return;
 
         if (TextUtils.isEmpty(shipment.getNumber())) {//查询物料列表
-            code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_SALE_SHIPMENT, ""), code);
+            code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_CUSTOMERE, ""), code);
             mPldnoEditText.setText(code);
             Map<String, String> param = new HashMap<>();
             param.put("username", SessionManager.getUserName(getContext()));
@@ -297,20 +298,23 @@ public class SaleShipmentMainFragment extends BaseFragment {
             param.put("pldno", code);
             NetWorkAccessTools.getInstance(getContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_SALE_SHIPMENT_QUERY_HEADER, getContext()), param, REQUEST_CODE_GET_SHIPMENT_LIST, mRequestTaskListener);
         } else {//扫描定位物料项
-            /*mPickNumberEditText.setText("");
+            mPldnoEditText.setText("");
             code = CommonTools.decodeScanString(PropertiesUtil.getInstance(getContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MATER,""), code);
             if (TextUtils.isEmpty(code)) {
                 Toast.makeText(getContext(), "无效物料标签", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            for (int position = 0; position < pick.getPickItems().size(); position++) {
-                if (TextUtils.equals(pick.getPickItems().get(position).getBranch().getMater().getNumber(), code)) {
-                    handleInquireMater(pick.getPickItems().get(position).getBranch().getMater().getWarehouse(),pick.getNumber(),pick.getPickItems().get(position).getPickLine(),pick.getPickItems().get(position).getBranch().getMater().getNumber(),pick.getPickItems().get(position).getBranch().getMater().getUnit(),pick.getPickItems().get(position).getBranch().getMater().getShard(),pick.getPickItems().get(position).getBranch().getMater().getLocation(),pick.getPickItems().get(position).getBranch().getPo(),pick.getPickItems().get(position).getQuantity(),pick.getDepartment(),pick.getWorkOrder(),pick.getPickItems().get(position).getSequence(),String.valueOf(pick.getType()),pick.getPickItems().get(position).getBranched()+"");
+            for (int position = 0; position < shipment.getShipmentItems().size(); position++) {
+                if (TextUtils.equals(shipment.getShipmentItems().get(position).getMater().getNumber(), code)) {
+                    handleInquireMater(shipment.getWarehouse(), shipment.getNumber(), shipment.getShipmentItems().get(position).getPldln(),
+                            shipment.getShipmentItems().get(position).getMater().getNumber(), shipment.getShipmentItems().get(position).getMater().getShard(),
+                            shipment.getShipmentItems().get(position).getMater().getLocation(), shipment.getShipmentItems().get(position).getQuantity(),
+                            shipment.getShipmentItems().get(position).getC6cvnb(), shipment.getShipmentItems().get(position).getCdfcnb());
                     return;
                 }
             }
-            Toast.makeText(getContext(), "该物料不在列表中", Toast.LENGTH_SHORT).show();*/
+            ((BaseActivity)getActivity()).ShowToast("该物料不在列表中");
         }
     }
 

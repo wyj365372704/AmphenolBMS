@@ -40,6 +40,7 @@ public class PropertiesUtil {
     public static final String BARCODE_PREFIX_SALE_SHIPMENT = "BARCODE_PREFIX_SALE_SHIPMENT";//
     public static final String BARCODE_PREFIX_EMPLOYEE = "BARCODE_PREFIX_EMPLOYEE";//
     public static final String BARCODE_PREFIX_MACHINE = "BARCODE_PREFIX_MACHINE";//
+    public static final String BARCODE_PREFIX_CUSTOMERE = "BARCODE_PREFIX_CUSTOMERE";//
 
 
 
