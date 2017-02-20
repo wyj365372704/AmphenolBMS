@@ -487,7 +487,7 @@ public class PurchaseReturnSecondFragment extends BaseFragment {
                             Toast.makeText(getContext(), "退货成功", Toast.LENGTH_SHORT).show();
                             mSecondFragmentCallBack.itemBeenSured(returnsItem.getNumber());
                         } else {
-                            Toast.makeText(getContext(), "退货失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "退货失败:"+bundle.getString("desc"), Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;
@@ -497,7 +497,7 @@ public class PurchaseReturnSecondFragment extends BaseFragment {
                             Toast.makeText(getContext(), "关闭成功", Toast.LENGTH_SHORT).show();
                             mSecondFragmentCallBack.itemBeenClosed(returnsItem.getNumber());
                         } else {
-                            Toast.makeText(getContext(), "关闭失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "关闭失败:"+bundle.getString("desc"), Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;

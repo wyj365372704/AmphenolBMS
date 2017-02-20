@@ -79,12 +79,16 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
     @Override
     protected void handleScanCode(String message) {
         boolean state = mInquireButton.getTag() == null ? false : (boolean) mInquireButton.getTag();
+        String work_order = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER, ""), message);
+        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), message);
+        String eachBoxQuantity = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_QUANTITY, ""), message);
+        String location = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION, ""), message).toUpperCase();
         if (state) {//当前按钮状态为“清除”
-            handleScanBranch(message);
-            handleScanEachBoxQuantity(message);
-            handleScanLocation(message);
+            handleScanBranch(branch);
+            handleScanEachBoxQuantity(eachBoxQuantity);
+            handleScanLocation(location);
         } else {
-            handleScanWorkOrder(message);
+            handleScanWorkOrder(work_order,branch,eachBoxQuantity);
         }
     }
 
@@ -138,7 +142,7 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
                             mWorkOrder = new WorkOrder();
                             refreshShow();
                         } else {
-                            handleScanWorkOrder(mWorkOrderEditText.getText().toString());
+                            handleScanWorkOrder(mWorkOrderEditText.getText().toString(),"","");
                         }
                         break;
                     case R.id.fragment_purchase_receipt_scan_iv:
@@ -394,11 +398,9 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
         }
     }
 
-    private void handleScanWorkOrder(String message) {
-        if (TextUtils.isEmpty(message))
+    private void handleScanWorkOrder(String work_order,String branch,String eachBoxQuantity) {
+        if (TextUtils.isEmpty(work_order))
             return;
-
-        String work_order = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER, ""), message);
 
         if (TextUtils.isEmpty(work_order))
             return;
@@ -412,21 +414,20 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
         param.put("username", SessionManager.getUserName(getApplicationContext()));
         param.put("env", SessionManager.getEnv(getApplicationContext()));
         param.put("work_order", work_order);
-        param.put("scan_message", message);
+        param.put("branch", branch);
+        param.put("eachBoxQuantity", eachBoxQuantity);
         param.put("warehouse", SessionManager.getWarehouse(getApplicationContext()));
         NetWorkAccessTools.getInstance(getApplicationContext()).getAsyn(CommonTools.getUrl(PropertiesUtil.ACTION_PRODUCTION_STORAGE_INQUIRE, getApplicationContext()), param, REQUEST_CODE_INQUIRE, mRequestTaskListener);
     }
 
-    private void handleScanBranch(String code) {
-        String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), code);
+    private void handleScanBranch(String branch) {
         if (branch.isEmpty())
             return;
         mBranchEditText.setText(branch);
         ShowToast("批次号调整为:" + branch);
     }
 
-    private void handleScanEachBoxQuantity(String code) {
-        String eachBoxQuantity = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_QUANTITY, ""), code);
+    private void handleScanEachBoxQuantity(String eachBoxQuantity) {
         if (eachBoxQuantity.isEmpty())
             return;
         try {
@@ -440,8 +441,7 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
     }
 
 
-    private void handleScanLocation(String code) {
-        String location = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_LOCATION, ""), code).toUpperCase();
+    private void handleScanLocation(String location) {
         if (location.isEmpty())
             return;
         mLocationEditText.setText(location);
@@ -492,9 +492,12 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_FOR_SCAN_WORK_ORDER && resultCode == Activity.RESULT_OK) {
-            String code = data.getStringExtra("data").trim();
-            mWorkOrderEditText.setText(code);
-            handleScanWorkOrder(mWorkOrderEditText.getText().toString());
+            String message = data.getStringExtra("data").trim();
+            String work_order = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_MANUFACTURING_ORDER, ""), message);
+            String branch = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_BRANCH, ""), message);
+            String eachBoxQuantity = CommonTools.decodeScanString(PropertiesUtil.getInstance(getApplicationContext()).getValue(PropertiesUtil.BARCODE_PREFIX_QUANTITY, ""), message);
+            mWorkOrderEditText.setText(work_order);
+            handleScanWorkOrder(work_order,branch,eachBoxQuantity);
         }
     }
 
@@ -540,8 +543,8 @@ public class ProductionStorageActivity extends ScannedBaseActivity {
                     if (bundle.getInt("code") == 1) {
                         mWorkOrder = bundle.getParcelable("workOrder");
                         refreshShow();
-                        handleScanBranch(((Map<String, String>) bundle.getSerializable("params")).get("scan_message"));
-                        handleScanEachBoxQuantity(((Map<String, String>) bundle.getSerializable("params")).get("scan_message"));
+                        handleScanBranch(((Map<String, String>) bundle.getSerializable("params")).get("branch"));
+                        handleScanEachBoxQuantity(((Map<String, String>) bundle.getSerializable("params")).get("eachBoxQuantity"));
                         updateTotalQuantity();
                     } else if (bundle.getInt("code") == 5) {
                         ShowToast("该生产工单不存在");
