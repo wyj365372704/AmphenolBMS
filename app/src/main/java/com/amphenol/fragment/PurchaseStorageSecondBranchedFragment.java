@@ -113,7 +113,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
                     case R.id.toolbar_menu:
                         ActionSheet.createBuilder(getContext(), getFragmentManager())
                                 .setCancelButtonTitle("取消")
-                                .setOtherButtonTitles("确认入库", "新增批次", "拍照上传", "关闭入库")
+                                .setOtherButtonTitles("确认入库", "新增批次", "关闭入库")
                                 .setCancelableOnTouchOutside(true)
                                 .setListener(mActionSheetListener).show();
                         break;
@@ -275,7 +275,7 @@ public class PurchaseStorageSecondBranchedFragment extends BaseFragment {
 
                         break;
 
-                    case 3://关闭入库
+                    case 2://关闭入库
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("关闭入库").setMessage("将要对此物料进行关闭入库?");
                         builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {

@@ -53,6 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="38dp"
             android:layout_weight="1"
+            android:visibility="gone"
             android:background="@drawable/positive_button_background"
             android:text="拍照上传"
             android:textColor="@android:color/white"
@@ -64,7 +65,7 @@
             android:layout_height="38dp"
             android:layout_marginLeft="16dp"
             android:layout_weight="1"
-            android:background="@drawable/negative_button_background"
+            android:background="@drawable/positive_button_background"
             android:text="关闭收货"
             android:textColor="@android:color/white"
             android:textStyle="bold"/>

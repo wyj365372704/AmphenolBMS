@@ -114,7 +114,7 @@ public class PurchaseReceiptSecondBranchedFragment extends BaseFragment {
                     case R.id.toolbar_menu:
                         ActionSheet.createBuilder(getContext(), getFragmentManager())
                                 .setCancelButtonTitle("取消")
-                                .setOtherButtonTitles("确认收货", "新增批次", "拍照上传", "关闭收货")
+                                .setOtherButtonTitles("确认收货", "新增批次", "关闭收货")
                                 .setCancelableOnTouchOutside(true)
                                 .setListener(mActionSheetListener).show();
                         break;
@@ -276,7 +276,7 @@ public class PurchaseReceiptSecondBranchedFragment extends BaseFragment {
 
                         break;
 
-                    case 3://关闭收货
+                    case 2://关闭收货
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("关闭收货").setMessage("将要对此物料进行关闭收货?");
                         builder.setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
