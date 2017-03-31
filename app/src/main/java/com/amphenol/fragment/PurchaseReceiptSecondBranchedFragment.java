@@ -307,6 +307,15 @@ public class PurchaseReceiptSecondBranchedFragment extends BaseFragment {
                 });
                 builder.create().show();
             }
+
+            @Override
+            public void OnRequisitionQuantityChanged(int position, double quantity) {
+                if (quantity > mPurchaseItem.getPurchaseItemBranchItems().get(position).getBranch().getQuantity()) {
+//                    ((BaseActivity) getActivity()).ShowToast("输入的收货数量大于计划数量");
+                }
+                UpdateActualQuantity();
+                updateReceiptTotalWeight();
+            }
         };
         mSingleTextWatcher = new TextWatcher() {
             @Override
@@ -359,7 +368,8 @@ public class PurchaseReceiptSecondBranchedFragment extends BaseFragment {
         }
 
         if (mPurchaseItem.getUnit() != null) {
-            if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "GM") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "gm")) {
+            if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "GM") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "gm")
+                    || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "G")|| TextUtils.equals(mPurchaseItem.getMater().getUnit(), "g")) {
                 mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).divide(new BigDecimal(Double.toString(1000d))).toString());
             } else if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "KG") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "kg")) {
                 mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).toString());

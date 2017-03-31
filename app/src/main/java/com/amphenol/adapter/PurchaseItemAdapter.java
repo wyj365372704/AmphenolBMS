@@ -58,7 +58,8 @@ public class PurchaseItemAdapter extends RecyclerView.Adapter {
 
     class ViewHolderBody extends RecyclerView.ViewHolder {
         int position ;
-        TextView scpcTextView, jhslTextView , ssslEditText;
+        TextView scpcTextView, jhslTextView ;
+        EditText ssslEditText;
         ImageView closeImageView;
 
         View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -68,12 +69,36 @@ public class PurchaseItemAdapter extends RecyclerView.Adapter {
                     mOnItemEventCallBack.onItemClosed(position);
             }
         };
+        TextWatcher mTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double quantity = 0;
+                try {
+                    quantity = Double.parseDouble(s.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                date.get(position).setActualQuantity(quantity);
+                if (mOnItemEventCallBack != null)
+                    mOnItemEventCallBack.OnRequisitionQuantityChanged(position, quantity);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
         public ViewHolderBody(View itemView) {
             super(itemView);
             scpcTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_second_item_scpc_tv);
             jhslTextView = (TextView) itemView.findViewById(R.id.purchase_receipt_second_item_jhsl_tv);
-            ssslEditText = (TextView) itemView.findViewById(R.id.purchase_receipt_second_item_sssl_et);
+            ssslEditText = (EditText) itemView.findViewById(R.id.purchase_receipt_second_item_sssl_et);
+            ssslEditText.addTextChangedListener(mTextWatcher);
             closeImageView = (ImageView) itemView.findViewById(R.id.purchase_receipt_second_item_close_iv);
             closeImageView.setOnClickListener(mOnClickListener);
         }
@@ -81,6 +106,8 @@ public class PurchaseItemAdapter extends RecyclerView.Adapter {
 
     public interface onItemEventCallBack {
         void onItemClosed(int position);
+
+        void OnRequisitionQuantityChanged(int position, double quantity);
     }
 
 }

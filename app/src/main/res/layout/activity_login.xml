@@ -59,8 +59,7 @@
                 android:layout_height="32dp"
                 android:layout_marginLeft="8dp"
                 android:height="32dp"
-                android:gravity="center_vertical"
-                android:text="ADMIN"/>
+                android:gravity="center_vertical"/>
         </LinearLayout>
 
         <LinearLayout
@@ -83,8 +82,7 @@
                 android:layout_height="32dp"
                 android:layout_marginLeft="8dp"
                 android:gravity="center_vertical"
-                android:inputType="textPassword"
-                android:text="123456"/>
+                android:inputType="textPassword"/>
         </LinearLayout>
 
         <Button

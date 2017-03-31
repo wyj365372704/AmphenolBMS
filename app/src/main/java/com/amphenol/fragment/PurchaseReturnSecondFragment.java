@@ -216,14 +216,12 @@ public class PurchaseReturnSecondFragment extends BaseFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                double single = 0;
                 try {
-                    single = Double.parseDouble(String.valueOf(s));
+                     Double.parseDouble(String.valueOf(s));
                 } catch (Throwable e) {
                     e.printStackTrace();
                     ((BaseActivity) getActivity()).ShowToast("实际单重输入非法");
                 }
-                updateReceiptTotalWeight();
             }
 
             @Override
@@ -307,39 +305,6 @@ public class PurchaseReturnSecondFragment extends BaseFragment {
         mActualquantityTextView.setText(returnsItem.getActualQuantity() + "");
     }
 
-    /**
-     * 实收总数随着更改
-     */
-    private void UpdateActualQuantity() {
-       /* double count = 0;
-        for (Purchase.PurchaseItem.PurchaseItemBranchItem purchaseItemBranchItem : mPurchaseItem.getPurchaseItemBranchItems()) {
-            count = count + purchaseItemBranchItem.getActualQuantity();
-        }
-        mActualquantityTextView.setText(count + "");*/
-    }
-
-    /**
-     * 更新收货总重量
-     */
-    private void updateReceiptTotalWeight() {
-        /*double single = 0;
-        double total = 0;
-
-        try {
-            single = Double.parseDouble(mActualquantityTextView.getText().toString().trim());
-            total = Double.parseDouble(mActualSingleEditText.getText().toString().trim());
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-
-        if (mPurchaseItem.getUnit() != null) {
-            if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "GM") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "gm")) {
-                mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).divide(new BigDecimal(Double.toString(1000d))).toString());
-            } else if (TextUtils.equals(mPurchaseItem.getMater().getUnit(), "KG") || TextUtils.equals(mPurchaseItem.getMater().getUnit(), "kg")) {
-                mTotalWeightTextView.setText(new BigDecimal(Double.toString(single)).multiply(new BigDecimal(Double.toString(total))).toString());
-            }
-        }*/
-    }
 
     private void initViews() {
         mMaterNumberTextView = (TextView) rootView.findViewById(R.id.fragment_purchase_receipt_second_wlbh_in_tv);

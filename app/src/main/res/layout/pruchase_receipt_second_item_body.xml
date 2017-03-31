@@ -30,24 +30,24 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/normal_font_size"/>
 
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_weight="2">
 
-        <TextView
+        <EditText
             android:id="@+id/purchase_receipt_second_item_sssl_et"
+            style="@style/NormalTheme.EditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="0"
-            android:textColor="@android:color/black"/>
-    </LinearLayout>
+            android:inputType="numberDecimal"
+            android:text="0"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="0dp"

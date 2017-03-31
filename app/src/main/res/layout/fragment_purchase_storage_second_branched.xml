@@ -252,16 +252,14 @@
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/normal_font_size"/>
 
-                        <EditText
+                        <TextView
                             android:id="@+id/fragment_purchase_receipt_second_sszs_in_et"
-                            style="@style/NormalTheme.EditText"
                             android:layout_width="match_parent"
-                            android:layout_height="28dp"
+                            android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
+                            android:textColor="@android:color/black"
                             android:layout_marginLeft="4dp"
                             android:layout_toRightOf="@id/fragment_purchase_receipt_second_sszs_tv"
-                            android:hint="输入入库总数"
-                            android:inputType="numberDecimal"
                             android:padding="0dp"/>
                     </RelativeLayout>
 
@@ -308,7 +306,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="180dp"
                             android:gravity="center"
-                            android:text="收货总重量:"
+                            android:text="入库总重量:"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/normal_font_size"/>
 
