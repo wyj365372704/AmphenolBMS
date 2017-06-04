@@ -1,14 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key'
+            keyPassword 'amphenol'
+            storeFile file('E:/android_studio_workspace/Amphenol/key/amphenol_key.jks')
+            storePassword 'amphenol'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.amphenol.amphenol"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 16
-        versionName "1.0.0"
+        versionCode 20
+        versionName "2.0.0"
     }
     buildTypes {
         release {
