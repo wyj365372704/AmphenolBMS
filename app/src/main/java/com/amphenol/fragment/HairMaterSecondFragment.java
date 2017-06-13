@@ -47,6 +47,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -155,7 +156,8 @@ public class HairMaterSecondFragment extends BaseFragment {
     private void refreshShow() {
         materNumberTextView.setText(mPickItem.getBranch().getMater().getNumber());
         materDescTextView.setText(mPickItem.getBranch().getMater().getDesc());
-        mPlanQuantityTextView.setText(mPickItem.getQuantity() + "");
+        mPlanQuantityTextView.setText(String.valueOf(mPickItem.getQuantity()));
+        mHairQuantityTextView.setText(String.valueOf(mPickItem.getQuantity()));
         mUnitTextView.setText(mPickItem.getBranch().getMater().getUnit());
         mWarehouseTextView.setText(mPickItem.getBranch().getMater().getWarehouse());
 
@@ -426,10 +428,10 @@ public class HairMaterSecondFragment extends BaseFragment {
         mPickItem.setHairQuantity(0);
         for (Pick.PickItem.PickItemBranchItem pickItemBranchItem : mPickItem.getPickItemBranchItems()) {
             if (pickItemBranchItem.isChecked()) {
-                mPickItem.setHairQuantity(mPickItem.getHairQuantity() + pickItemBranchItem.getQuantity());
+                mPickItem.setHairQuantity(BigDecimal.valueOf(mPickItem.getHairQuantity()).add(BigDecimal.valueOf(pickItemBranchItem.getQuantity())).doubleValue());
             }
         }
-        mHairQuantityTextView.setText(mPickItem.getHairQuantity() + "");
+        mHairQuantityTextView.setText(String.valueOf(BigDecimal.valueOf(mPickItem.getQuantity()).subtract(BigDecimal.valueOf(mPickItem.getHairQuantity()))));
     }
 
     private void handleInquireMater(String warehouse, String unit, String mate, String pickNumber, String pickLine, String shard, String location, String branch, double quantity, String department, String workOrder, String sequence, String type, String branched) {
